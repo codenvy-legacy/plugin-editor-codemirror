@@ -12,8 +12,6 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import java.util.Stack;
 
-import org.codenvy.ide.editor.common.client.requirejs.ModuleHolder;
-
 import com.codenvy.ide.api.editor.EditorPartPresenter;
 import com.codenvy.ide.api.editor.EditorProvider;
 import com.codenvy.ide.api.extension.Extension;
@@ -22,6 +20,7 @@ import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
 import com.codenvy.ide.core.editor.EditorType;
 import com.codenvy.ide.core.editor.EditorTypeRegistry;
+import com.codenvy.ide.editor.common.client.requirejs.ModuleHolder;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
@@ -35,19 +34,23 @@ import com.google.inject.Inject;
 public class CodeMirrorEditorExtension {
 
     /** The editor type key. */
-    private static final String       CODEMIRROR_EDITOR_KEY = "codemirror";
+    private static final String               CODEMIRROR_EDITOR_KEY = "codemirror";
 
-    private final NotificationManager notificationManager;
-    private final ModuleHolder        moduleHolder;
-    private final EditorTypeRegistry  editorTypeRegistry;
+    private final NotificationManager         notificationManager;
+    private final ModuleHolder                moduleHolder;
+    private final EditorTypeRegistry          editorTypeRegistry;
+
+    private final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory;
 
     @Inject
     public CodeMirrorEditorExtension(final EditorTypeRegistry editorTypeRegistry,
                                      final ModuleHolder moduleHolder,
-                                     final NotificationManager notificationManager) {
+                                     final NotificationManager notificationManager,
+                                     final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory) {
         this.notificationManager = notificationManager;
         this.moduleHolder = moduleHolder;
         this.editorTypeRegistry = editorTypeRegistry;
+        this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
 
         injectCodeMirror();
     }
@@ -179,8 +182,7 @@ public class CodeMirrorEditorExtension {
 
             @Override
             public EditorPartPresenter getEditor() {
-                // TODO Auto-generated method stub
-                return null;
+                return codeMirrorTextEditorFactory.createTextEditor();
             }
         });
     }

@@ -1,0 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Codenvy, S.A.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Codenvy, S.A. - initial API and implementation
+ *******************************************************************************/
+package com.codenvy.ide.editor.codemirror.client;
+
+import javax.inject.Inject;
+
+import com.codenvy.ide.editor.common.client.texteditor.EmbeddedTextEditorPresenter;
+import com.codenvy.ide.editor.common.client.texteditor.EmbeddedTextEditorPresenterFactory;
+
+public class CodeMirrorTextEditorFactory {
+
+    @Inject
+    private CodeMirrorTextEditorViewFactory    viewFactory;
+
+    @Inject
+    private EmbeddedTextEditorPresenterFactory presenterFactory;
+
+    public EmbeddedTextEditorPresenter createTextEditor() {
+        return this.presenterFactory.createTextEditor(this.viewFactory);
+    }
+}
