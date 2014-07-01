@@ -30,6 +30,7 @@ import com.codenvy.ide.editor.common.client.events.HasGutterClickHandlers;
 import com.codenvy.ide.editor.common.client.events.HasViewPortChangeHandlers;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.editor.common.client.requirejs.ModuleHolder;
 import com.codenvy.ide.editor.common.client.texteditor.EditorWidget;
 import com.codenvy.ide.editor.common.client.texteditor.EmbeddedDocument;
 import com.codenvy.ide.text.Region;
@@ -91,6 +92,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @AssistedInject
     public CodeMirrorEditorWidget(final NotificationManager notificationManager,
+                                  final ModuleHolder moduleHolder,
                                   @Assisted final String editorMode,
                                   @Assisted final com.codenvy.ide.text.Document document) {
         this.panel.setSize("100%", "100%");
@@ -98,7 +100,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
         this.notificationManager = notificationManager;
 
-        this.editorOverlay = CMEditorOverlay.createEditor(this.panel.getElement(), getConfiguration());
+        JavaScriptObject codeMirrorEditorModule = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY);
+
+        this.editorOverlay = CMEditorOverlay.createEditor(this.panel.getElement(), getConfiguration(), codeMirrorEditorModule);
         this.editorOverlay.setSize("100%", "100%");
         this.editorOverlay.refresh();
 

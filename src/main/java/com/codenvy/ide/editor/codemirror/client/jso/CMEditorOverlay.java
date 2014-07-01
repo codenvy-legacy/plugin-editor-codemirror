@@ -112,6 +112,12 @@ public class CMEditorOverlay extends JavaScriptObject {
         return $wnd.CodeMirror(element, options);
     }-*/;
 
+    public final static native CMEditorOverlay createEditor(Element element,
+                                                            JavaScriptObject options,
+                                                            JavaScriptObject module) /*-{
+        return module(element, options);
+    }-*/;
+
     // events handling - the cm.off(...) method is not that easy to do...
 
     public final native <T extends JavaScriptObject> void on(String eventType, EventHandlerMultipleParameters<T> handler) /*-{
