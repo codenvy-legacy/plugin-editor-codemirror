@@ -73,17 +73,51 @@ public class CodeMirrorEditorExtension {
                 // language modes
                 CODEMIRROR_BASE + "mode/xml/xml",
                 CODEMIRROR_BASE + "mode/htmlmixed/htmlmixed", // must be defined after xml
+                CODEMIRROR_BASE + "mode/htmlembedded/htmlembedded",
+                CODEMIRROR_BASE + "mode/dtd/dtd",
+
                 CODEMIRROR_BASE + "mode/javascript/javascript",
+                CODEMIRROR_BASE + "mode/coffeescript/coffeescript",
+
                 CODEMIRROR_BASE + "mode/css/css",
+                CODEMIRROR_BASE + "mode/sass/sass",
+
                 CODEMIRROR_BASE + "mode/sql/sql",
+                CODEMIRROR_BASE + "mode/properties/properties",
+                CODEMIRROR_BASE + "mode/yaml/yaml",
+                CODEMIRROR_BASE + "mode/diff/diff",
+                CODEMIRROR_BASE + "mode/shell/shell",
+
                 CODEMIRROR_BASE + "mode/clike/clike",
+                CODEMIRROR_BASE + "mode/clojure/clojure",
+                CODEMIRROR_BASE + "mode/groovy/groovy",
+
+                CODEMIRROR_BASE + "mode/stex/stex",
                 CODEMIRROR_BASE + "mode/markdown/markdown",
                 CODEMIRROR_BASE + "mode/gfm/gfm", // markdown extension for github
-                CODEMIRROR_BASE + "mode/properties/properties",
+
                 CODEMIRROR_BASE + "mode/php/php",
-                CODEMIRROR_BASE + "mode/htmlembedded/htmlembedded",
                 CODEMIRROR_BASE + "mode/python/python",
-                CODEMIRROR_BASE + "mode/yaml/yaml",
+                CODEMIRROR_BASE + "mode/ruby/ruby",
+                CODEMIRROR_BASE + "mode/go/go",
+                CODEMIRROR_BASE + "mode/lua/lua",
+                CODEMIRROR_BASE + "mode/perl/perl",
+                CODEMIRROR_BASE + "mode/r/r",
+                CODEMIRROR_BASE + "mode/rust/rust",
+                CODEMIRROR_BASE + "mode/tcl/tcl",
+
+                CODEMIRROR_BASE + "mode/commonlisp/commonlisp",
+                CODEMIRROR_BASE + "mode/haskell/haskell",
+                CODEMIRROR_BASE + "mode/erlang/erlang",
+                CODEMIRROR_BASE + "mode/scheme/scheme",
+                CODEMIRROR_BASE + "mode/mllike/mllike",
+
+                CODEMIRROR_BASE + "mode/cobol/cobol",
+                CODEMIRROR_BASE + "mode/fortran/fortran",
+                CODEMIRROR_BASE + "mode/pascal/pascal",
+                CODEMIRROR_BASE + "mode/smalltalk/smalltalk",
+                CODEMIRROR_BASE + "mode/vb/vb",
+                CODEMIRROR_BASE + "mode/vbscript/vbscript",
 
                 // hints
                 CODEMIRROR_BASE + "addon/hint/show-hint",
