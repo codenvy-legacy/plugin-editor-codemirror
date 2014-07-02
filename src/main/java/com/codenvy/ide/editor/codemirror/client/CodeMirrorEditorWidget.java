@@ -147,7 +147,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         json.put("lineNumbers", JSONBoolean.getInstance(true));
 
         // set a theme
-        json.put("theme", new JSONString("solarized dark"));
+        json.put("theme", new JSONString("codenvy"));
 
 
         // autoclose brackets/tags, match brackets/tags

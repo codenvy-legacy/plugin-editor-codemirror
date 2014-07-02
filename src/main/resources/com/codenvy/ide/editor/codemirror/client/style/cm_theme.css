@@ -1,0 +1,103 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Codenvy, S.A.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Codenvy, S.A. - initial API and implementation
+ *******************************************************************************/
+
+    @external .cm-s-codenvy, .CodeMirror, CodeMirror-selected;
+    @external .CodeMirror-gutters, .CodeMirror-gutter, .CodeMirror-foldgutter, .CodeMirror-lines, .CodeMirror-linenumber;
+    @external .CodeMirror-cursor, .CodeMirror-activeline-background;
+    @external .CodeMirror-matchingbracket;
+    @external .CodeMirror-cursor;
+    
+.cm-s-codenvy.CodeMirror {
+  /* Set height, width, borders, and global font properties here */
+
+    font-family: editorFontFamily;
+    font-size: 13px;
+    line-height: editorLineHeight;
+    position: absolute;
+    text-wrap: none;
+    user-select: none;
+
+    background-color: editorBackgroundColor;
+    color: editorDefaultFontColor
+}
+
+/* GUTTER */
+
+.cm-s-codenvy .CodeMirror-gutters {
+    /* duplicated from Editor -> .leftGutterBase, .leftGutter, .leftGutterNotification */
+    cursor: default;
+    font-size: 11px;
+    font-face: Verdana;
+    height: 100%;
+    line-height: editorLineHeight;
+    overflow: hidden;
+
+    /* duplicated from Editor -> .leftGutter - removed right border */
+    color: #bbbbbb;
+    min-width: 2em;
+    padding-left: 5px;
+    padding-right: 6px;
+    text-align: right;
+
+    border-right: none;
+    background-color: editoGutterColor;
+}
+
+.cm-s-codenvy .CodeMirror-gutter {
+    background-color: editorBackgroundColor;
+}
+.cm-s-codenvy .CodeMirror-foldgutter {
+    border-right: 1px dotted #888888;
+}
+
+.cm-s-codenvy .CodeMirror-linenumber {
+    /* duplicated from LineNumerRenderer.css -> .lineNumber */
+    font-family: "DejaVu Sans Mono", alternativeFontFamily;
+    font-size: 12px;
+    color: #888888;
+}
+
+/* CURSOR */
+
+.cm-s-codenvy .CodeMirror div.CodeMirror-cursor {
+    /* duplicated from CursorView.css -> .root */
+    height: editorLineHeight;
+    position: absolute;
+    width: 2px;
+}
+
+.cm-s-codenvy div.CodeMirror-selected {
+    /* duplicated from Editor.css -> ::selection OR SelectionLineRenderer -> .selection */
+    background: editorSelectionColor;
+}
+
+.cm-s-codenvy .CodeMirror-activeline-background {
+    /* duplicated from LineNumerRenderer.css -> .activeline */
+    background: editorCurrentLineColor !important;
+}
+
+.cm-s-codenvy .CodeMirror-matchingbracket {
+    /* duplicated from ParentMatchHighlighter.css -> .match */
+    box-shadow: 0 0 1px #868686 inset;
+    -moz-box-shadow: 0 0 1px #868686 inset;
+    -webkit-box-shadow: 0 0 1px #868686 inset;
+    
+    /* duplicated from ParentMatchHighlighter.css ->.animationEnabled .match */
+    -moz-transition-duration: 0.10s;
+    -moz-transition-timing-function: ease-in;
+    -moz-transition-property: top, left, bottom, right, height, width;
+    -webkit-transition-duration: 0.10s;
+    -webkit-transition-timing-function: ease-in;
+    -webkit-transition-property: top, left, bottom, right, height, width;
+    transition-duration: 0.10s;
+    transition-timing-function: ease-in;
+    transition-property: top, left, bottom, right, height, width;
+}

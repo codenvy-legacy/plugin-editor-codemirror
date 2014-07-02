@@ -18,6 +18,7 @@ import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
 import com.codenvy.ide.core.editor.EditorType;
 import com.codenvy.ide.core.editor.EditorTypeRegistry;
+import com.codenvy.ide.editor.codemirror.client.style.CodeMirrorResource;
 import com.codenvy.ide.editor.common.client.requirejs.ModuleHolder;
 import com.codenvy.ide.editor.common.client.requirejs.RequireJsLoader;
 import com.codenvy.ide.util.loging.Log;
@@ -49,12 +50,16 @@ public class CodeMirrorEditorExtension {
                                      final ModuleHolder moduleHolder,
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
-                                     final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory) {
+                                     final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
+                                     final CodeMirrorResource highlightResource) {
         this.notificationManager = notificationManager;
         this.moduleHolder = moduleHolder;
         this.requireJsLoader = requireJsLoader;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
+
+        highlightResource.highlightStyle().ensureInjected();
+        highlightResource.editorStyle().ensureInjected();
 
         injectCodeMirror();
     }
@@ -170,7 +175,6 @@ public class CodeMirrorEditorExtension {
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "lib/codemirror.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "theme/solarized-mod.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/dialog/dialog.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/fold/foldgutter.css");
     }
