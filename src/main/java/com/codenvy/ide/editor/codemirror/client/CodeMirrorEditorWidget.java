@@ -14,6 +14,7 @@ package com.codenvy.ide.editor.codemirror.client;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
+import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.editor.codemirror.client.jso.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
@@ -83,7 +84,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private final KeyBindingsOverlay                    keyBindings                 = KeyBindingsOverlay.create();
     private final NotificationManager                   notificationManager;
 
-    private com.codenvy.ide.text.Document               document;
     private CodeMirrorDocument                          embeddedDocument;
 
     private boolean                                     changeHandlerAdded          = false;
@@ -99,6 +99,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @AssistedInject
     public CodeMirrorEditorWidget(final NotificationManager notificationManager,
                                   final ModuleHolder moduleHolder,
+                                  final PreferencesManager preferenceManager,
                                   @Assisted final String editorMode,
                                   @Assisted final com.codenvy.ide.text.Document document) {
         initWidget(UIBINDER.createAndBindUi(this));
