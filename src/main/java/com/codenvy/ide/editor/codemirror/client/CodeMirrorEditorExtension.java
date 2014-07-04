@@ -33,7 +33,7 @@ import com.google.inject.Inject;
 public class CodeMirrorEditorExtension {
 
     /** The editor type key. */
-    private static final String               CODEMIRROR_EDITOR_KEY = "codemirror";
+    public static final String                CODEMIRROR_EDITOR_KEY = "codemirror";
 
     /** The codemirror javascript module key. */
     public static final String                CODEMIRROR_MODULE_KEY = "CodeMirror";

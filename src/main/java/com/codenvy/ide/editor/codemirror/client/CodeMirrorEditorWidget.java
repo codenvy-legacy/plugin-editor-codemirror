@@ -31,6 +31,7 @@ import com.codenvy.ide.editor.common.client.events.HasGutterClickHandlers;
 import com.codenvy.ide.editor.common.client.events.HasViewPortChangeHandlers;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.editor.common.client.keymap.KeymapPrefReader;
 import com.codenvy.ide.editor.common.client.requirejs.ModuleHolder;
 import com.codenvy.ide.editor.common.client.texteditor.EditorWidget;
 import com.codenvy.ide.editor.common.client.texteditor.EmbeddedDocument;
@@ -83,6 +84,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private final CMEditorOverlay                       editorOverlay;
     private final KeyBindingsOverlay                    keyBindings                 = KeyBindingsOverlay.create();
     private final NotificationManager                   notificationManager;
+    private final PreferencesManager                    preferencesManager;
 
     private CodeMirrorDocument                          embeddedDocument;
 
@@ -99,12 +101,13 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @AssistedInject
     public CodeMirrorEditorWidget(final NotificationManager notificationManager,
                                   final ModuleHolder moduleHolder,
-                                  final PreferencesManager preferenceManager,
+                                  final PreferencesManager preferencesManager,
                                   @Assisted final String editorMode,
                                   @Assisted final com.codenvy.ide.text.Document document) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.notificationManager = notificationManager;
+        this.preferencesManager = preferencesManager;
 
         JavaScriptObject codeMirrorEditorModule = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY);
 
@@ -129,6 +132,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                 changeKeymap();
             }
         });
+
+        setupKeymap();
     }
 
     @Override
@@ -219,7 +224,11 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final Keymap next = Keymap.fromIndex((current.getIndex() + 1) % 4);
         Log.info(CodeMirrorEditorWidget.class, "Setting editor keymap: " + next.getCodeMirrorKey());
         notificationManager.showNotification(new Notification("Changed key binding: " + next.getCodeMirrorKey(), Type.INFO));
-        switch (next) {
+        selectKeymap(next);
+    }
+
+    private void selectKeymap(final Keymap keymap) {
+        switch (keymap) {
             case DEFAULT:
                 selectDefaultKeymap();
                 break;
@@ -233,7 +242,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                 selectSublimeKeymap();
                 break;
             default:
-                throw new RuntimeException("Unknown keymap type: " + next);
+                throw new RuntimeException("Unknown keymap type: " + keymap);
         }
     }
 
@@ -451,6 +460,19 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
             throw new RuntimeException("Invalid selection");
         }
         return new RegionImpl(startOffset, endOffset - startOffset);
+    }
+
+    private void setupKeymap() {
+        final String propertyValue = KeymapPrefReader.readPref(this.preferencesManager,
+                                                               CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
+        Keymap keymap;
+        try {
+            keymap = Keymap.fromCodeMirrorKey(propertyValue);
+        } catch (final IllegalArgumentException e) {
+            Log.error(CodeMirrorEditorWidget.class, "Unknown value in keymap preference.", e);
+            return;
+        }
+        selectKeymap(keymap);
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
