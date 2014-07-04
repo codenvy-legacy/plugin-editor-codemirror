@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
+import com.google.gwt.core.shared.GWT;
+
 /**
  * Enum for keymaps supported by CodeMirror.
  * 
  * @author "Mickaël Leduque"
  */
-public enum Keymap {
+public enum Keymap implements com.codenvy.ide.editor.common.client.keymap.Keymap {
     DEFAULT(0, "default"),
     EMACS(1, "emacs"),
     VIM(2, "vim"),
@@ -53,5 +55,27 @@ public enum Keymap {
             }
         }
         throw new IllegalArgumentException("Unknown keymap index");
+    }
+
+    @Override
+    public String getKey() {
+        return this.codemirrorKey;
+    }
+
+    @Override
+    public String getDisplay() {
+        KeymapDisplayConstants constants = GWT.create(KeymapDisplayConstants.class);
+        switch (this) {
+            case EMACS:
+                return constants.emacs();
+            case VIM:
+                return constants.vim();
+            case SUBLIME:
+                return constants.sublime();
+            case DEFAULT:
+                return constants.defaultKeymap();
+            default:
+                throw new IllegalArgumentException("Unknown keymap enum");
+        }
     }
 }
