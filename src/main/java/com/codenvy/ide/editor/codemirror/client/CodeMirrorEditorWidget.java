@@ -31,6 +31,8 @@ import com.codenvy.ide.editor.common.client.events.HasGutterClickHandlers;
 import com.codenvy.ide.editor.common.client.events.HasViewPortChangeHandlers;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.editor.common.client.keymap.KeymapChangeEvent;
+import com.codenvy.ide.editor.common.client.keymap.KeymapChangeHandler;
 import com.codenvy.ide.editor.common.client.keymap.KeymapPrefReader;
 import com.codenvy.ide.editor.common.client.requirejs.ModuleHolder;
 import com.codenvy.ide.editor.common.client.texteditor.EditorWidget;
@@ -67,6 +69,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * The CodeMirror implementation of {@link EditorWidget}.
@@ -102,6 +105,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public CodeMirrorEditorWidget(final NotificationManager notificationManager,
                                   final ModuleHolder moduleHolder,
                                   final PreferencesManager preferencesManager,
+                                  final EventBus eventBus,
                                   @Assisted final String editorMode,
                                   @Assisted final com.codenvy.ide.text.Document document) {
         initWidget(UIBINDER.createAndBindUi(this));
@@ -134,6 +138,13 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         });
 
         setupKeymap();
+        eventBus.addHandler(KeymapChangeEvent.TYPE, new KeymapChangeHandler() {
+
+            @Override
+            public void onKeymapChanged(final KeymapChangeEvent event) {
+                setupKeymap();
+            }
+        });
     }
 
     @Override
