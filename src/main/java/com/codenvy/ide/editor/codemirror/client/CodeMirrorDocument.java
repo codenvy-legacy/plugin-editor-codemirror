@@ -58,8 +58,12 @@ public class CodeMirrorDocument implements EmbeddedDocument {
     }
 
     @Override
+    public int getLineCount() {
+        return this.documentOverlay.lineCount();
+    }
+
+    @Override
     public HandlerRegistration addCursorHandler(final CursorActivityHandler handler) {
         return this.hasCursorActivityHandlers.addCursorActivityHandler(handler);
     }
-
 }

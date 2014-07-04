@@ -39,6 +39,7 @@ import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -58,6 +59,8 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.assistedinject.Assisted;
@@ -72,22 +75,25 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                                      HasScrollHandlers, HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
                                                      HasViewPortChangeHandlers, HasGutterClickHandlers {
 
-    private final SimplePanel             panel                       = new SimplePanel();
-    private final CMEditorOverlay         editorOverlay;
-    private final KeyBindingsOverlay      keyBindings                 = KeyBindingsOverlay.create();
-    private final NotificationManager     notificationManager;
+    private static final CodeMirrorEditorWidgetUiBinder UIBINDER                    = GWT.create(CodeMirrorEditorWidgetUiBinder.class);
 
-    private com.codenvy.ide.text.Document document;
-    private CodeMirrorDocument            embeddedDocument;
+    @UiField
+    SimplePanel                                         panel;
+    private final CMEditorOverlay                       editorOverlay;
+    private final KeyBindingsOverlay                    keyBindings                 = KeyBindingsOverlay.create();
+    private final NotificationManager                   notificationManager;
 
-    private boolean                       changeHandlerAdded          = false;
-    private boolean                       focusHandlerAdded           = false;
-    private boolean                       blurHandlerAdded            = false;
-    private boolean                       scrollHandlerAdded          = false;
-    private boolean                       cursorHandlerAdded          = false;
-    private boolean                       beforeSelectionHandlerAdded = false;
-    private boolean                       viewPortHandlerAdded        = false;
-    private boolean                       gutterClickHandlerAdded     = false;
+    private com.codenvy.ide.text.Document               document;
+    private CodeMirrorDocument                          embeddedDocument;
+
+    private boolean                                     changeHandlerAdded          = false;
+    private boolean                                     focusHandlerAdded           = false;
+    private boolean                                     blurHandlerAdded            = false;
+    private boolean                                     scrollHandlerAdded          = false;
+    private boolean                                     cursorHandlerAdded          = false;
+    private boolean                                     beforeSelectionHandlerAdded = false;
+    private boolean                                     viewPortHandlerAdded        = false;
+    private boolean                                     gutterClickHandlerAdded     = false;
 
 
     @AssistedInject
@@ -95,8 +101,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                   final ModuleHolder moduleHolder,
                                   @Assisted final String editorMode,
                                   @Assisted final com.codenvy.ide.text.Document document) {
-        this.panel.setSize("100%", "100%");
-        initWidget(this.panel);
+        initWidget(UIBINDER.createAndBindUi(this));
 
         this.notificationManager = notificationManager;
 
@@ -408,6 +413,17 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.editorOverlay.markClean();
     }
 
+
+    @Override
+    public int getTabSize() {
+        return this.editorOverlay.getIntOption("tabSize");
+    }
+
+    @Override
+    public void setTabSize(int tabSize) {
+        this.editorOverlay.setOption("tabSize", tabSize);
+    }
+
     @Override
     public EmbeddedDocument getDocument() {
         if (this.embeddedDocument == null) {
@@ -427,12 +443,15 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final int startOffset = this.editorOverlay.getDoc().indexFromPos(from);
         final int endOffset = this.editorOverlay.getDoc().indexFromPos(to);
 
-        final int lastLine = this.editorOverlay.getDoc().getLastLine();
+        final int lastLine = this.editorOverlay.getDoc().lastLine();
         final int lastPosition = this.editorOverlay.getDoc().getLine(lastLine).length();
 
         if (startOffset < 0 || endOffset > lastPosition || startOffset > endOffset) {
             throw new RuntimeException("Invalid selection");
         }
         return new RegionImpl(startOffset, endOffset - startOffset);
+    }
+
+    interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
     }
 }

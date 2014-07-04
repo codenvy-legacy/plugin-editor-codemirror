@@ -83,12 +83,12 @@ public class CMDocumentOverlay extends JavaScriptObject {
         return this.getLine(index);
     }-*/;
 
-    public final native int getFirstLine() /*-{
-        return this.getLastLine();
+    public final native int firstLine() /*-{
+        return this.firstLine();
     }-*/;
 
-    public final native int getLastLine() /*-{
-        return this.getLastLine();
+    public final native int lastLine() /*-{
+        return this.lastLine();
     }-*/;
 
 

@@ -77,18 +77,6 @@ public class CMEditorOverlay extends JavaScriptObject {
         this.setOption(propertyName, value);
     }-*/;
 
-    public final native String getStringOption(final String propertyName) /*-{
-        return this.getOption(propertyName);
-    }-*/;
-
-    public final native boolean getBooleanOption(final String propertyName) /*-{
-        return this.getOption(propertyName);
-    }-*/;
-
-    public final native JavaScriptObject getOption(final String propertyName) /*-{
-        return this.getOption(propertyName);
-    }-*/;
-
     /**
      * Change option value for the editor.
      * 
@@ -97,6 +85,32 @@ public class CMEditorOverlay extends JavaScriptObject {
      */
     public final native void setOption(final String propertyName, final boolean value) /*-{
         this.setOption(propertyName, value);
+    }-*/;
+
+    /**
+     * Change option value for the editor.
+     * 
+     * @param propertyName the option name
+     * @param value the new value
+     */
+    public final native void setOption(final String propertyName, final int value) /*-{
+        this.setOption(propertyName, value);
+    }-*/;
+
+    public final native String getStringOption(final String propertyName) /*-{
+        return this.getOption(propertyName);
+    }-*/;
+
+    public final native boolean getBooleanOption(final String propertyName) /*-{
+        return this.getOption(propertyName);
+    }-*/;
+
+    public final native int getIntOption(final String propertyName) /*-{
+        return this.getOption(propertyName);
+    }-*/;
+
+    public final native JavaScriptObject getOption(final String propertyName) /*-{
+        return this.getOption(propertyName);
     }-*/;
 
     public final static native CMHintFunctionOverlay getHintFunction(String name) /*-{
