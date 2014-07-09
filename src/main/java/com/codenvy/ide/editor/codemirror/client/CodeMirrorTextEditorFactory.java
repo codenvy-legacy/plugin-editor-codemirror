@@ -12,8 +12,8 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import javax.inject.Inject;
 
-import com.codenvy.ide.editor.common.client.texteditor.EmbeddedTextEditorPresenter;
-import com.codenvy.ide.editor.common.client.texteditor.EmbeddedTextEditorPresenterFactory;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenterFactory;
 
 public class CodeMirrorTextEditorFactory {
 

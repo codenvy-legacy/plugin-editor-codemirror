@@ -12,7 +12,7 @@ package com.codenvy.ide.editor.codemirror.client.inject;
 
 import com.codenvy.ide.api.extension.ExtensionGinModule;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
-import com.codenvy.ide.editor.common.client.texteditor.EditorWidgetFactory;
+import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
 import com.google.inject.TypeLiteral;

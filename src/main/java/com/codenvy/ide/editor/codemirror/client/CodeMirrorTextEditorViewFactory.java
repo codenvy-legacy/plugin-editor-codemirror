@@ -12,11 +12,11 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import javax.inject.Inject;
 
-import com.codenvy.ide.editor.common.client.filetype.FileTypeIdentifier;
-import com.codenvy.ide.editor.common.client.texteditor.EditorWidgetFactory;
-import com.codenvy.ide.editor.common.client.texteditor.EmbeddedTextEditorPartView;
-import com.codenvy.ide.editor.common.client.texteditor.EmbeddedTextEditorPartViewImpl;
-import com.codenvy.ide.editor.common.client.texteditor.EmbeddedTextEditorViewFactory;
+import com.codenvy.ide.jseditor.client.filetype.FileTypeIdentifier;
+import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPartView;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPartViewImpl;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorViewFactory;
 
 public class CodeMirrorTextEditorViewFactory implements EmbeddedTextEditorViewFactory {
 

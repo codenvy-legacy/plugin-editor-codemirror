@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.codenvy.ide.core.editor.EditorType;
-import com.codenvy.ide.editor.common.client.keymap.Keymap;
+import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.shared.GWT;
 

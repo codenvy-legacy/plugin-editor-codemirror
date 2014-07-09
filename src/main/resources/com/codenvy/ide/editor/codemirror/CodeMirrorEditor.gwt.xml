@@ -15,5 +15,5 @@
         "http://google-web-toolkit.googlecode.com/svn/tags/2.4.0/distro-source/core/src/gwt-module.dtd">
 <module>
     <inherits name="com.google.gwt.user.User"/>
-    <inherits name="com.codenvy.ide.editor.common.EditorCommon"/>
+    <inherits name="com.codenvy.ide.jseditor.JsEditor"/>
 </module>
