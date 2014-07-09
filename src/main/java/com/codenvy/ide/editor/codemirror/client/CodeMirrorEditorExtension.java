@@ -62,6 +62,8 @@ public class CodeMirrorEditorExtension {
         highlightResource.editorStyle().ensureInjected();
 
         injectCodeMirror();
+        // no need to delay
+        CodeMirrorKeymaps.init();
     }
 
     private void injectCodeMirror() {

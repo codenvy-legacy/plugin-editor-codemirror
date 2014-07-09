@@ -11,8 +11,6 @@
 package com.codenvy.ide.editor.codemirror.client;
 
 
-import com.codenvy.ide.api.notification.Notification;
-import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
 import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.editor.codemirror.client.jso.BeforeSelectionEventParamOverlay;
@@ -31,6 +29,7 @@ import com.codenvy.ide.editor.common.client.events.HasGutterClickHandlers;
 import com.codenvy.ide.editor.common.client.events.HasViewPortChangeHandlers;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.editor.common.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.editor.common.client.keymap.Keymap;
 import com.codenvy.ide.editor.common.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.editor.common.client.keymap.KeymapChangeHandler;
 import com.codenvy.ide.editor.common.client.keymap.KeymapPrefReader;
@@ -106,8 +105,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                   final ModuleHolder moduleHolder,
                                   final PreferencesManager preferencesManager,
                                   final EventBus eventBus,
-                                  @Assisted final String editorMode,
-                                  @Assisted final com.codenvy.ide.text.Document document) {
+                                  @Assisted final String editorMode) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.notificationManager = notificationManager;
@@ -129,20 +127,15 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
             }
         });
 
-        this.keyBindings.addBinding("Shift-Ctrl-Alt-K", new KeyBindingAction() {
-
-            public void action() {
-                Log.info(CodeMirrorEditorWidget.class, "Keymap change binding used.");
-                changeKeymap();
-            }
-        });
-
         setupKeymap();
         eventBus.addHandler(KeymapChangeEvent.TYPE, new KeymapChangeHandler() {
 
             @Override
             public void onKeymapChanged(final KeymapChangeEvent event) {
-                setupKeymap();
+                final String editorTypeKey = event.getEditorTypeKey();
+                if (CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY.equals(editorTypeKey)) {
+                    setupKeymap();
+                }
             }
         });
     }
@@ -210,51 +203,38 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     }
 
     public void selectVimKeymap() {
-        this.editorOverlay.setOption("keyMap", Keymap.VIM.getCodeMirrorKey());
+        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.VIM));
         this.editorOverlay.setOption("showCursorWhenSelecting", true);
     }
 
     public void selectEmacsKeymap() {
-        this.editorOverlay.setOption("keyMap", Keymap.EMACS.getCodeMirrorKey());
+        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.EMACS));
         this.editorOverlay.setOption("showCursorWhenSelecting", false);
     }
 
     public void selectSublimeKeymap() {
-        this.editorOverlay.setOption("keyMap", Keymap.SUBLIME.getCodeMirrorKey());
+        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.SUBLIME));
         this.editorOverlay.setOption("showCursorWhenSelecting", false);
     }
 
     public void selectDefaultKeymap() {
-        this.editorOverlay.setOption("keyMap", Keymap.DEFAULT.getCodeMirrorKey());
+        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.DEFAULT));
         this.editorOverlay.setOption("showCursorWhenSelecting", false);
     }
 
-    protected void changeKeymap() {
-        final String keymapCode = this.editorOverlay.getStringOption("keyMap");
-        final Keymap current = Keymap.fromCodeMirrorKey(keymapCode);
-        final Keymap next = Keymap.fromIndex((current.getIndex() + 1) % 4);
-        Log.info(CodeMirrorEditorWidget.class, "Setting editor keymap: " + next.getCodeMirrorKey());
-        notificationManager.showNotification(new Notification("Changed key binding: " + next.getCodeMirrorKey(), Type.INFO));
-        selectKeymap(next);
-    }
-
     private void selectKeymap(final Keymap keymap) {
-        switch (keymap) {
-            case DEFAULT:
-                selectDefaultKeymap();
-                break;
-            case VIM:
-                selectVimKeymap();
-                break;
-            case EMACS:
-                selectEmacsKeymap();
-                break;
-            case SUBLIME:
-                selectSublimeKeymap();
-                break;
-            default:
-                throw new RuntimeException("Unknown keymap type: " + keymap);
+        if (keymap == null || CodeMirrorKeymaps.DEFAULT.equals(keymap)) {
+            selectDefaultKeymap();
+        } else if (CodeMirrorKeymaps.EMACS.equals(keymap)) {
+            selectEmacsKeymap();
+        } else if (CodeMirrorKeymaps.VIM.equals(keymap)) {
+            selectVimKeymap();
+        } else if (CodeMirrorKeymaps.SUBLIME.equals(keymap)) {
+            selectSublimeKeymap();
+        } else {
+            throw new RuntimeException("Unknown keymap type: " + keymap);
         }
+
     }
 
     @Override
@@ -478,7 +458,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                                                CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
         Keymap keymap;
         try {
-            keymap = Keymap.fromCodeMirrorKey(propertyValue);
+            keymap = Keymap.fromKey(propertyValue);
         } catch (final IllegalArgumentException e) {
             Log.error(CodeMirrorEditorWidget.class, "Unknown value in keymap preference.", e);
             return;
