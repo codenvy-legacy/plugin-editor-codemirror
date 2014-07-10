@@ -45,6 +45,9 @@
     </scm>
     <properties>
         <license_years>2014</license_years>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <upstream.url>http://codemirror.net/</upstream.url>
+        <upstream.version>4.3</upstream.version>
     </properties>
     <dependencies>
         <dependency>
@@ -80,17 +83,58 @@
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
+            <resource>
+                <directory>target/codemirror-${upstream.version}</directory>
+                <includes>
+                    <include>**/*.js</include>
+                    <include>**/*.css</include>
+                </includes>
+                <excludes>
+                    <exclude>**/test/**</exclude>
+                    <exclude>**/doc/**</exclude>
+                    <exclude>**/theme/**</exclude>
+                    <exclude>**/demo/**</exclude>
+                </excludes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <!-- CodeMirror - MIT License -->
-                        <exclude>**/com/codenvy/ide/editor/codemirror/public/codemirror-4.2/**</exclude>
-                    </excludes>
-                </configuration>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0-beta-4</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>download-single</goal>
+                        </goals>
+                        <configuration>
+                            <url>${upstream.url}</url>
+                            <fromFile>codemirror-${upstream.version}.zip</fromFile>
+                            <toFile>${project.build.directory}/codemirror-${upstream.version}.zip</toFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <unzip dest="${project.build.directory}" src="${project.build.directory}/codemirror-${upstream.version}.zip" />
+                                <mkdir dir="${project.build.directory}/codemirror-${upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/" />
+                                <move todir="${project.build.directory}/codemirror-${upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/">
+                                    <fileset dir="${project.build.directory}/codemirror-${upstream.version}/" />
+                                </move>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -71,7 +71,7 @@ public class CodeMirrorEditorExtension {
          * This could be simplified and optimized with a all-in-one minified js from http://codemirror.net/doc/compress.html but at least
          * while debugging, unmodified source is necessary. Another option would be to include all-in-one minified along with a source map
          */
-        final String CODEMIRROR_BASE = "codemirror-4.2/";
+        final String CODEMIRROR_BASE = "codemirror/";
         final String[] scripts = new String[]{
 
                 // base script
