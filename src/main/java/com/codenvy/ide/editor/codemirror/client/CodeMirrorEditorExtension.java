@@ -204,6 +204,16 @@ public class CodeMirrorEditorExtension {
             public CodenvyTextEditor getEditor() {
                 return codeMirrorTextEditorFactory.createTextEditor();
             }
+
+            @Override
+            public String getId() {
+                return CODEMIRROR_EDITOR_KEY;
+            }
+
+            @Override
+            public String getDescription() {
+                return "CodeMirror Editor";
+            }
         });
     }
 
