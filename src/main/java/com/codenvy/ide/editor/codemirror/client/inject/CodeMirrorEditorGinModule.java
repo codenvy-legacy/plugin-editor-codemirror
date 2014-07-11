@@ -10,11 +10,16 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.inject;
 
+import javax.inject.Named;
+
 import com.codenvy.ide.api.extension.ExtensionGinModule;
+import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorExtension;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 
 @ExtensionGinModule
@@ -25,5 +30,12 @@ public class CodeMirrorEditorGinModule extends AbstractGinModule {
         // Bind the CodeMirror EditorWidget factory
         install(new GinFactoryModuleBuilder().build(new TypeLiteral<EditorWidgetFactory<CodeMirrorEditorWidget>>() {
         }));
+    }
+
+    @Provides
+    @Singleton
+    @Named("DefaultEditorType")
+    protected String defaultEditorTypeKey() {
+        return CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY;
     }
 }
