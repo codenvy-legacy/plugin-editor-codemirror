@@ -12,9 +12,9 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
+import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
-import com.codenvy.ide.jseditor.client.texteditor.EmbeddedDocument;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
@@ -65,5 +65,10 @@ public class CodeMirrorDocument implements EmbeddedDocument {
     @Override
     public HandlerRegistration addCursorHandler(final CursorActivityHandler handler) {
         return this.hasCursorActivityHandlers.addCursorActivityHandler(handler);
+    }
+
+    @Override
+    public String getContents() {
+        return this.documentOverlay.getValue();
     }
 }

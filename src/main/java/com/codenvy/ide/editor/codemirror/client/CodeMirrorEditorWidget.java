@@ -11,12 +11,12 @@
 package com.codenvy.ide.editor.codemirror.client;
 
 
-import com.codenvy.ide.api.notification.NotificationManager;
 import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.editor.codemirror.client.jso.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.KeyBindingsOverlay;
+import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeEvent;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeHandler;
 import com.codenvy.ide.jseditor.client.events.CursorActivityEvent;
@@ -35,7 +35,6 @@ import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
 import com.codenvy.ide.jseditor.client.keymap.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
-import com.codenvy.ide.jseditor.client.texteditor.EmbeddedDocument;
 import com.codenvy.ide.text.Region;
 import com.codenvy.ide.text.RegionImpl;
 import com.codenvy.ide.util.loging.Log;
@@ -85,7 +84,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     SimplePanel                                         panel;
     private final CMEditorOverlay                       editorOverlay;
     private final KeyBindingsOverlay                    keyBindings                 = KeyBindingsOverlay.create();
-    private final NotificationManager                   notificationManager;
     private final PreferencesManager                    preferencesManager;
 
     private CodeMirrorDocument                          embeddedDocument;
@@ -101,14 +99,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
 
     @AssistedInject
-    public CodeMirrorEditorWidget(final NotificationManager notificationManager,
-                                  final ModuleHolder moduleHolder,
+    public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final PreferencesManager preferencesManager,
                                   final EventBus eventBus,
                                   @Assisted final String editorMode) {
         initWidget(UIBINDER.createAndBindUi(this));
 
-        this.notificationManager = notificationManager;
         this.preferencesManager = preferencesManager;
 
         JavaScriptObject codeMirrorEditorModule = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY);

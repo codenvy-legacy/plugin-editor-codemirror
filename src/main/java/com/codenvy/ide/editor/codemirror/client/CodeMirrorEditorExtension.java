@@ -10,17 +10,19 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-import com.codenvy.ide.api.editor.CodenvyTextEditor;
-import com.codenvy.ide.api.editor.TextEditorProvider;
+import com.codenvy.ide.api.editor.EditorPartPresenter;
 import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
-import com.codenvy.ide.core.editor.EditorType;
-import com.codenvy.ide.core.editor.EditorTypeRegistry;
 import com.codenvy.ide.editor.codemirror.client.style.CodeMirrorResource;
+import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
+import com.codenvy.ide.jseditor.client.editorconfig.DefaultEmbeddedTextEditorConf;
+import com.codenvy.ide.jseditor.client.editortype.EditorType;
+import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
@@ -198,21 +200,14 @@ public class CodeMirrorEditorExtension {
     }-*/;
 
     private void registerEditor() {
-        this.editorTypeRegistry.registerEditorType(EditorType.fromKey(CODEMIRROR_EDITOR_KEY), "CodeMirror", new TextEditorProvider() {
+        Log.info(CodeMirrorEditorExtension.class, "Registering CodeMirror editor type.");
+        this.editorTypeRegistry.registerEditorType(EditorType.fromKey(CODEMIRROR_EDITOR_KEY), "CodeMirror", new EditorBuilder() {
 
             @Override
-            public CodenvyTextEditor getEditor() {
-                return codeMirrorTextEditorFactory.createTextEditor();
-            }
-
-            @Override
-            public String getId() {
-                return CODEMIRROR_EDITOR_KEY;
-            }
-
-            @Override
-            public String getDescription() {
-                return "CodeMirror Editor";
+            public EditorPartPresenter buildEditor() {
+                final EmbeddedTextEditorPresenter editor = codeMirrorTextEditorFactory.createTextEditor();
+                editor.initialize(new DefaultEmbeddedTextEditorConf(), notificationManager);
+                return editor;
             }
         });
     }

@@ -15,6 +15,7 @@ import javax.inject.Named;
 import com.codenvy.ide.api.extension.ExtensionGinModule;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorExtension;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
+import com.codenvy.ide.jseditor.client.JsEditorExtension;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
@@ -34,7 +35,7 @@ public class CodeMirrorEditorGinModule extends AbstractGinModule {
 
     @Provides
     @Singleton
-    @Named("DefaultEditorType")
+    @Named(JsEditorExtension.DEFAULT_EDITOR_TYPE_INJECT_NAME)
     protected String defaultEditorTypeKey() {
         return CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY;
     }
