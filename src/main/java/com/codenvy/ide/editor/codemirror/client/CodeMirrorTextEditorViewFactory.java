@@ -12,6 +12,7 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import javax.inject.Inject;
 
+import com.codenvy.ide.jseditor.client.JsEditorConstants;
 import com.codenvy.ide.jseditor.client.filetype.FileTypeIdentifier;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPartView;
@@ -24,10 +25,11 @@ public class CodeMirrorTextEditorViewFactory implements EmbeddedTextEditorViewFa
     private EditorWidgetFactory<CodeMirrorEditorWidget> widgetFactory;
     @Inject
     private FileTypeIdentifier                          fileTypeIdentifier;
-
+    @Inject
+    private JsEditorConstants                           constants;
 
     @Override
     public EmbeddedTextEditorPartView createTextEditorPartView() {
-        return new EmbeddedTextEditorPartViewImpl<CodeMirrorEditorWidget>(this.widgetFactory, this.fileTypeIdentifier);
+        return new EmbeddedTextEditorPartViewImpl<CodeMirrorEditorWidget>(this.widgetFactory, this.fileTypeIdentifier, constants);
     }
 }
