@@ -44,10 +44,10 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
+        <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
+        <codemirror.upstream.version>4.3</codemirror.upstream.version>
         <license_years>2014</license_years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <upstream.url>http://codemirror.net/</upstream.url>
-        <upstream.version>4.3</upstream.version>
     </properties>
     <dependencies>
         <dependency>
@@ -84,7 +84,7 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>target/codemirror-${upstream.version}</directory>
+                <directory>target/codemirror-${codemirror.upstream.version}</directory>
                 <includes>
                     <include>**/*.js</include>
                     <include>**/*.css</include>
@@ -109,9 +109,9 @@
                             <goal>download-single</goal>
                         </goals>
                         <configuration>
-                            <url>${upstream.url}</url>
-                            <fromFile>codemirror-${upstream.version}.zip</fromFile>
-                            <toFile>${project.build.directory}/codemirror-${upstream.version}.zip</toFile>
+                            <url>${codemirror.upstream.url}</url>
+                            <fromFile>codemirror-${codemirror.upstream.version}.zip</fromFile>
+                            <toFile>${project.build.directory}/codemirror-${codemirror.upstream.version}.zip</toFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -126,10 +126,10 @@
                         </goals>
                         <configuration>
                             <target>
-                                <unzip dest="${project.build.directory}" src="${project.build.directory}/codemirror-${upstream.version}.zip" />
-                                <mkdir dir="${project.build.directory}/codemirror-${upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/" />
-                                <move todir="${project.build.directory}/codemirror-${upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/">
-                                    <fileset dir="${project.build.directory}/codemirror-${upstream.version}/" />
+                                <unzip dest="${project.build.directory}" src="${project.build.directory}/codemirror-${codemirror.upstream.version}.zip" />
+                                <mkdir dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/" />
+                                <move todir="${project.build.directory}/codemirror-${codemirror.upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/">
+                                    <fileset dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/" />
                                 </move>
                             </target>
                         </configuration>
