@@ -221,4 +221,26 @@ public class CMDocumentOverlay extends JavaScriptObject {
     public interface LineOperation {
         void processLine(CMLineHandleOverlay lineHandle);
     }
+
+    // clean/dirty state
+
+    public final native boolean isClean() /*-{
+        return this.isClean();
+    }-*/;
+
+    public final native boolean isClean(int generation) /*-{
+        return this.isClean(generation);
+    }-*/;
+
+    public final native void markClean() /*-{
+        this.markClean();
+    }-*/;
+
+    public final native int changeGeneration() /*-{
+        this.changeGeneration();
+    }-*/;
+
+    public final native int changeGeneration(boolean closeEvent) /*-{
+        this.changeGeneration(closeEvent);
+    }-*/;
 }

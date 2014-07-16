@@ -13,6 +13,7 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.editor.codemirror.client.jso.BeforeSelectionEventParamOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.KeyBindingsOverlay;
@@ -237,10 +238,11 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addChangeHandler(final ChangeHandler handler) {
         if (!changeHandlerAdded) {
             changeHandlerAdded = true;
-            this.editorOverlay.on("change", new CMEditorOverlay.EventHandlerNoParameters() {
+            this.editorOverlay.on("change", new CMEditorOverlay.EventHandlerOneParameter<CMChangeEventOverlay>() {
 
                 @Override
-                public void onEvent() {
+                public void onEvent(final CMChangeEventOverlay param) {
+                    Log.info(CodeMirrorEditorWidget.class, "Change event - state clean=" + editorOverlay.isClean());
                     fireChangeEvent();
                 }
             });
