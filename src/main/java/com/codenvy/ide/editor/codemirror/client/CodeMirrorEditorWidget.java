@@ -108,6 +108,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private boolean                                     viewPortHandlerAdded        = false;
     private boolean                                     gutterClickHandlerAdded     = false;
 
+    /** The 'generation', marker to ask if changes where done since if was set. */
+    private int generationMarker;
 
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
@@ -145,6 +147,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                 }
             }
         });
+        this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
     }
 
     @Override
@@ -157,6 +160,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.editorOverlay.setValue(newValue);
         // reset history, else the setValue is undo-able
         this.editorOverlay.getDoc().clearHistory();
+        this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
     }
 
     private JavaScriptObject getConfiguration() {
@@ -414,12 +418,13 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public boolean isDirty() {
-        return !this.editorOverlay.isClean();
+        return !this.editorOverlay.getDoc().isClean(this.generationMarker);
     }
 
     @Override
     public void markClean() {
-        this.editorOverlay.markClean();
+    	// Use changeGeneration instead of markClean: codemirror author's recommandation
+        this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
     }
 
 
