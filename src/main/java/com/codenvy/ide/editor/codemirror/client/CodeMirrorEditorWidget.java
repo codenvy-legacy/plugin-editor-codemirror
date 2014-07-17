@@ -79,6 +79,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                                      HasScrollHandlers, HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
                                                      HasViewPortChangeHandlers, HasGutterClickHandlers {
 
+	private static final String TAB_SIZE_OPTION = "tabSize";
+
 	/** The UI binder instance. */
     private static final CodeMirrorEditorWidgetUiBinder UIBINDER                    = GWT.create(CodeMirrorEditorWidgetUiBinder.class);
 
@@ -423,12 +425,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public int getTabSize() {
-        return this.editorOverlay.getIntOption("tabSize");
+        return this.editorOverlay.getIntOption(TAB_SIZE_OPTION);
     }
 
     @Override
     public void setTabSize(int tabSize) {
-        this.editorOverlay.setOption("tabSize", tabSize);
+        this.editorOverlay.setOption(TAB_SIZE_OPTION, tabSize);
     }
 
     @Override
