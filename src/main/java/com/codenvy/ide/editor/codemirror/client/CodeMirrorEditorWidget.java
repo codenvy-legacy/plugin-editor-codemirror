@@ -79,16 +79,24 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                                      HasScrollHandlers, HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
                                                      HasViewPortChangeHandlers, HasGutterClickHandlers {
 
+	/** The UI binder instance. */
     private static final CodeMirrorEditorWidgetUiBinder UIBINDER                    = GWT.create(CodeMirrorEditorWidgetUiBinder.class);
 
     @UiField
     SimplePanel                                         panel;
+    
+    /** The native editor object. */
     private final CMEditorOverlay                       editorOverlay;
+    
+    /** The native keybinding object. */
     private final KeyBindingsOverlay                    keyBindings                 = KeyBindingsOverlay.create();
+    
     private final PreferencesManager                    preferencesManager;
 
+    /** The EmbeddededDocument instance. */
     private CodeMirrorDocument                          embeddedDocument;
 
+    // flags to know if an event type has already be added to the native editor
     private boolean                                     changeHandlerAdded          = false;
     private boolean                                     focusHandlerAdded           = false;
     private boolean                                     blurHandlerAdded            = false;
