@@ -11,6 +11,9 @@
 package com.codenvy.ide.editor.codemirror.client;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
@@ -38,7 +41,6 @@ import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.codenvy.ide.text.Region;
 import com.codenvy.ide.text.RegionImpl;
-import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
@@ -82,7 +84,10 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 	private static final String TAB_SIZE_OPTION = "tabSize";
 
 	/** The UI binder instance. */
-    private static final CodeMirrorEditorWidgetUiBinder UIBINDER                    = GWT.create(CodeMirrorEditorWidgetUiBinder.class);
+    private static final CodeMirrorEditorWidgetUiBinder UIBINDER = GWT.create(CodeMirrorEditorWidgetUiBinder.class);
+
+    /** The logger. */
+    private static final Logger LOG = Logger.getLogger(CodeMirrorEditorWidget.class.getSimpleName());
 
     @UiField
     SimplePanel                                         panel;
@@ -131,7 +136,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.keyBindings.addBinding("Ctrl-Space", new KeyBindingAction() {
 
             public void action() {
-                Log.debug(CodeMirrorEditorWidget.class, "Completion binding used.");
+                LOG.fine("Completion binding used.");
                 autoComplete();
             }
         });
@@ -161,6 +166,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         // reset history, else the setValue is undo-able
         this.editorOverlay.getDoc().clearHistory();
         this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
+        LOG.fine("Set value - state clean=" + editorOverlay.getDoc().isClean(getGenerationMarker())
+                 + " (generation=" + getGenerationMarker() + ").");
     }
 
     private JavaScriptObject getConfiguration() {
@@ -204,11 +211,11 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public void setMode(final String modeName) {
-        Log.info(CodeMirrorEditorWidget.class, "Setting editor mode : " + modeName);
+        LOG.fine("Setting editor mode : " + modeName);
         if (!modeName.equals("html")) {
             this.editorOverlay.setOption("mode", modeName);
         } else {
-            Log.info(CodeMirrorEditorWidget.class, "... actually, changing to text/html.");
+            LOG.fine("... actually, changing to text/html.");
             this.editorOverlay.setOption("mode", "text/html");
         }
     }
@@ -256,8 +263,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
                 @Override
                 public void onEvent(final CMChangeEventOverlay param) {
-                    Log.info(CodeMirrorEditorWidget.class,
-                              "Change event - state clean=" + editorOverlay.getDoc().isClean(getGenerationMarker())
+                    LOG.fine("Change event - state clean=" + editorOverlay.getDoc().isClean(getGenerationMarker())
                                   + " (generation=" + getGenerationMarker() + ").");
                     fireChangeEvent();
                 }
@@ -425,13 +431,20 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public void markClean() {
-        boolean beforeDirty = isDirty();
-        int beforeGeneration = this.generationMarker;
-    	// Use changeGeneration instead of markClean: codemirror author's recommandation
+        boolean beforeDirty = false;
+        int beforeGeneration = 0;
+        if (LOG.isLoggable(Level.FINE)) {
+            beforeDirty = isDirty();
+            beforeGeneration = this.generationMarker;
+        }
+
+        // Use changeGeneration instead of markClean: codemirror author's recommandation
         this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
 
-        Log.debug(CodeMirrorEditorWidget.class, "marClean - Before dirty=" + beforeDirty + " gen=" + beforeGeneration + " After dirty="
-                                               + isDirty() + " gen=" + this.generationMarker);
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("markClean - Before dirty=" + beforeDirty + " gen=" + beforeGeneration
+                     + " After dirty=" + isDirty() + " gen=" + this.generationMarker);
+        }
     }
 
 
@@ -480,7 +493,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         try {
             keymap = Keymap.fromKey(propertyValue);
         } catch (final IllegalArgumentException e) {
-            Log.error(CodeMirrorEditorWidget.class, "Unknown value in keymap preference.", e);
+            LOG.log(Level.WARNING, "Unknown value in keymap preference.", e);
             return;
         }
         selectKeymap(keymap);
