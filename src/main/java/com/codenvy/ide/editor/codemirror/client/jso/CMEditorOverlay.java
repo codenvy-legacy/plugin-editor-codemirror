@@ -158,7 +158,7 @@ public class CMEditorOverlay extends JavaScriptObject {
         this.on(
             eventType,
             function(param) {
-                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent(*)(param);
+                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
             });
     }-*/;
 
