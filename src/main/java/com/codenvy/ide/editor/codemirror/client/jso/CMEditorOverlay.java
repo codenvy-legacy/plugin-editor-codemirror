@@ -187,5 +187,42 @@ public class CMEditorOverlay extends JavaScriptObject {
     public final native Element getWrapperElement() /*-{
         return this.getWrapperElement();
     }-*/;
+    
+    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
+                                                                    String eventType,
+                                                                    EventHandlerOneParameter<T> handler,
+                                                                    JavaScriptObject module) /*-{
+        module.on(
+            eventType,
+            function(param) {
+                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
+            });
+    }-*/;
+    
+    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
+                                                                    String eventType,
+                                                                    EventHandlerNoParameters handler,
+                                                                    JavaScriptObject module) /*-{
+        module.on(
+            eventType,
+            function(param) {
+                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
+            });
+    }-*/;
+    
+    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
+                                                                    String eventType,
+                                                                    EventHandlerMultipleParameters<T> handler,
+                                                                    JavaScriptObject module) /*-{
+        module.on(
+            eventType,
+            function() {
+                var params = [];
+                for (var i = 0; i < arguments.length; i++) {
+                    params.push(arguments[i]);
+                }
+                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)();
+            });
+    }-*/;
 
 }
