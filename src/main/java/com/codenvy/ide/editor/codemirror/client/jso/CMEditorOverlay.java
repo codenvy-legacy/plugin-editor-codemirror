@@ -135,31 +135,34 @@ public class CMEditorOverlay extends JavaScriptObject {
     // events handling - the cm.off(...) method is not that easy to do...
 
     public final native <T extends JavaScriptObject> void on(String eventType, EventHandlerMultipleParameters<T> handler) /*-{
-        this.on(
-            eventType,
-            function() {
-                var params = [];
-                for (var i = 0; i < arguments.length; i++) {
-                    params.push(arguments[i]);
-                }
-                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)(params);
-            });
+        this
+                .on(
+                        eventType,
+                        function() {
+                            var params = [];
+                            for (var i = 0; i < arguments.length; i++) {
+                                params.push(arguments[i]);
+                            }
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)(params);
+                        });
     }-*/;
 
     public final native void on(String eventType, EventHandlerNoParameters handler) /*-{
-        this.on(
-            eventType,
-            function() {
-                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
-            });
+        this
+                .on(
+                        eventType,
+                        function() {
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
+                        });
     }-*/;
 
     public final native <T extends JavaScriptObject> void on(String eventType, EventHandlerOneParameter<T> handler) /*-{
-        this.on(
-            eventType,
-            function(param) {
-                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
-            });
+        this
+                .on(
+                        eventType,
+                        function(param) {
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
+                        });
     }-*/;
 
     public interface EventHandlerNoParameters {
@@ -174,15 +177,7 @@ public class CMEditorOverlay extends JavaScriptObject {
         void onEvent(JsArray<T> param);
     }
 
-    // clean/dirty state
-
-    public final native boolean isClean() /*-{
-        return this.isClean();
-    }-*/;
-
-    public final native void markClean() /*-{
-        this.markClean();
-    }-*/;
+    // editor element
 
     public final native Element getWrapperElement() /*-{
         return this.getWrapperElement();
@@ -192,37 +187,40 @@ public class CMEditorOverlay extends JavaScriptObject {
                                                                     String eventType,
                                                                     EventHandlerOneParameter<T> handler,
                                                                     JavaScriptObject module) /*-{
-        module.on(
-            eventType,
-            function(param) {
-                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
-            });
+        module
+                .on(
+                        eventType,
+                        function(param) {
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
+                        });
     }-*/;
     
     public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                                     String eventType,
                                                                     EventHandlerNoParameters handler,
                                                                     JavaScriptObject module) /*-{
-        module.on(
-            eventType,
-            function(param) {
-                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
-            });
+        module
+                .on(
+                        eventType,
+                        function(param) {
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
+                        });
     }-*/;
     
     public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                                     String eventType,
                                                                     EventHandlerMultipleParameters<T> handler,
                                                                     JavaScriptObject module) /*-{
-        module.on(
-            eventType,
-            function() {
-                var params = [];
-                for (var i = 0; i < arguments.length; i++) {
-                    params.push(arguments[i]);
-                }
-                handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)();
-            });
+        module
+                .on(
+                        eventType,
+                        function() {
+                            var params = [];
+                            for (var i = 0; i < arguments.length; i++) {
+                                params.push(arguments[i]);
+                            }
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)();
+                        });
     }-*/;
 
 }

@@ -232,6 +232,11 @@ public class CMDocumentOverlay extends JavaScriptObject {
         return this.isClean(generation);
     }-*/;
 
+    /**
+     * @deprecated by upstream - use {@link #changeGeneration()} or {@link #changeGeneration(boolean)} instead<br>
+     *             Kept for API completeness
+     */
+    @Deprecated
     public final native void markClean() /*-{
         this.markClean();
     }-*/;

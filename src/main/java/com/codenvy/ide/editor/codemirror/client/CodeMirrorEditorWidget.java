@@ -131,7 +131,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.keyBindings.addBinding("Ctrl-Space", new KeyBindingAction() {
 
             public void action() {
-                Log.info(CodeMirrorEditorWidget.class, "Completion binding used.");
+                Log.debug(CodeMirrorEditorWidget.class, "Completion binding used.");
                 autoComplete();
             }
         });
@@ -256,7 +256,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
                 @Override
                 public void onEvent(final CMChangeEventOverlay param) {
-                    Log.info(CodeMirrorEditorWidget.class, "Change event - state clean=" + editorOverlay.isClean());
+                    Log.info(CodeMirrorEditorWidget.class,
+                              "Change event - state clean=" + editorOverlay.getDoc().isClean(getGenerationMarker())
+                                  + " (generation=" + getGenerationMarker() + ").");
                     fireChangeEvent();
                 }
             });
@@ -423,8 +425,13 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public void markClean() {
+        boolean beforeDirty = isDirty();
+        int beforeGeneration = this.generationMarker;
     	// Use changeGeneration instead of markClean: codemirror author's recommandation
         this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
+
+        Log.debug(CodeMirrorEditorWidget.class, "marClean - Before dirty=" + beforeDirty + " gen=" + beforeGeneration + " After dirty="
+                                               + isDirty() + " gen=" + this.generationMarker);
     }
 
 
@@ -477,6 +484,16 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
             return;
         }
         selectKeymap(keymap);
+    }
+
+    /**
+     * Returns the generation marker.<br>
+     * As the field is not final, this is needed so the non-static inner class can see the value changes.
+     * 
+     * @return the generation marker
+     */
+    private int getGenerationMarker() {
+        return this.generationMarker;
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
