@@ -12,6 +12,7 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
@@ -25,6 +26,9 @@ import com.google.gwt.core.shared.GWT;
  */
 public final class CodeMirrorKeymaps {
 
+    /** The logger. */
+    private static final Logger  LOG = Logger.getLogger(CodeMirrorKeymaps.class.getSimpleName());
+
     public static Keymap                     DEFAULT;
     public static Keymap                     EMACS;
     public static Keymap                     VIM;
@@ -33,7 +37,7 @@ public final class CodeMirrorKeymaps {
     private static final Map<Keymap, String> nativeMapping = new HashMap<>();
 
     public final static void init() {
-        Log.info(CodeMirrorKeymaps.class, "Initializing codemirror keymaps.");
+        LOG.fine("Initializing codemirror keymaps.");
         KeymapDisplayConstants constants = GWT.create(KeymapDisplayConstants.class);
         EditorType cmEditor = EditorType.fromKey(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
         DEFAULT = Keymap.newKeymap("CM_default", constants.defaultKeymap(), cmEditor);

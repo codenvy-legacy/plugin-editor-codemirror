@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
+import java.util.logging.Logger;
+
 import com.codenvy.ide.api.editor.EditorPartPresenter;
 import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
@@ -34,6 +36,8 @@ import com.google.inject.Inject;
 @Extension(title = "CodeMirror Editor.", version = "1.0.0")
 public class CodeMirrorEditorExtension {
 
+    /** The logger. */
+    private static final Logger  LOG = Logger.getLogger(CodeMirrorEditorExtension.class.getSimpleName());
     /** The editor type key. */
     public static final String                CODEMIRROR_EDITOR_KEY = "codemirror";
 
@@ -200,7 +204,7 @@ public class CodeMirrorEditorExtension {
     }-*/;
 
     private void registerEditor() {
-        Log.info(CodeMirrorEditorExtension.class, "Registering CodeMirror editor type.");
+        LOG.fine("Registering CodeMirror editor type.");
         this.editorTypeRegistry.registerEditorType(EditorType.fromKey(CODEMIRROR_EDITOR_KEY), "CodeMirror", new EditorBuilder() {
 
             @Override
