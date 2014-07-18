@@ -8,8 +8,9 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package com.codenvy.ide.editor.codemirror.client.jso;
+package com.codenvy.ide.editor.codemirror.client.jso.event;
 
+import com.codenvy.ide.editor.codemirror.client.jso.CMSelectionOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 

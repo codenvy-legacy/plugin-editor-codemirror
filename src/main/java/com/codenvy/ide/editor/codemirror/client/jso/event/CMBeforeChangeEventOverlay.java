@@ -8,8 +8,9 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package com.codenvy.ide.editor.codemirror.client.jso;
+package com.codenvy.ide.editor.codemirror.client.jso.event;
 
+import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
@@ -18,9 +19,9 @@ import com.google.gwt.core.client.JsArrayString;
  * 
  * @author "Mickaël Leduque"
  */
-public class CMChangeEventOverlay extends JavaScriptObject {
+public class CMBeforeChangeEventOverlay extends JavaScriptObject {
 
-    protected CMChangeEventOverlay() {
+    protected CMBeforeChangeEventOverlay() {
     }
 
     public final native CMPositionOverlay getFrom() /*-{
@@ -35,12 +36,28 @@ public class CMChangeEventOverlay extends JavaScriptObject {
         return this.text;
     }-*/;
 
-    public final native JsArrayString getRemoved() /*-{
-        return this.removed;
+    public final native void cancel() /*-{
+        this.cancel();
     }-*/;
 
-    /* @see http://codemirror.net/doc/manual.html#selection_origin */
-    public final native String getOrigin() /*-{
-        return this.origin;
+
+    public final native boolean hasUpdate() /*-{
+        return (typeof this.update === "function");
+    }-*/;
+
+    public final native String update() /*-{
+        return this.update();
+    }-*/;
+
+    public final native String update(CMPositionOverlay from) /*-{
+        return this.update(from);
+    }-*/;
+
+    public final native String update(CMPositionOverlay from, CMPositionOverlay to) /*-{
+        return this.update(from, to);
+    }-*/;
+
+    public final native String update(CMPositionOverlay from, CMPositionOverlay to, JsArrayString text) /*-{
+        return this.update(from, to, text);
     }-*/;
 }
