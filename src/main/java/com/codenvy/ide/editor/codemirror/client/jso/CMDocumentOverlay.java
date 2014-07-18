@@ -237,10 +237,10 @@ public class CMDocumentOverlay extends JavaScriptObject {
     }-*/;
 
     public final native int changeGeneration() /*-{
-        this.changeGeneration();
+        return this.changeGeneration();
     }-*/;
 
     public final native int changeGeneration(boolean closeEvent) /*-{
-        this.changeGeneration(closeEvent);
+        return this.changeGeneration(closeEvent);
     }-*/;
 }
