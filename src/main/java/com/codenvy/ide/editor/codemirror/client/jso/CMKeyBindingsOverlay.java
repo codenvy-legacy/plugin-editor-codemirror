@@ -18,9 +18,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author "Mickaël Leduque"
  */
-public class KeyBindingsOverlay extends JavaScriptObject {
+public class CMKeyBindingsOverlay extends JavaScriptObject {
 
-    protected KeyBindingsOverlay() {
+    protected CMKeyBindingsOverlay() {
     }
 
     public final native void addBinding(String keySpec, KeyBindingAction keyBindingAction) /*-{
@@ -29,7 +29,7 @@ public class KeyBindingsOverlay extends JavaScriptObject {
         }
     }-*/;
 
-    public final static native KeyBindingsOverlay create() /*-{
+    public final static native CMKeyBindingsOverlay create() /*-{
         return {};
     }-*/;
 }

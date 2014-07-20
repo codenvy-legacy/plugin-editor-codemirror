@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 
 import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMKeyBindingsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.KeyBindingsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
@@ -96,7 +96,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private final CMEditorOverlay                       editorOverlay;
     
     /** The native keybinding object. */
-    private final KeyBindingsOverlay                    keyBindings                 = KeyBindingsOverlay.create();
+    private final CMKeyBindingsOverlay                    keyBindings                 = CMKeyBindingsOverlay.create();
     
     private final PreferencesManager                    preferencesManager;
 
