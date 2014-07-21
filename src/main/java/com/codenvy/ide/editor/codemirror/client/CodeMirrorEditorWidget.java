@@ -20,6 +20,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMKeyBindingsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeEvent;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeHandler;
@@ -44,6 +46,7 @@ import com.codenvy.ide.text.RegionImpl;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -60,10 +63,6 @@ import com.google.gwt.event.dom.client.HasScrollHandlers;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONBoolean;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -170,39 +169,40 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                  + " (generation=" + getGenerationMarker() + ").");
     }
 
-    private JavaScriptObject getConfiguration() {
-        final JSONObject json = new JSONObject();
-
+    private CMEditorOptionsOverlay getConfiguration() {
+        final CMEditorOptionsOverlay options = CMEditorOptionsOverlay.create();
         // set up key bindings
-        json.put("extraKeys", new JSONObject(keyBindings));
+        options.setExtraKeys(this.keyBindings);
 
         // show line numbers
-        json.put("lineNumbers", JSONBoolean.getInstance(true));
+        options.setLineNumbers(true);
 
         // set a theme
-        json.put("theme", new JSONString("codenvy"));
-
+        options.setTheme("codenvy");
 
         // autoclose brackets/tags, match brackets/tags
-        json.put("autoCloseBrackets", JSONBoolean.getInstance(true));
-        json.put("matchBrackets", JSONBoolean.getInstance(true));
-        json.put("autoCloseTags", JSONBoolean.getInstance(true));
+        options.setProperty("autoCloseBrackets", true);
+        options.setProperty("matchBrackets", true);
+        options.setProperty("autoCloseTags", true);
 
         // folding
-        json.put("foldGutter", JSONBoolean.getInstance(true));
-        JSONArray gutters = new JSONArray();
-        gutters.set(0, new JSONString("CodeMirror-linenumbers"));
-        gutters.set(1, new JSONString("CodeMirror-foldgutter"));
-        json.put("gutters", gutters);
+        options.setProperty("foldGutter", true);
 
-        JSONObject matchTagsConfig = new JSONObject();
-        matchTagsConfig.put("bothTags", JSONBoolean.getInstance(true));
-        json.put("matchTags", matchTagsConfig);
+        // gutters - define 2 : line and fold
+        final JsArrayString gutters = JsArray.createArray(2).cast();
+        gutters.push("CodeMirror-linenumbers");
+        gutters.push("CodeMirror-foldgutter");
+        options.setGutters(gutters);
+
+        // highlight matching tags
+        CMMatchTagsConfig matchTagsConfig = CMMatchTagsConfig.create();
+        matchTagsConfig.setBothTags(true);
+        options.setProperty("matchTags", matchTagsConfig);
 
         // highlight active line
-        json.put("styleActiveLine", JSONBoolean.getInstance(true));
+        options.setProperty("styleActiveLine", true);
 
-        return json.getJavaScriptObject();
+        return options;
     }
 
     protected void autoComplete() {

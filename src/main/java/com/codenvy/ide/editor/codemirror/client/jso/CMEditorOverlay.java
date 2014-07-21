@@ -12,8 +12,10 @@ package com.codenvy.ide.editor.codemirror.client.jso;
 
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 
 public class CMEditorOverlay extends JavaScriptObject {
@@ -109,7 +111,7 @@ public class CMEditorOverlay extends JavaScriptObject {
         return this.getOption(propertyName);
     }-*/;
 
-    public final native JavaScriptObject getOption(final String propertyName) /*-{
+    public final native CMEditorOptionsOverlay getOption(final String propertyName) /*-{
         return this.getOption(propertyName);
     }-*/;
 
@@ -223,4 +225,64 @@ public class CMEditorOverlay extends JavaScriptObject {
                         });
     }-*/;
 
+    /**
+     * Version of codemirror.
+     * 
+     * @param module the CodeMirror module (loaded by requirejs)
+     * @return the version, major.minor.patch (all three are integers)
+     */
+    public final static native String version(JavaScriptObject module) /*-{
+        return module.version();
+    }-*/;
+
+    /**
+     * CodeMirror modes by name.
+     * 
+     * @param module the CodeMirror module (loaded by requirejs)
+     * @return a javascript object such that modes[modeName] is the mode object
+     */
+    public final static native JavaScriptObject modes(JavaScriptObject module) /*-{
+        return module.modes;
+    }-*/;
+
+    /**
+     * Names of the modes loaded in codemirror.
+     * 
+     * @param module the CodeMirror module (loaded by requirejs)
+     * @return an array of names of modes
+     */
+    public final static native JsArrayString modeNames(JavaScriptObject module) /*-{
+        return Object.getOwnPropertyNames(module.modes).sort();
+    }-*/;
+
+    /**
+     * Codemirror modes by mime-types.
+     * 
+     * @param module the CodeMirror module (loaded by requirejs)
+     * @return a javascript object such that mimeModes[mimeType] is the matching mode object
+     */
+    public final static native JavaScriptObject mimeModes(JavaScriptObject module) /*-{
+        return module.mimeModes;
+    }-*/;
+
+    /**
+     * Names of the mime-types known in codemirror.
+     * 
+     * @param module the CodeMirror module (loaded by requirejs)
+     * @return an array of names of mime-types
+     */
+    public final static native JsArrayString mimeModeNames(JavaScriptObject module) /*-{
+        return Object.getOwnPropertyNames(module.mimeModes).sort();
+    }-*/;
+
+    /**
+     * Returns the default configuration object for new codemirror editors.<br>
+     * This object properties can be modified to change the default options for new editors (but will not change existing ones).
+     * 
+     * @param module the CodeMirror module (loaded by requirejs)
+     * @return the default configuration
+     */
+    public final static native CMEditorOptionsOverlay defaults(JavaScriptObject module) /*-{
+        return modules.defaults;
+    }-*/;
 }
