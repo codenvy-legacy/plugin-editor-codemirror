@@ -1,0 +1,21 @@
+{
+  "name": "codemirror-minify-build",
+  "version": "1.0.0",
+  "description": "Minifies codemirror resources and generates source maps",
+  "license": "Eclipse Public License v1.0",
+  "contributors": [{"name": "Codenvy, S.A."}],
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.8.6",
+    "gulp-r": "^1.1.2",
+    "almond": "^0.2.9",
+    "gulp-rename": "^1.2.0",
+    "gulp-util": "^3.0.0",
+    "del": "^0.1.1",
+    "yargs": "~1.2.6",
+    "gulp-debug": "~1.0.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}

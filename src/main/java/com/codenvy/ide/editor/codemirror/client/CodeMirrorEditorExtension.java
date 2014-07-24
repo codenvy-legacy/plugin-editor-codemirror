@@ -24,11 +24,19 @@ import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
+import com.codenvy.ide.jseditor.client.requirejs.RequirejsCallback;
+import com.codenvy.ide.jseditor.client.requirejs.RequirejsErrorHandler;
+import com.codenvy.ide.jseditor.client.requirejs.RequirejsModule;
+import com.codenvy.ide.jseditor.client.requirejs.config.BundlesConfigProperty;
+import com.codenvy.ide.jseditor.client.requirejs.config.PathsConfigProperty;
+import com.codenvy.ide.jseditor.client.requirejs.config.RequirejsConfig;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
 import com.codenvy.ide.util.loging.Log;
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.inject.Inject;
@@ -81,110 +89,135 @@ public class CodeMirrorEditorExtension {
         final String[] scripts = new String[]{
 
                 // base script
-                CODEMIRROR_BASE + "lib/codemirror",
+                "lib/codemirror",
 
                 // language modes
-                CODEMIRROR_BASE + "mode/xml/xml",
-                CODEMIRROR_BASE + "mode/htmlmixed/htmlmixed", // must be defined after xml
-                CODEMIRROR_BASE + "mode/htmlembedded/htmlembedded",
-                CODEMIRROR_BASE + "mode/dtd/dtd",
+                "mode/xml/xml",
+                "mode/htmlmixed/htmlmixed", // must be defined after xml
+                "mode/htmlembedded/htmlembedded",
+                "mode/dtd/dtd",
 
-                CODEMIRROR_BASE + "mode/javascript/javascript",
-                CODEMIRROR_BASE + "mode/coffeescript/coffeescript",
+                "mode/javascript/javascript",
+                "mode/coffeescript/coffeescript",
 
-                CODEMIRROR_BASE + "mode/css/css",
-                CODEMIRROR_BASE + "mode/sass/sass",
+                "mode/css/css",
+                "mode/sass/sass",
 
-                CODEMIRROR_BASE + "mode/sql/sql",
-                CODEMIRROR_BASE + "mode/properties/properties",
-                CODEMIRROR_BASE + "mode/yaml/yaml",
-                CODEMIRROR_BASE + "mode/diff/diff",
-                CODEMIRROR_BASE + "mode/shell/shell",
+                "mode/sql/sql",
+                "mode/properties/properties",
+                "mode/yaml/yaml",
+                "mode/diff/diff",
+                "mode/shell/shell",
 
-                CODEMIRROR_BASE + "mode/clike/clike",
-                CODEMIRROR_BASE + "mode/clojure/clojure",
-                CODEMIRROR_BASE + "mode/groovy/groovy",
+                "mode/clike/clike",
+                "mode/clojure/clojure",
+                "mode/groovy/groovy",
 
-                CODEMIRROR_BASE + "mode/stex/stex",
-                CODEMIRROR_BASE + "mode/markdown/markdown",
-                CODEMIRROR_BASE + "mode/gfm/gfm", // markdown extension for github
+                "mode/stex/stex",
+                "mode/markdown/markdown",
+                "mode/gfm/gfm", // markdown extension for github
 
-                CODEMIRROR_BASE + "mode/php/php",
-                CODEMIRROR_BASE + "mode/python/python",
-                CODEMIRROR_BASE + "mode/ruby/ruby",
-                CODEMIRROR_BASE + "mode/go/go",
-                CODEMIRROR_BASE + "mode/lua/lua",
-                CODEMIRROR_BASE + "mode/perl/perl",
-                CODEMIRROR_BASE + "mode/r/r",
-                CODEMIRROR_BASE + "mode/rust/rust",
-                CODEMIRROR_BASE + "mode/tcl/tcl",
+                "mode/php/php",
+                "mode/python/python",
+                "mode/ruby/ruby",
+                "mode/go/go",
+                "mode/lua/lua",
+                "mode/perl/perl",
+                "mode/r/r",
+                "mode/rust/rust",
+                "mode/tcl/tcl",
 
-                CODEMIRROR_BASE + "mode/commonlisp/commonlisp",
-                CODEMIRROR_BASE + "mode/haskell/haskell",
-                CODEMIRROR_BASE + "mode/erlang/erlang",
-                CODEMIRROR_BASE + "mode/scheme/scheme",
-                CODEMIRROR_BASE + "mode/mllike/mllike",
+                "mode/commonlisp/commonlisp",
+                "mode/haskell/haskell",
+                "mode/erlang/erlang",
+                "mode/scheme/scheme",
+                "mode/mllike/mllike",
 
-                CODEMIRROR_BASE + "mode/cobol/cobol",
-                CODEMIRROR_BASE + "mode/fortran/fortran",
-                CODEMIRROR_BASE + "mode/pascal/pascal",
-                CODEMIRROR_BASE + "mode/smalltalk/smalltalk",
-                CODEMIRROR_BASE + "mode/vb/vb",
-                CODEMIRROR_BASE + "mode/vbscript/vbscript",
+                "mode/cobol/cobol",
+                "mode/fortran/fortran",
+                "mode/pascal/pascal",
+                "mode/smalltalk/smalltalk",
+                "mode/vb/vb",
+                "mode/vbscript/vbscript",
 
                 CODEMIRROR_BASE + "mode/puppet/puppet",
 
                 // hints
-                CODEMIRROR_BASE + "addon/hint/show-hint",
-                CODEMIRROR_BASE + "addon/hint/xml-hint",
-                CODEMIRROR_BASE + "addon/hint/html-hint",
-                CODEMIRROR_BASE + "addon/hint/javascript-hint",
-                CODEMIRROR_BASE + "addon/hint/css-hint",
-                CODEMIRROR_BASE + "addon/hint/anyword-hint",
-                CODEMIRROR_BASE + "addon/hint/sql-hint",
+                "addon/hint/show-hint",
+                "addon/hint/xml-hint",
+                "addon/hint/html-hint",
+                "addon/hint/javascript-hint",
+                "addon/hint/css-hint",
+                "addon/hint/anyword-hint",
+                "addon/hint/sql-hint",
 
                 // pair matching
-                CODEMIRROR_BASE + "addon/edit/closebrackets",
-                CODEMIRROR_BASE + "addon/edit/closetag",
-                CODEMIRROR_BASE + "addon/edit/matchbrackets",
-                CODEMIRROR_BASE + "addon/edit/matchtags",
+                "addon/edit/closebrackets",
+                "addon/edit/closetag",
+                "addon/edit/matchbrackets",
+                "addon/edit/matchtags",
                 // the two following are added to repair actual functionality in 'classic' editor
-                CODEMIRROR_BASE + "addon/selection/mark-selection",
-                CODEMIRROR_BASE + "addon/selection/active-line",
+                "addon/selection/mark-selection",
+                "addon/selection/active-line",
                 // editor keymaps
-                CODEMIRROR_BASE + "keymap/emacs",
-                CODEMIRROR_BASE + "keymap/vim",
-                CODEMIRROR_BASE + "keymap/sublime",
+                "keymap/emacs",
+                "keymap/vim",
+                "keymap/sublime",
                 // for search
-                CODEMIRROR_BASE + "addon/search/search",
-                CODEMIRROR_BASE + "addon/dialog/dialog",
-                CODEMIRROR_BASE + "addon/search/searchcursor",
+                "addon/search/search",
+                "addon/dialog/dialog",
+                "addon/search/searchcursor",
                 // comment management
-                CODEMIRROR_BASE + "addon/comment/comment",
-                CODEMIRROR_BASE + "addon/comment/continuecomment",
+                "addon/comment/comment",
+                "addon/comment/continuecomment",
                 // folding
-                CODEMIRROR_BASE + "addon/fold/foldcode",
-                CODEMIRROR_BASE + "addon/fold/foldgutter",
-                CODEMIRROR_BASE + "addon/fold/brace-fold",
-                CODEMIRROR_BASE + "addon/fold/xml-fold", // also required by matchbrackets and closebrackets
-                CODEMIRROR_BASE + "addon/fold/comment-fold",
-                CODEMIRROR_BASE + "addon/fold/indent-fold",
-                CODEMIRROR_BASE + "addon/fold/markdown-fold",
+
+                "addon/fold/foldcode",
+                "addon/fold/foldgutter",
+                "addon/fold/brace-fold",
+                "addon/fold/xml-fold", // also required by matchbrackets and closebrackets
+                "addon/fold/comment-fold",
+                "addon/fold/indent-fold",
+                "addon/fold/markdown-fold",
         };
 
+        final RequirejsConfig config = RequirejsConfig.create();
+        config.setContext("codemirror");
 
-        this.requireJsLoader.require(new Callback<Void, Throwable>() {
+
+        final PathsConfigProperty paths = PathsConfigProperty.create();
+        paths.put("codemirror", CODEMIRROR_BASE);
+        config.setPaths(paths);
+
+        JsArrayString deps = JsArrayString.createArray().cast();
+        deps.push("require");
+        config.setDeps(deps);
+
+
+        final BundlesConfigProperty bundles = BundlesConfigProperty.create();
+        final JsArrayString modules = JsArrayString.createArray().cast();
+        for (final String script : scripts) {
+            modules.push(script);
+        }
+
+        bundles.addBundle("codemirror-all", modules);
+        config.setBundles(bundles);
+
+        final RequirejsCallback callback = new RequirejsCallback() {
             @Override
-            public void onSuccess(final Void result) {
+            public void onReady(final JsArray<RequirejsModule> modules) {
                 registerEditor();
             }
+        };
+        final RequirejsErrorHandler errorHandler = new RequirejsErrorHandler() {
 
             @Override
-            public void onFailure(final Throwable e) {
-                Log.error(CodeMirrorEditorExtension.class, "Unable to inject CodeMirror", e);
+            public void onError(final RequireError error) {
+                Log.error(CodeMirrorEditorExtension.class, "Unable to inject CodeMirror", new JavaScriptException(error));
                 initializationFailed("Unable to inject CodeMirror main script");
             }
-        }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
+        };
+        this.requireJsLoader.require(callback, errorHandler, config, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "lib/codemirror.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/dialog/dialog.css");

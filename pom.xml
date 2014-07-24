@@ -47,6 +47,8 @@
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
         <codemirror.upstream.version>4.3</codemirror.upstream.version>
         <license_years>2014</license_years>
+        <node.version>v0.10.29</node.version>
+        <npm.version>1.4.12</npm.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
@@ -84,10 +86,11 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>target/codemirror-${codemirror.upstream.version}</directory>
+                <directory>target/codemirror-resources</directory>
                 <includes>
                     <include>**/*.js</include>
                     <include>**/*.css</include>
+                    <include>**/*.map</include>
                 </includes>
                 <excludes>
                     <exclude>**/test/**</exclude>
@@ -127,14 +130,70 @@
                         <configuration>
                             <target>
                                 <unzip dest="${project.build.directory}" src="${project.build.directory}/codemirror-${codemirror.upstream.version}.zip" />
-                                <mkdir dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/" />
-                                <move todir="${project.build.directory}/codemirror-${codemirror.upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/">
+                                <mkdir dir="${project.build.directory}/codemirror-resources/com/codenvy/ide/editor/codemirror/public/codemirror/" />
+                                <move todir="${project.build.directory}/codemirror-resources/com/codenvy/ide/editor/codemirror/public/codemirror/">
                                     <fileset dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/" />
                                 </move>
                             </target>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>0.0.15</version>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <npmVersion>${npm.version}</npmVersion>
+                            <nodeVersion>${node.version}</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>gulp-build</id>
+                        <goals>
+                            <!-- Executes the 'default' task in gulpfile.js -->
+                            <goal>gulp</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>optimize --cmVersion=${codemirror.upstream.version}</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <workingDirectory>src/main/frontend</workingDirectory>
+                </configuration>
+            </plugin>
+            <!-- Add the local node directory to clean list -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/frontend/node</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>src/main/frontend/node_modules</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>
