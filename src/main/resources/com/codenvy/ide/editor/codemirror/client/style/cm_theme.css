@@ -51,23 +51,33 @@
     background-color: editorBackgroundColor;
 }
 .cm-s-codenvy .CodeMirror-foldgutter {
-    border-right: 1px dotted #888888;
+    border-right: 1px dotted editorGutterSeparatorColor;
 }
 
 .cm-s-codenvy .CodeMirror-linenumber {
     /* duplicated from LineNumerRenderer.css -> .lineNumber */
     font-family: "DejaVu Sans Mono", alternativeFontFamily;
     font-size: 12px;
-    color: #888888;
+    color: editorGutterLineNumberColor;
 }
 
 /* CURSOR */
-
-.cm-s-codenvy .CodeMirror div.CodeMirror-cursor {
+/* --- Normal cursor --- */
+.cm-s-codenvy div.CodeMirror-cursors div.CodeMirror-cursor {
     /* duplicated from CursorView.css -> .root */
     height: editorLineHeight;
     position: absolute;
-    width: 2px;
+    /* use the same color as classic cursor */
+    border-left: 2px solid editorCursorColor;
+    background-color: editorCursorColor;
+}
+/* --- VIM fat cursor --- */
+.cm-s-codenvy.cm-keymap-fat-cursor div.CodeMirror-cursors div.CodeMirror-cursor,
+
+/* --- Overwrite cursor --- */
+.cm-s-codenvy div.CodeMirror-cursors.CodeMirror-overwrite div.CodeMirror-cursor {
+    width: auto;
+    border-left: 0;
 }
 
 .cm-s-codenvy div.CodeMirror-selected {
