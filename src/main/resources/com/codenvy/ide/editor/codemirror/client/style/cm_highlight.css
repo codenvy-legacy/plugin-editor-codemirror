@@ -9,10 +9,7 @@
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
 
-    @external cm-keyword, cm-atom, cm-number, cm-def, cm-variable, cm-variable-2;
-    @external cm-property, cm-operator, cm-comment, cm-string, cm-meta, cm-error;
-    @external cm-builtin, cm-tag, cm-attribute, cm-quote, cm-invalidchar, cm-bracket, cm-string-2;
-    @external cm-em, cm-hr, cm-strong, cm-variable-3, cm-link, cm-qualifier, cm-header, cm-punctuation, cm-positive, cm-negative;
+    @external *;
 
     .cm-keyword {
         color: keyword;

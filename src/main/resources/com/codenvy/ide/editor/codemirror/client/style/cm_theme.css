@@ -9,11 +9,7 @@
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
 
-    @external .cm-s-codenvy, .CodeMirror, CodeMirror-selected;
-    @external .CodeMirror-gutters, .CodeMirror-gutter, .CodeMirror-foldgutter, .CodeMirror-lines, .CodeMirror-linenumber;
-    @external .CodeMirror-cursor, .CodeMirror-activeline-background;
-    @external .CodeMirror-matchingbracket;
-    @external .CodeMirror-cursor;
+    @external *;
     
 .cm-s-codenvy.CodeMirror {
   /* Set height, width, borders, and global font properties here */
