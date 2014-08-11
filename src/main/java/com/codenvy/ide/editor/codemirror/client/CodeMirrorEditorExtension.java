@@ -132,6 +132,8 @@ public class CodeMirrorEditorExtension {
                 CODEMIRROR_BASE + "mode/vb/vb",
                 CODEMIRROR_BASE + "mode/vbscript/vbscript",
 
+                CODEMIRROR_BASE + "mode/puppet/puppet",
+
                 // hints
                 CODEMIRROR_BASE + "addon/hint/show-hint",
                 CODEMIRROR_BASE + "addon/hint/xml-hint",
