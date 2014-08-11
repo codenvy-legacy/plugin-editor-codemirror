@@ -168,6 +168,8 @@ public class CodeMirrorEditorExtension {
                 CODEMIRROR_BASE + "addon/fold/brace-fold",
                 CODEMIRROR_BASE + "addon/fold/xml-fold", // also required by matchbrackets and closebrackets
                 CODEMIRROR_BASE + "addon/fold/comment-fold",
+                CODEMIRROR_BASE + "addon/fold/indent-fold",
+                CODEMIRROR_BASE + "addon/fold/markdown-fold",
         };
 
 
