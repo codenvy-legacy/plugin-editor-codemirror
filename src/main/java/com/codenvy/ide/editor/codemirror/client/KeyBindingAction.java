@@ -18,5 +18,5 @@ package com.codenvy.ide.editor.codemirror.client;
 public interface KeyBindingAction {
 
     /** The triggered action. */
-    void action();
+    void action(CodeMirrorEditorWidget editor);
 }

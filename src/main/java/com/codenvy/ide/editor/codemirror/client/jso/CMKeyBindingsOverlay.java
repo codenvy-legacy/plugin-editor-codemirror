@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
 import com.codenvy.ide.editor.codemirror.client.KeyBindingAction;
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -23,9 +24,9 @@ public class CMKeyBindingsOverlay extends JavaScriptObject {
     protected CMKeyBindingsOverlay() {
     }
 
-    public final native void addBinding(String keySpec, KeyBindingAction keyBindingAction) /*-{
+    public final native void addBinding(String keySpec, KeyBindingAction keyBindingAction, CodeMirrorEditorWidget editorWidget) /*-{
         this[keySpec] = function(editor) {
-            keyBindingAction.@com.codenvy.ide.editor.codemirror.client.KeyBindingAction::action()();
+            keyBindingAction.@com.codenvy.ide.editor.codemirror.client.KeyBindingAction::action(*)(editorWidget);
         }
     }-*/;
 

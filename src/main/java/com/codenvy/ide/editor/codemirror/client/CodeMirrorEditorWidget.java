@@ -16,7 +16,8 @@ import java.util.logging.Logger;
 
 import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMKeyBindingsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
@@ -80,9 +81,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                                      HasScrollHandlers, HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
                                                      HasViewPortChangeHandlers, HasGutterClickHandlers {
 
-	private static final String TAB_SIZE_OPTION = "tabSize";
+    private static final String                         TAB_SIZE_OPTION             = "tabSize";
 
-	/** The UI binder instance. */
+    /** The UI binder instance. */
     private static final CodeMirrorEditorWidgetUiBinder UIBINDER = GWT.create(CodeMirrorEditorWidgetUiBinder.class);
 
     /** The logger. */
@@ -93,14 +94,13 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     
     /** The native editor object. */
     private final CMEditorOverlay                       editorOverlay;
-    
-    /** The native keybinding object. */
-    private final CMKeyBindingsOverlay                    keyBindings                 = CMKeyBindingsOverlay.create();
-    
+
     private final PreferencesManager                    preferencesManager;
 
     /** The EmbeddededDocument instance. */
     private CodeMirrorDocument                          embeddedDocument;
+
+    private final JavaScriptObject                      codeMirrorEditorModule;
 
     // flags to know if an event type has already be added to the native editor
     private boolean                                     changeHandlerAdded          = false;
@@ -124,7 +124,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
         this.preferencesManager = preferencesManager;
 
-        JavaScriptObject codeMirrorEditorModule = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY);
+
+        codeMirrorEditorModule = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY);
 
         this.editorOverlay = CMEditorOverlay.createEditor(this.panel.getElement(), getConfiguration(), codeMirrorEditorModule);
         this.editorOverlay.setSize("100%", "100%");
@@ -132,13 +133,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
         setMode(editorMode);
 
-        this.keyBindings.addBinding("Ctrl-Space", new KeyBindingAction() {
-
-            public void action() {
-                LOG.fine("Completion binding used.");
-                autoComplete();
-            }
-        });
+        initKeyBindings();
 
         setupKeymap();
         eventBus.addHandler(KeymapChangeEvent.TYPE, new KeymapChangeHandler() {
@@ -152,6 +147,31 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
             }
         });
         this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
+
+        buildKeybindingInfo();
+    }
+
+    private void initKeyBindings() {
+
+        final CMKeymapOverlay keyBindings = CMKeymapOverlay.create();
+
+        // keyBindings.addBinding("Ctrl-Space", new KeyBindingAction() {
+        //
+        // public void action(final CodeMirrorEditorWidget editorWidget) {
+        // LOG.fine("Completion binding used.");
+        // editorWidget.autoComplete();
+        // }
+        // }, this);
+
+        keyBindings.addBinding("Shift-Ctrl-K", new KeyBindingAction() {
+
+            public void action(final CodeMirrorEditorWidget editorWidget) {
+                LOG.fine("Keybindings help binding used.");
+                editorWidget.keybindingHelp();
+            }
+        }, this);
+
+        this.editorOverlay.addKeyMap(keyBindings);
     }
 
     @Override
@@ -171,8 +191,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private CMEditorOptionsOverlay getConfiguration() {
         final CMEditorOptionsOverlay options = CMEditorOptionsOverlay.create();
-        // set up key bindings
-        options.setExtraKeys(this.keyBindings);
 
         // show line numbers
         options.setLineNumbers(true);
@@ -507,6 +525,58 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
      */
     private int getGenerationMarker() {
         return this.generationMarker;
+    }
+
+    /**
+     * Generate a key bindings list for all keymaps.
+     */
+    public void keybindingHelp() {
+        insertAtCursor(buildKeybindingInfo());
+    }
+
+    private String buildKeybindingInfo() {
+        final StringBuilder sb = new StringBuilder();
+        final CMKeymapSetOverlay keymapsObject = CMEditorOverlay.keyMap(codeMirrorEditorModule);
+        for (final String keymapKey : keymapsObject.getKeys()) {
+            if (keymapKey.startsWith("emacs") || keymapKey.startsWith("vim")) {
+                continue;
+            }
+            sb.append("# ").append(keymapKey).append("\n\n");
+            final CMKeymapOverlay keymap = keymapsObject.get(keymapKey);
+            for (final String binding : keymap.getKeys()) {
+                if (binding.equals("fallthrough")
+                    || binding.equals("nofallthrough")
+                    || binding.equals("disableInput")
+                    || binding.equals("auto")) {
+                    continue;
+                }
+                switch (keymap.getType(binding)) {
+                    case COMMAND_NAME:
+                        sb.append("**")
+                          .append(binding)
+                          .append("** ")
+                          .append(keymap.getCommandName(binding))
+                          .append("\n\n");
+                        break;
+                    case FUNCTION:
+                        sb.append("**")
+                          .append(binding)
+                          .append("** ")
+                          .append(keymap.getFunctionSource(binding))
+                          .append("\n\n");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    private void insertAtCursor(final String insertedText) {
+        final CMPositionOverlay cursor = this.editorOverlay.getDoc().getCursor();
+        this.editorOverlay.getDoc().replaceRange(insertedText, cursor.getLine(), cursor.getCharacter());
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {

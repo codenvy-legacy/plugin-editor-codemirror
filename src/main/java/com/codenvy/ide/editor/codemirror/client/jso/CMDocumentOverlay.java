@@ -71,10 +71,26 @@ public class CMDocumentOverlay extends JavaScriptObject {
         return this.getRange({ line : fromLine, ch : fromChar }, { line : toLine, ch : toChar }, separator);
     }-*/;
 
+    /**
+     * Replace the text range with the new text.
+     * 
+     * @param replacement the new text
+     * @param fromLine the line of the beginning of the range
+     * @param fromChar the char of the beginning of the range
+     * @param toLine the line of the end of the range
+     * @param toChar the char of the end of the range
+     */
     public final native void replaceRange(String replacement, int fromLine, int fromChar, int toLine, int toChar) /*-{
         return this.replaceRange(replacement, { line : fromLine, ch : fromChar }, { line : toLine, ch : toChar });
     }-*/;
 
+    /**
+     * insert the text at the given position.
+     * 
+     * @param replacement the text to insert
+     * @param fromLine the line of the insertion position
+     * @param fromChar the char of the insertion position
+     */
     public final native void replaceRange(String replacement, int fromLine, int fromChar) /*-{
         return this.replaceRange(replacement, { line : fromLine, ch : fromChar });
     }-*/;

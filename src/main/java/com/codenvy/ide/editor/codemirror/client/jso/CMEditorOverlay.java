@@ -283,6 +283,18 @@ public class CMEditorOverlay extends JavaScriptObject {
      * @return the default configuration
      */
     public final static native CMEditorOptionsOverlay defaults(JavaScriptObject module) /*-{
-        return modules.defaults;
+        return module.defaults;
+    }-*/;
+
+    public final static native CMKeymapSetOverlay keyMap(JavaScriptObject module) /*-{
+        return module.keyMap;
+    }-*/;
+
+    public final native void addKeyMap(CMKeymapOverlay keymap) /*-{
+        this.addKeyMap(keymap);
+    }-*/;
+
+    public final native void addKeyMap(CMKeymapOverlay keymap, boolean bottom) /*-{
+        this.addKeyMap(keymap, bottom);
     }-*/;
 }
