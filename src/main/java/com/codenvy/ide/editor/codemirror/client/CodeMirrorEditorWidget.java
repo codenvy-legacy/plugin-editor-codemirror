@@ -26,6 +26,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
+import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeEvent;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeHandler;
 import com.codenvy.ide.jseditor.client.events.CursorActivityEvent;
@@ -114,6 +115,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     /** The 'generation', marker to ask if changes where done since if was set. */
     private int generationMarker;
+
+    private Keymap                                      keymap;
 
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
@@ -268,9 +271,10 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         } else if (CodeMirrorKeymaps.SUBLIME.equals(keymap)) {
             selectSublimeKeymap();
         } else {
+            this.keymap = null;
             throw new RuntimeException("Unknown keymap type: " + keymap);
         }
-
+        this.keymap = keymap;
     }
 
     @Override
@@ -577,6 +581,16 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private void insertAtCursor(final String insertedText) {
         final CMPositionOverlay cursor = this.editorOverlay.getDoc().getCursor();
         this.editorOverlay.getDoc().replaceRange(insertedText, cursor.getLine(), cursor.getCharacter());
+    }
+
+    @Override
+    public EditorType getEditorType() {
+        return EditorType.fromKey(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
+    }
+
+    @Override
+    public Keymap getKeymap() {
+        return this.keymap;
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
