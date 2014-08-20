@@ -159,6 +159,7 @@ public class CodeMirrorEditorExtension {
                 CODEMIRROR_BASE + "addon/search/search",
                 CODEMIRROR_BASE + "addon/dialog/dialog",
                 CODEMIRROR_BASE + "addon/search/searchcursor",
+                CODEMIRROR_BASE + "addon/search/match-highlighter",
                 // comment management
                 CODEMIRROR_BASE + "addon/comment/comment",
                 CODEMIRROR_BASE + "addon/comment/continuecomment",
