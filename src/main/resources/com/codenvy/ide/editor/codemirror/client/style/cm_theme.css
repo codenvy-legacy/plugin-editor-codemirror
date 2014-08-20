@@ -107,3 +107,50 @@
     transition-timing-function: ease-in;
     transition-property: top, left, bottom, right, height, width;
 }
+
+/* Styling dialogs. */
+
+.cm-s-codenvy .CodeMirror-dialog {
+    background-color: activeTabBackground;
+    color: mainFontColor;
+    text-shadow: boxTextShadow;
+    font-family: mainFontFamily;
+    font-size: boxFontSize;
+}
+
+.cm-s-codenvy .CodeMirror-dialog-top {
+    border-color: activeTabBorderColor;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.cm-s-codenvy .CodeMirror-dialog-bottom {
+    border-top-color: activeTabBorderColor;
+}
+
+.cm-s-codenvy .CodeMirror-dialog input {
+    /* duplicated from Core.css gwt-TextBox style */
+    background-color: boxBackgroundColor;
+    color: boxTextColor;
+    border: 1px solid boxBorderColor;
+    border-radius: 1px;
+    box-shadow: boxInnerShadow, boxOuterShadow;
+    font-family: mainFontFamily;
+    font-size: boxFontSize;
+    text-shadow: boxTextShadow;
+}
+/* hacky override for the inline style. */
+.cm-s-codenvy .CodeMirror-dialog input[style*=width] {
+    width: 25em !important;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+.cm-s-codenvy .CodeMirror-dialog span[style] {
+    color: mainFontColor !important;
+}
+
+.cm-s-codenvy .CodeMirror-dialog button {
+    
+}
