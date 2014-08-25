@@ -109,6 +109,8 @@ public class CodeMirrorEditorExtension {
                 CODEMIRROR_BASE + "mode/markdown/markdown",
                 CODEMIRROR_BASE + "mode/gfm/gfm", // markdown extension for github
 
+                CODEMIRROR_BASE + "mode/slim/slim",
+
                 CODEMIRROR_BASE + "mode/php/php",
                 CODEMIRROR_BASE + "mode/python/python",
                 CODEMIRROR_BASE + "mode/ruby/ruby",
