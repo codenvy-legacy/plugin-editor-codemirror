@@ -104,6 +104,7 @@ public class CodeMirrorEditorExtension {
                 CODEMIRROR_BASE + "mode/clike/clike",
                 CODEMIRROR_BASE + "mode/clojure/clojure",
                 CODEMIRROR_BASE + "mode/groovy/groovy",
+                CODEMIRROR_BASE + "mode/kotlin/kotlin",
 
                 CODEMIRROR_BASE + "mode/stex/stex",
                 CODEMIRROR_BASE + "mode/markdown/markdown",
