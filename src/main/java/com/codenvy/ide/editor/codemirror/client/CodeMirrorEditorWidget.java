@@ -36,7 +36,10 @@ import com.codenvy.ide.jseditor.client.events.GutterClickHandler;
 import com.codenvy.ide.jseditor.client.events.HasBeforeSelectionChangeHandlers;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
 import com.codenvy.ide.jseditor.client.events.HasGutterClickHandlers;
+import com.codenvy.ide.jseditor.client.events.HasScrollHandlers;
 import com.codenvy.ide.jseditor.client.events.HasViewPortChangeHandlers;
+import com.codenvy.ide.jseditor.client.events.ScrollEvent;
+import com.codenvy.ide.jseditor.client.events.ScrollHandler;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeHandler;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
@@ -61,9 +64,6 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
-import com.google.gwt.event.dom.client.HasScrollHandlers;
-import com.google.gwt.event.dom.client.ScrollEvent;
-import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -79,8 +79,8 @@ import com.google.web.bindery.event.shared.EventBus;
  * @author "Mickaël Leduque"
  */
 public class CodeMirrorEditorWidget extends Composite implements EditorWidget, HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
-                                                     HasScrollHandlers, HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
-                                                     HasViewPortChangeHandlers, HasGutterClickHandlers {
+                                                     HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
+                                                     HasViewPortChangeHandlers, HasGutterClickHandlers, HasScrollHandlers {
 
     private static final String                         TAB_SIZE_OPTION             = "tabSize";
 
@@ -348,7 +348,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                 }
             });
         }
-        return addHandler(handler, ScrollEvent.getType());
+        return addHandler(handler, ScrollEvent.TYPE);
     }
 
     private void fireScrollEvent() {
