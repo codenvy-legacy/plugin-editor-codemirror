@@ -21,6 +21,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
@@ -508,18 +510,25 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         return new RegionImpl(startOffset, endOffset - startOffset);
     }
 
-    @Override
-    public void setSelectedRange(final Region selection) {
+    public void setSelectedRange(final Region selection, final boolean show) {
         final CMPositionOverlay anchor = this.editorOverlay.getDoc().posFromIndex(selection.getOffset());
-        final CMPositionOverlay head = this.editorOverlay.getDoc().posFromIndex(selection.getOffset() + selection.getLength());
-        this.editorOverlay.getDoc().setSelection(anchor, head);
+        final int headOffset = selection.getOffset() + selection.getLength();
+        final CMPositionOverlay head = this.editorOverlay.getDoc().posFromIndex(headOffset);
+        
+        if (show) {
+            this.editorOverlay.getDoc().setSelection(anchor, head);
+        } else {
+            this.editorOverlay.getDoc().setSelection(anchor, head, CMSetSelectionOptions.createNoScroll());
+        }
     }
 
-    @Override
     public void setDisplayRange(final Region range) {
-        // TODO Auto-generated method stub
-        
+        final CMPositionOverlay from = this.editorOverlay.getDoc().posFromIndex(range.getOffset());
+        final CMPositionOverlay to = this.editorOverlay.getDoc().posFromIndex(range.getOffset() + range.getLength());
+        CMRangeOverlay nativeRange = CMRangeOverlay.create(from, to);
+        this.editorOverlay.scrollIntoView(nativeRange);
     }
+
     private void setupKeymap() {
         final String propertyValue = KeymapPrefReader.readPref(this.preferencesManager,
                                                                CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
