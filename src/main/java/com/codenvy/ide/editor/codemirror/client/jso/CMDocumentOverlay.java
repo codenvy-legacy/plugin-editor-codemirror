@@ -200,6 +200,134 @@ public class CMDocumentOverlay extends JavaScriptObject {
         this.replaceSelection(replacement);
     }-*/;
 
+    public final native void setSelection(CMPositionOverlay anchor) /*-{
+        this.setSelection(anchor);
+    }-*/;
+
+    public final native void setSelection(CMPositionOverlay anchor, CMPositionOverlay head) /*-{
+        this.setSelection(anchor, head);
+    }-*/;
+
+    public final native void setSelection(CMPositionOverlay anchor, CMPositionOverlay head,
+                                          CMSetSelectionOptions options) /*-{
+        this.setSelection(anchor, head, options);
+    }-*/;
+
+    /**
+     * Sets a new set of selections. There must be at least one selection in the given array.<br>
+     * The primary index is taken from the previous selection, or set to the last range if the
+     * previous selection had less ranges than the new one.
+     * @param ranges the ranges of the new selection
+     */
+    public final native void setSelections(JsArray<CMSelectionOverlay> ranges) /*-{
+        this.setSelections(ranges);
+    }-*/;
+
+    /**
+     * Sets a new set of selections. There must be at least one selection in the given array.
+     * @param ranges the ranges of the new selection
+     * @param primary determines which selection is the primary one
+     */
+    public final native void setSelections(JsArray<CMSelectionOverlay> ranges, int primary) /*-{
+        this.setSelections(ranges, primary);
+    }-*/;
+
+    /**
+     * Sets a new set of selections. There must be at least one selection in the given array.
+     * @param ranges the ranges of the new selection
+     * @param primary determines which selection is the primary one
+     * @param options selection options
+     */
+    public final native void setSelections(JsArray<CMSelectionOverlay> ranges, int primary,
+                                           CMSetSelectionOptions options) /*-{
+        this.setSelections(ranges, primary, options);
+    }-*/;
+
+    /**
+     * Sets a new set of selections. There must be at least one selection in the given array.
+     * @param ranges the ranges of the new selection
+     * @param options selection options
+     */
+    public final native void setSelections(JsArray<CMSelectionOverlay> ranges,
+                                           CMSetSelectionOptions options) /*-{
+        this.setSelections(ranges, options);
+    }-*/;
+
+    /**
+     * Add a new selection to the existing selections and makes it the primary selection.
+     * @param anchor the anchor of the selection
+     * @param head the head of the selection
+     */
+    public final native void addSelection(CMPositionOverlay anchor, CMPositionOverlay head) /*-{
+        this.addSelection(anchor, head);
+    }-*/;
+
+    /**
+     * Similar to setSelection, but will, if shift is held or the extending flag is set, move the head
+     * of the selection while leaving the anchor at its current place.<br>
+     * When multiple selections are present, all but the primary selection will be dropped by this method.
+     * @param from origin of extension
+     */
+    public final native void extendSelection(CMPositionOverlay from) /*-{
+        this.extendSelection(from);
+    }-*/;
+
+    /**
+     * Same as {@link #extendSelection(CMPositionOverlay)}, the 'to' argument ensurse a region
+     * (for example a word or paragraph) will end up selected (in addition to whatever lies
+     * between that region and the current anchor). 
+     * @param from origin of extension
+     * @param to mandatory position that must be included in selection 
+     */
+    public final native void extendSelection(CMPositionOverlay from, CMPositionOverlay to) /*-{
+        this.extendSelection(from, to);
+    }-*/;
+
+    public final native void extendSelection(CMPositionOverlay from,
+                                             CMSetSelectionOptions options) /*-{
+        this.extendSelection(from, options);
+    }-*/;
+
+    public final native void extendSelection(CMPositionOverlay from, CMPositionOverlay to,
+                                             CMSetSelectionOptions options) /*-{
+        this.extendSelection(from, to, options);
+    }-*/;
+
+    /**
+     * An equivalent of {@link #extendSelection(CMPositionOverlay)} that acts on all selections at once.
+     * @param heads
+     */
+    public final native void extendSelections(JsArray<CMPositionOverlay> heads) /*-{
+        this.extendSelections(heads);
+    }-*/;
+
+    /**
+     * An equivalent of {@link #extendSelection(CMPositionOverlay, CMSetSelectionOptions)} that acts on all selections at once.
+     * @param heads
+     * @param options
+     */
+    public final native void extendSelections(JsArray<CMPositionOverlay> heads,
+                                             CMSetSelectionOptions options) /*-{
+        this.extendSelections(heads, options);
+    }-*/;
+
+    /**
+     * Sets or clears the 'extending' flag, which acts similar to the shift key, in that it will cause cursor movement
+     * and calls to extendSelection to leave the selection anchor in place.
+     * @param extending the extending flag (true to extend, falsse to clear)
+     */
+    public final native void setExtending(boolean extending) /*-{
+        this.setExtending(extending);
+    }-*/;
+
+    /**
+     * Get the value of the 'extending' flag.
+     * @return the flag
+     */
+    public final native boolean getExtending() /*-{
+        return this.getExtending();
+    }-*/;
+
     /**
      * Replace selection(s) with replacement.
      * 

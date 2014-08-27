@@ -54,4 +54,8 @@ public class CMSetSelectionOptions extends JavaScriptObject {
     public final native void setBias(int newValue) /*-{
         this.bias = newValue;
     }-*/;
+
+    public static final native CMSetSelectionOptions create() /*-{
+        return {};
+    }-*/;
 }
