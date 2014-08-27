@@ -508,6 +508,18 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         return new RegionImpl(startOffset, endOffset - startOffset);
     }
 
+    @Override
+    public void setSelectedRange(final Region selection) {
+        final CMPositionOverlay anchor = this.editorOverlay.getDoc().posFromIndex(selection.getOffset());
+        final CMPositionOverlay head = this.editorOverlay.getDoc().posFromIndex(selection.getOffset() + selection.getLength());
+        this.editorOverlay.getDoc().setSelection(anchor, head);
+    }
+
+    @Override
+    public void setDisplayRange(final Region range) {
+        // TODO Auto-generated method stub
+        
+    }
     private void setupKeymap() {
         final String propertyValue = KeymapPrefReader.readPref(this.preferencesManager,
                                                                CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
@@ -595,4 +607,5 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
     }
+
 }

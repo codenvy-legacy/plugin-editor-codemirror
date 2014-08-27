@@ -13,6 +13,8 @@ package com.codenvy.ide.editor.codemirror.client.jso;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
@@ -296,5 +298,69 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     public final native void addKeyMap(CMKeymapOverlay keymap, boolean bottom) /*-{
         this.addKeyMap(keymap, bottom);
+    }-*/;
+
+    public final native CMScrollInfoOverlay getScrollInfo() /*-{
+        return this.getScrollInfo();
+    }-*/;
+
+    /**
+     * Scroll the cursor into view.
+     */
+    public final native void scrollIntoView() /*-{
+        this.scrollIntoView(null);
+    }-*/;
+
+    /**
+     * Scroll the cursor into view.
+     * @param margin the amount of vertical pixel around the area to make visible as well.
+     */
+    public final native void scrollIntoView(double margin) /*-{
+        this.scrollIntoView(null, margin);
+    }-*/;
+
+    /**
+     * Scroll the given line, character position into view.
+     */
+    public final native void scrollIntoView(CMPositionOverlay what) /*-{
+        this.scrollIntoView(what);
+    }-*/;
+
+    /**
+     * Scroll the given line, character position into view.
+     * @param margin the amount of vertical pixel around the area to make visible as well.
+     */
+    public final native void scrollIntoView(CMPositionOverlay what, double margin) /*-{
+        this.scrollIntoView(what, margin);
+    }-*/;
+
+    /**
+     * Scroll the given rectangular zone into view.
+     */
+    public final native void scrollIntoView(CMPixelRangeOverlay what) /*-{
+        this.scrollIntoView(what);
+    }-*/;
+
+    /**
+     * Scroll the given rectangular zone into view.
+     * @param margin the amount of vertical pixel around the area to make visible as well.
+     */
+    public final native void scrollIntoView(CMPixelRangeOverlay what, double margin) /*-{
+        this.scrollIntoView(what, margin);
+    }-*/;
+
+    /**
+     * Scroll the given text range into view.
+     */
+    public final native void scrollIntoView(CMRangeOverlay what) /*-{
+        this.scrollIntoView(what);
+    }-*/;
+
+    /**
+     * Scroll the given text range into view.
+     * @param margin the amount of vertical pixel around the area to make visible as well.
+     */
+    public final native void scrollIntoView(CMRangeOverlay what, double margin) /*-{
+        this.scrollIntoView(what, margin);
     }-*/;
 }
