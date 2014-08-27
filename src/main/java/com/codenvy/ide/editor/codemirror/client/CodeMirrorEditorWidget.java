@@ -354,7 +354,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     }
 
     private void fireScrollEvent() {
-        DomEvent.fireNativeEvent(Document.get().createScrollEvent(), this);
+        fireEvent(new ScrollEvent());
     }
 
     @Override
@@ -436,7 +436,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private void fireGutterClickEvent() {
         fireEvent(new GutterClickEvent());
     }
-
 
     @Override
     public void setReadOnly(final boolean isReadOnly) {
@@ -616,5 +615,4 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
     }
-
 }
