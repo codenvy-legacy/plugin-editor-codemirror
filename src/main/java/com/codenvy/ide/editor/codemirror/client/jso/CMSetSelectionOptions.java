@@ -58,4 +58,8 @@ public class CMSetSelectionOptions extends JavaScriptObject {
     public static final native CMSetSelectionOptions create() /*-{
         return {};
     }-*/;
+
+    public static final native CMSetSelectionOptions createNoScroll() /*-{
+        return {"scroll": false};
+    }-*/;
 }
