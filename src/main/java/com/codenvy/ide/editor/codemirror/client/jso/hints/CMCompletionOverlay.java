@@ -22,27 +22,55 @@ public class CMCompletionOverlay extends JavaScriptObject {
         return this.text;
     }-*/;
 
+    public native final void setText(String text) /*-{
+        this.text = text;
+    }-*/;
+
     public native final String getDisplayText() /*-{
         return this.displayText;
+    }-*/;
+
+    public native final void setDisplayText(String displayText) /*-{
+        this.displayText = displayText;
     }-*/;
 
     public native final String getClassName() /*-{
         return this.className;
     }-*/;
 
+    public native final void setClassName(String className) /*-{
+        this.className = className;
+    }-*/;
+
     public native final CMRenderFunctionOverlay getRender() /*-{
         return this.render;
+    }-*/;
+
+    public native final void setRender(CMRenderFunctionOverlay render) /*-{
+        this.render = render;
     }-*/;
 
     public native final CMHintApplyOverlay getHint() /*-{
         return this.hint;
     }-*/;
 
+    public native final void setHint(CMHintApplyOverlay hint) /*-{
+        this.hint = hint;
+    }-*/;
+
     public native final CMPositionOverlay getFrom() /*-{
         return this.from;
     }-*/;
 
+    public native final void setFrom(CMPositionOverlay from) /*-{
+        this.from = from;
+    }-*/;
+
     public native final CMPositionOverlay getTo() /*-{
         return this.to;
+    }-*/;
+
+    public native final void setTo(CMPositionOverlay to) /*-{
+        this.to = to;
     }-*/;
 }
