@@ -363,4 +363,42 @@ public class CMEditorOverlay extends JavaScriptObject {
     public final native void scrollIntoView(CMRangeOverlay what, double margin) /*-{
         this.scrollIntoView(what, margin);
     }-*/;
+
+    /**
+     * Returns the position and dimensions of an arbitrary character.
+     * @param position the character position
+     * @return the position and dimensions of the character
+     */
+    public final native CMPixelRangeOverlay charCoords(CMPositionOverlay position) /*-{
+        return this.charCoords(position);
+    }-*/;
+
+    /**
+     * Returns the position and dimensions of an arbitrary character.
+     * @param position the character position
+     * @param mode context of the coordinates; window, page (default) or local(top-left corner of document)
+     * @return the position and dimensions of the character
+     */
+    public final native CMPixelRangeOverlay charCoords(CMPositionOverlay position, String mode) /*-{
+        return this.charCoords(position, mode);
+    }-*/;
+
+    /**
+     * Given an {left, top} object, returns the {line, ch} position that corresponds to it. 
+     * @param coordinates the pixel coordinates
+     * @return the {line, char} position 
+     */
+    public final native CMPositionOverlay coordsChar(CMPixelCoordinatesOverlay coordinates) /*-{
+        return this.coordChar(coordinates);
+    }-*/;
+
+    /**
+     * Given an {left, top} object, returns the {line, ch} position that corresponds to it, relative to the mode. 
+     * @param coordinates the pixel coordinates
+     * @param mode window,page or local
+     * @return the {line, char} position 
+     */
+    public final native CMPositionOverlay coordsChar(CMPixelCoordinatesOverlay coordinates, String mode) /*-{
+        return this.coordChar(coordinates, mode);
+    }-*/;
 }

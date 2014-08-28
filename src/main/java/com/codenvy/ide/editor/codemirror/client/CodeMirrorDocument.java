@@ -15,6 +15,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
+import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**

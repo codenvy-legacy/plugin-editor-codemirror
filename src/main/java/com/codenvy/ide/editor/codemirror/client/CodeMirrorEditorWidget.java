@@ -48,6 +48,7 @@ import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
 import com.codenvy.ide.jseditor.client.keymap.KeymapPrefReader;
+import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -102,6 +103,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     /** The EmbeddededDocument instance. */
     private CodeMirrorDocument                          embeddedDocument;
+    /** The position converter instance. */
+    private final PositionConverter                           positionConverter;
 
     private final JavaScriptObject                      codeMirrorEditorModule;
 
@@ -135,6 +138,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.editorOverlay = CMEditorOverlay.createEditor(this.panel.getElement(), getConfiguration(), codeMirrorEditorModule);
         this.editorOverlay.setSize("100%", "100%");
         this.editorOverlay.refresh();
+        
+        this.positionConverter = new CodemirrorPositionConverter(this.editorOverlay);
 
         setMode(editorMode);
 
@@ -611,6 +616,10 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public Keymap getKeymap() {
         return this.keymap;
+    }
+
+    public PositionConverter getPositionConverter() {
+        return this.positionConverter;
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
