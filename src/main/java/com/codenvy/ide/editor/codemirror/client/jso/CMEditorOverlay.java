@@ -401,4 +401,8 @@ public class CMEditorOverlay extends JavaScriptObject {
     public final native CMPositionOverlay coordsChar(CMPixelCoordinatesOverlay coordinates, String mode) /*-{
         return this.coordChar(coordinates, mode);
     }-*/;
+
+    public final native void focus() /*-{
+        this.focus();
+    }-*/;
 }

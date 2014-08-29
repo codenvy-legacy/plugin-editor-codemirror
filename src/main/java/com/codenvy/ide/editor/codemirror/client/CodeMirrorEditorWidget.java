@@ -622,6 +622,10 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         return this.positionConverter;
     }
 
+    public void setFocus() {
+        this.editorOverlay.focus();
+    }
+
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
     }
 }
