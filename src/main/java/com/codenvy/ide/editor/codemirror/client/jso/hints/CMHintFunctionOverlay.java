@@ -33,7 +33,20 @@ public class CMHintFunctionOverlay extends JavaScriptObject {
         };
     }-*/;
 
+    public static final native CMHintFunctionOverlay createFromAsyncHintFunction(AsyncHintFunction hintFunction) /*-{
+        var result = function(editor, callback, options) {
+            return hintFunction.@com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay.AsyncHintFunction::getHints(*)(editor, callback, options);
+        };
+        result.async=true;
+        return result;
+    }-*/;
+
     public interface HintFunction {
-        JavaScriptObject getHints(CMEditorOverlay editor, CMHintOptionsOverlay options);
+        CMHintResultsOverlay getHints(CMEditorOverlay editor, CMHintOptionsOverlay options);
+    }
+
+    public interface AsyncHintFunction {
+        void getHints(CMEditorOverlay editor, CMHintCallback callback,
+                                  CMHintOptionsOverlay options);
     }
 }

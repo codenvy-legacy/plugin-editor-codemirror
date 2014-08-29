@@ -18,8 +18,9 @@ import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
 import com.codenvy.ide.editor.codemirror.client.style.CodeMirrorResource;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
-import com.codenvy.ide.jseditor.client.editorconfig.DefaultEmbeddedTextEditorConf;
+import com.codenvy.ide.jseditor.client.editorconfig.DefaultTextEditorConfiguration;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
@@ -57,7 +58,8 @@ public class CodeMirrorEditorExtension {
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
-                                     final CodeMirrorResource highlightResource) {
+                                     final CodeMirrorResource highlightResource,
+                                     final CompletionResources completionResources) {
         this.notificationManager = notificationManager;
         this.moduleHolder = moduleHolder;
         this.requireJsLoader = requireJsLoader;
@@ -66,6 +68,7 @@ public class CodeMirrorEditorExtension {
 
         highlightResource.highlightStyle().ensureInjected();
         highlightResource.editorStyle().ensureInjected();
+        completionResources.completionCss().ensureInjected();
 
         injectCodeMirror();
         // no need to delay
@@ -193,10 +196,12 @@ public class CodeMirrorEditorExtension {
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "lib/codemirror.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/dialog/dialog.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/fold/foldgutter.css");
+        injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/hint/show-hint.css");
+
     }
 
     private static void injectCssLink(final String url) {
-        LinkElement link = Document.get().createLinkElement();
+        final LinkElement link = Document.get().createLinkElement();
         link.setRel("stylesheet");
         link.setHref(url);
         nativeAttachToHead(link);
@@ -204,7 +209,7 @@ public class CodeMirrorEditorExtension {
 
     /**
      * Attach an element to document head.
-     * 
+     *
      * @param scriptElement the element to attach
      */
     private static native void nativeAttachToHead(JavaScriptObject scriptElement) /*-{
@@ -218,7 +223,7 @@ public class CodeMirrorEditorExtension {
             @Override
             public EditorPartPresenter buildEditor() {
                 final EmbeddedTextEditorPresenter editor = codeMirrorTextEditorFactory.createTextEditor();
-                editor.initialize(new DefaultEmbeddedTextEditorConf(), notificationManager);
+                editor.initialize(new DefaultTextEditorConfiguration(), notificationManager);
                 return editor;
             }
         });

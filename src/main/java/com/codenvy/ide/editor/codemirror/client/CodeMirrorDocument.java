@@ -10,13 +10,21 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.CHANGE;
+
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
+import com.codenvy.ide.jseditor.client.document.DocumentEventBus;
 import com.codenvy.ide.jseditor.client.document.DocumentHandle;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
+import com.codenvy.ide.jseditor.client.events.DocumentChangeEvent;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
@@ -31,10 +39,40 @@ public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
 
     private final HasCursorActivityHandlers hasCursorActivityHandlers;
 
+    private final DocumentEventBus eventBus = new DocumentEventBus();
+
     public CodeMirrorDocument(final CMDocumentOverlay documentOverlay,
                               final HasCursorActivityHandlers hasCursorActivityHandlers) {
         this.documentOverlay = documentOverlay;
         this.hasCursorActivityHandlers = hasCursorActivityHandlers;
+
+        documentOverlay.getEditor().on(CHANGE, new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
+            @Override
+            public void onEvent(final JsArray<JavaScriptObject> params) {
+
+                // first parameter is editor instance, second is the change
+                final CMChangeEventOverlay change = params.get(1).cast();
+                fireDocumentChangeEvent(change);
+            }
+        });
+    }
+
+    private void fireDocumentChangeEvent(final CMChangeEventOverlay param) {
+        int startOffset = 0;
+        if (param.getFrom() != null) {
+            startOffset = this.documentOverlay.indexFromPos(param.getFrom());
+        }
+        int endOffset;
+        if (param.getTo() != null) {
+            endOffset = this.documentOverlay.indexFromPos(param.getTo());
+        } else {
+            endOffset = this.documentOverlay.getValue().length();
+        }
+        final int length = endOffset - startOffset;
+        final String text = param.getText().join("\n");
+
+        final DocumentChangeEvent event = new DocumentChangeEvent(this, startOffset, length, text);
+        this.eventBus.fireEvent(event);
     }
 
     @Override
@@ -88,5 +126,25 @@ public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
     @Override
     public boolean isSameAs(final DocumentHandle document) {
         return (this.equals(document));
+    }
+
+    @Override
+    public DocumentEventBus getDocEventBus() {
+        return this.eventBus;
+    }
+
+    @Override
+    public EmbeddedDocument getDocument() {
+        return this;
+    }
+
+    @Override
+    public int getContentsCharCount() {
+        // same as last offset
+        final int lastLine = this.documentOverlay.lastLine();
+        final String lineContent = this.documentOverlay.getLine(lastLine);
+        final int lineSize = lineContent.length();
+        // zero based char position on the line
+        return this.documentOverlay.indexFromPos(CMPositionOverlay.create(lastLine, lineSize - 1));
     }
 }

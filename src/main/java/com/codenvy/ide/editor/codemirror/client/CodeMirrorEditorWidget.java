@@ -29,6 +29,7 @@ import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.REA
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.SHOW_CURSOR_WHEN_SELECTING;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.STYLE_ACTIVE_LINE;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,11 +43,16 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOptionsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeEvent;
@@ -64,6 +70,8 @@ import com.codenvy.ide.jseditor.client.events.ScrollEvent;
 import com.codenvy.ide.jseditor.client.events.ScrollHandler;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.jseditor.client.keymap.KeyBindingAction;
+import com.codenvy.ide.jseditor.client.keymap.Keybinding;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
@@ -71,6 +79,7 @@ import com.codenvy.ide.jseditor.client.keymap.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
+import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
@@ -124,7 +133,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     /** The EmbeddededDocument instance. */
     private CodeMirrorDocument                          embeddedDocument;
     /** The position converter instance. */
-    private final PositionConverter                           positionConverter;
+    private final PositionConverter                     positionConverter;
 
     private final CodeMirrorOverlay                      codeMirror;
 
@@ -143,16 +152,20 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private Keymap                                      keymap;
 
+    private final CompletionResources completionResources;
+
     private CMKeymapOverlay keyBindings;
 
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final PreferencesManager preferencesManager,
                                   final EventBus eventBus,
+                                  final CompletionResources completionResources,
                                   @Assisted final String editorMode) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.preferencesManager = preferencesManager;
+        this.completionResources = completionResources;
 
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
@@ -514,12 +527,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final int startOffset = this.editorOverlay.getDoc().indexFromPos(from);
         final int endOffset = this.editorOverlay.getDoc().indexFromPos(to);
 
-        final int lastLine = this.editorOverlay.getDoc().lastLine();
-        final int lastPosition = this.editorOverlay.getDoc().getLine(lastLine).length();
-
-        if (startOffset < 0 || endOffset > lastPosition || startOffset > endOffset) {
-            throw new RuntimeException("Invalid selection");
-        }
         return new RegionImpl(startOffset, endOffset - startOffset);
     }
 
@@ -633,6 +640,52 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     public void setFocus() {
         this.editorOverlay.focus();
+    }
+
+    public void showCompletionsProposals(final List<CompletionProposal> proposals) {
+        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
+                                                     proposals, this.completionResources.completionCss());
+    }
+
+
+    @Override
+    public void addKeybinding(final Keybinding keybinding) {
+        final String keySpec = KeybindingTranslator.translateKeyBinding(keybinding, this.codeMirror);
+        if (keySpec == null) {
+            LOG.warning("Couldn't bind key, keycode is unknown.");
+            return;
+        }
+        final KeyBindingAction bindingAction = keybinding.getAction();
+        if (bindingAction == null) {
+            LOG.warning("Cannot bind null action on "+ keySpec +".");
+            return;
+        }
+        LOG.info("Binding action on " + keySpec + ".");
+        this.keyBindings.addBinding(keySpec, bindingAction, new CodeMirrorKeyBindingAction<KeyBindingAction>() {
+
+            @Override
+            public void action(final KeyBindingAction action) {
+                action.action();
+            }
+        });
+    }
+
+    @Override
+    public void showCompletionProposals(final CompletionsSource completionsSource) {
+        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
+                                                     completionsSource,
+                                                     this.completionResources.completionCss());
+    }
+
+    public void showMessage(final String message) {
+        final CMDialogOptionsOverlay options = JavaScriptObject.createObject().cast();
+        options.setBottom(true);
+        final CMDialogOverlay dialog = this.editorOverlay.getDialog();
+        if (dialog != null) {
+            dialog.openNotification(message, options);
+        } else {
+            Log.info(CodeMirrorEditorWidget.class, message);
+        }
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
