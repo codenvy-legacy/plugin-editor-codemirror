@@ -13,6 +13,8 @@ package com.codenvy.ide.editor.codemirror.client;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
+import com.codenvy.ide.jseditor.client.document.DocumentEventBus;
+import com.codenvy.ide.jseditor.client.document.DocumentHandle;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
@@ -23,12 +25,14 @@ import com.google.gwt.event.shared.HandlerRegistration;
  *
  * @author "Mickaël Leduque"
  */
-public class CodeMirrorDocument implements EmbeddedDocument {
+public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
 
     /** The internal document representation for CodeMirror. */
     private final CMDocumentOverlay         documentOverlay;
 
     private final HasCursorActivityHandlers hasCursorActivityHandlers;
+
+    private final DocumentEventBus eventBus = new DocumentEventBus();
 
     public CodeMirrorDocument(final CMDocumentOverlay documentOverlay,
                               final HasCursorActivityHandlers hasCursorActivityHandlers) {
@@ -78,5 +82,33 @@ public class CodeMirrorDocument implements EmbeddedDocument {
         final CMPositionOverlay toPos = this.documentOverlay.posFromIndex(region.getOffset() + region.getLength());
 
         this.documentOverlay.replaceRange(text, fromPos, toPos);
+    }
+
+    public DocumentHandle getDocumentHandle() {
+        return this;
+    }
+
+    @Override
+    public boolean isSameAs(final DocumentHandle document) {
+        return (this.equals(document));
+    }
+
+    @Override
+    public DocumentEventBus getDocEventBus() {
+        return this.eventBus;
+    }
+
+    @Override
+    public EmbeddedDocument getDocument() {
+        return this;
+    }
+
+    public int getContentsCharCount() {
+        // same as last offset
+        final int lastLine = this.documentOverlay.lastLine();
+        final String lineContent = this.documentOverlay.getLine(lastLine);
+        final int lineSize = lineContent.length();
+        // zero based char position on the line
+        return this.documentOverlay.indexFromPos(CMPositionOverlay.create(lastLine, lineSize - 1));
     }
 }
