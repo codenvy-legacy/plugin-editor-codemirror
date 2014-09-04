@@ -63,7 +63,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Change option value for the editor. Obviously only works for options that take a string value.
-     * 
+     *
      * @param propertyName the option name
      * @param value the new value
      */
@@ -73,7 +73,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Change option value for the editor.
-     * 
+     *
      * @param propertyName the option name
      * @param value the new value
      */
@@ -83,7 +83,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Change option value for the editor.
-     * 
+     *
      * @param propertyName the option name
      * @param value the new value
      */
@@ -93,7 +93,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Change option value for the editor.
-     * 
+     *
      * @param propertyName the option name
      * @param value the new value
      */
@@ -186,7 +186,7 @@ public class CMEditorOverlay extends JavaScriptObject {
     public final native Element getWrapperElement() /*-{
         return this.getWrapperElement();
     }-*/;
-    
+
     public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                                     String eventType,
                                                                     EventHandlerOneParameter<T> handler,
@@ -198,7 +198,7 @@ public class CMEditorOverlay extends JavaScriptObject {
                             handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
                         });
     }-*/;
-    
+
     public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                                     String eventType,
                                                                     EventHandlerNoParameters handler,
@@ -210,7 +210,7 @@ public class CMEditorOverlay extends JavaScriptObject {
                             handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
                         });
     }-*/;
-    
+
     public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                                     String eventType,
                                                                     EventHandlerMultipleParameters<T> handler,
@@ -229,7 +229,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Version of codemirror.
-     * 
+     *
      * @param module the CodeMirror module (loaded by requirejs)
      * @return the version, major.minor.patch (all three are integers)
      */
@@ -239,7 +239,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * CodeMirror modes by name.
-     * 
+     *
      * @param module the CodeMirror module (loaded by requirejs)
      * @return a javascript object such that modes[modeName] is the mode object
      */
@@ -249,7 +249,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Names of the modes loaded in codemirror.
-     * 
+     *
      * @param module the CodeMirror module (loaded by requirejs)
      * @return an array of names of modes
      */
@@ -259,7 +259,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Codemirror modes by mime-types.
-     * 
+     *
      * @param module the CodeMirror module (loaded by requirejs)
      * @return a javascript object such that mimeModes[mimeType] is the matching mode object
      */
@@ -269,7 +269,7 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     /**
      * Names of the mime-types known in codemirror.
-     * 
+     *
      * @param module the CodeMirror module (loaded by requirejs)
      * @return an array of names of mime-types
      */
@@ -280,7 +280,7 @@ public class CMEditorOverlay extends JavaScriptObject {
     /**
      * Returns the default configuration object for new codemirror editors.<br>
      * This object properties can be modified to change the default options for new editors (but will not change existing ones).
-     * 
+     *
      * @param module the CodeMirror module (loaded by requirejs)
      * @return the default configuration
      */
@@ -384,19 +384,19 @@ public class CMEditorOverlay extends JavaScriptObject {
     }-*/;
 
     /**
-     * Given an {left, top} object, returns the {line, ch} position that corresponds to it. 
+     * Given an {left, top} object, returns the {line, ch} position that corresponds to it.
      * @param coordinates the pixel coordinates
-     * @return the {line, char} position 
+     * @return the {line, char} position
      */
     public final native CMPositionOverlay coordsChar(CMPixelCoordinatesOverlay coordinates) /*-{
         return this.coordChar(coordinates);
     }-*/;
 
     /**
-     * Given an {left, top} object, returns the {line, ch} position that corresponds to it, relative to the mode. 
+     * Given an {left, top} object, returns the {line, ch} position that corresponds to it, relative to the mode.
      * @param coordinates the pixel coordinates
      * @param mode window,page or local
-     * @return the {line, char} position 
+     * @return the {line, char} position
      */
     public final native CMPositionOverlay coordsChar(CMPixelCoordinatesOverlay coordinates, String mode) /*-{
         return this.coordChar(coordinates, mode);
@@ -404,5 +404,14 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     public final native void focus() /*-{
         this.focus();
+    }-*/;
+
+    /**
+     * Returns the list of key names by code.
+     * @param module the codemirror module instance
+     * @return the key names
+     */
+    public final native static JsArrayString keyNames(JavaScriptObject module) /*-{
+        return module.keyNames;
     }-*/;
 }
