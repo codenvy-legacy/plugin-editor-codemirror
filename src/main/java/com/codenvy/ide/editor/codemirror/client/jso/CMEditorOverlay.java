@@ -486,4 +486,74 @@ public class CMEditorOverlay extends JavaScriptObject {
     public final native void clearGutter(String gutterId) /*-{
         this.clearGutter(gutterId);
     }-*/;
+
+    /**
+     * Set a CSS class name for the given line.
+     * @param line line number
+     * @param where "text"(the text element, which lies in front of the selection), "background"
+     *              (a background element that will be behind the selection), or "wrap"
+     *              (the wrapper node that wraps all of the line's elements, including gutter
+     *              elements)
+     * @param classname the name of the class to apply
+     * @return the line handle
+     */
+    public final native CMLineHandleOverlay addLineClass(int line, String where, String classname) /*-{
+        return this.addLineClass(line, where, classname);
+    }-*/;
+
+    /**
+     * Set a CSS class name for the given line.
+     * @param lineHandle line handle
+     * @param where "text"(the text element, which lies in front of the selection), "background"
+     *              (a background element that will be behind the selection), or "wrap"
+     *              (the wrapper node that wraps all of the line's elements, including gutter
+     *              elements)
+     * @param classname the name of the class to apply
+     * @return the line handle
+     */
+    public final native CMLineHandleOverlay addLineClass(CMLineHandleOverlay lineHandle, String where, String classname) /*-{
+        return this.addLineClass(lineHandle, where, classname);
+    }-*/;
+
+    /**
+     * Remove a CSS class from a line.
+     * @param line the line number
+     * @param where "text", "background", or "wrap" (see addLineClass)
+     * @param classname the name of the class to be removed
+     * @return the line handle
+     */
+    public final native CMLineHandleOverlay removeLineClass(int line, String where, String classname) /*-{
+        return this.removeLineClass(line, where, classname);
+    }-*/;
+
+    /**
+     * Remove a CSS class from a line.
+     * @param lineHandle the line handle
+     * @param where "text", "background", or "wrap" (see addLineClass)
+     * @param classname the name of the class to be removed
+     * @return the line handle
+     */
+    public final native CMLineHandleOverlay removeLineClass(CMLineHandleOverlay lineHandle, String where, String classname) /*-{
+        return this.removeLineClass(lineHandle, where, classname);
+    }-*/;
+
+    /**
+     * Remove all CSS classes from a line.
+     * @param linethe line number
+     * @param where "text", "background", or "wrap" (see addLineClass)
+     * @return the line handle
+     */
+    public final native CMLineHandleOverlay removeLineClass(int line, String where) /*-{
+        return this.removeLineClass(line, where);
+    }-*/;
+
+    /**
+     * Remove all CSS classes from a line.
+     * @param lineHandle the line handle
+     * @param where "text", "background", or "wrap" (see addLineClass)
+     * @return the line handle
+     */
+    public final native CMLineHandleOverlay removeLineClass(CMLineHandleOverlay lineHandle, String where) /*-{
+        return this.removeLineClass(lineHandle, where);
+    }-*/;
 }
