@@ -53,6 +53,23 @@ public class CMEditorOverlay extends JavaScriptObject {
         return this.getMode();
     }-*/;
 
+    /**
+     * Tells in the showHint method is available on the CodeMirror object.
+     * @param module the CodeMirror object
+     * @return true iff CodeMirror.showHint is defined
+     */
+    public static final native boolean hasShowHint(JavaScriptObject module) /*-{
+        return (("showHint" in module) && !(typeof(module[showHint]) === 'undefined'));
+    }-*/;
+
+    /**
+     * Tells in the showHint method is available on the editor instance.
+     * @return true iff showHint is defined
+     */
+    public final native boolean hasShowHint() /*-{
+        return (("showHint" in this.prototype) && !(typeof(this.prototype["showHint"]) === 'undefined'));
+    }-*/;
+
     public final native void showHint(CMHintOptionsOverlay options) /*-{
         this.showHint(options);
     }-*/;
