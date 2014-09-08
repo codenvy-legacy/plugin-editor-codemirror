@@ -146,15 +146,6 @@ public class CMEditorOverlay extends JavaScriptObject {
         return $wnd.CodeMirror.hint.html;
     }-*/;
 
-    public final static native CMEditorOverlay createEditor(final Element element) /*-{
-        return $wnd.CodeMirror(element, {});
-    }-*/;
-
-    public final static native CMEditorOverlay createEditor(final Element element,
-                                                            final JavaScriptObject options) /*-{
-        return $wnd.CodeMirror(element, options);
-    }-*/;
-
     public final static native CMEditorOverlay createEditor(Element element,
                                                             JavaScriptObject options,
                                                             JavaScriptObject module) /*-{
