@@ -452,4 +452,38 @@ public class CMEditorOverlay extends JavaScriptObject {
             return null;
         }
     }
+
+    /**
+     * Sets the gutter marker for the given gutter (identified by its CSS class) to the given value.<br>
+     * Value can be either null, to clear the marker, or a DOM element, to set it.<br>
+     * The DOM element will be shown in the specified gutter next to the specified line.
+     * @param line the line
+     * @param gutterId the CSS classname for the gutter
+     * @param element the element to add or null to clear
+     */
+    public final native void setGutterMarker(int line, String gutterId, Element element) /*-{
+        this.setGutterMarker(line, gutterId, element);
+    }-*/;
+
+    /**
+     * Sets the gutter marker for the given gutter (identified by its CSS class) to the given value.<br>
+     * Value can be either null, to clear the marker, or a DOM element, to set it.<br>
+     * The DOM element will be shown in the specified gutter next to the specified line.
+     * @param lineHandle the line
+     * @param gutterId the CSS classname for the gutter
+     * @param element the element to add or null to clear
+     */
+    public final native void setGutterMarker(CMLineHandleOverlay lineHandle, String gutterId,
+                                             Element element) /*-{
+        this.setGutterMarker(lineHandle, gutterId, element);
+    }-*/;
+
+
+    /**
+     * Remove all gutter markers in the gutter with the given ID.
+     * @param gutterId the gutter to clear (gutter CSS classname)
+     */
+    public final native void clearGutter(String gutterId) /*-{
+        this.clearGutter(gutterId);
+    }-*/;
 }
