@@ -23,12 +23,24 @@ public class CMHintResultsOverlay extends JavaScriptObject {
         return this.from;
     }-*/;
 
+    public final native void setFrom(CMPositionOverlay from) /*-{
+        this.from = from;
+    }-*/;
+
     public final native CMPositionOverlay getTo() /*-{
         return this.to;
     }-*/;
 
+    public final native void setTo(CMPositionOverlay to) /*-{
+        this.to = to;
+    }-*/;
+
     public final native JsArrayMixed getList() /*-{
         return this.list;
+    }-*/;
+
+    public final native void setList(JsArrayMixed list) /*-{
+        this.list = list;
     }-*/;
 
     public final native boolean completionItemIsString(int i) /*-{
