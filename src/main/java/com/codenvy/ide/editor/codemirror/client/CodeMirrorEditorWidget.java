@@ -23,6 +23,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
+import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
@@ -78,7 +79,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * The CodeMirror implementation of {@link EditorWidget}.
- * 
+ *
  * @author "Mickaël Leduque"
  */
 public class CodeMirrorEditorWidget extends Composite implements EditorWidget, HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
@@ -95,7 +96,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @UiField
     SimplePanel                                         panel;
-    
+
     /** The native editor object. */
     private final CMEditorOverlay                       editorOverlay;
 
@@ -106,7 +107,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     /** The position converter instance. */
     private final PositionConverter                           positionConverter;
 
-    private final JavaScriptObject                      codeMirrorEditorModule;
+    private final CodeMirrorOverlay                      codeMirror;
 
     // flags to know if an event type has already be added to the native editor
     private boolean                                     changeHandlerAdded          = false;
@@ -135,12 +136,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.preferencesManager = preferencesManager;
 
 
-        codeMirrorEditorModule = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY);
+        this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
 
-        this.editorOverlay = CMEditorOverlay.createEditor(this.panel.getElement(), getConfiguration(), codeMirrorEditorModule);
+        this.editorOverlay = this.codeMirror.createEditor(this.panel.getElement(), getConfiguration());
         this.editorOverlay.setSize("100%", "100%");
         this.editorOverlay.refresh();
-        
+
         this.positionConverter = new CodemirrorPositionConverter(this.editorOverlay);
 
         setMode(editorMode);
@@ -217,7 +218,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         options.setGutters(gutters);
 
         // highlight matching tags
-        CMMatchTagsConfig matchTagsConfig = CMMatchTagsConfig.create();
+        final CMMatchTagsConfig matchTagsConfig = CMMatchTagsConfig.create();
         matchTagsConfig.setBothTags(true);
         options.setProperty("matchTags", matchTagsConfig);
 
@@ -403,7 +404,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
                 @Override
                 public void onEvent(final JsArray<JavaScriptObject> param) {
-                    JsArrayInteger asIntegers = param.cast();
+                    final JsArrayInteger asIntegers = param.cast();
                     final int from = asIntegers.get(0);
                     final int to = asIntegers.get(1);
                     fireViewPortChangeEvent(from, to);
@@ -512,7 +513,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final CMPositionOverlay anchor = this.editorOverlay.getDoc().posFromIndex(selection.getOffset());
         final int headOffset = selection.getOffset() + selection.getLength();
         final CMPositionOverlay head = this.editorOverlay.getDoc().posFromIndex(headOffset);
-        
+
         if (show) {
             this.editorOverlay.getDoc().setSelection(anchor, head);
         } else {
@@ -523,7 +524,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public void setDisplayRange(final Region range) {
         final CMPositionOverlay from = this.editorOverlay.getDoc().posFromIndex(range.getOffset());
         final CMPositionOverlay to = this.editorOverlay.getDoc().posFromIndex(range.getOffset() + range.getLength());
-        CMRangeOverlay nativeRange = CMRangeOverlay.create(from, to);
+        final CMRangeOverlay nativeRange = CMRangeOverlay.create(from, to);
         this.editorOverlay.scrollIntoView(nativeRange);
     }
 
@@ -543,7 +544,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     /**
      * Returns the generation marker.<br>
      * As the field is not final, this is needed so the non-static inner class can see the value changes.
-     * 
+     *
      * @return the generation marker
      */
     private int getGenerationMarker() {
@@ -559,7 +560,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private String buildKeybindingInfo() {
         final StringBuilder sb = new StringBuilder();
-        final CMKeymapSetOverlay keymapsObject = CMEditorOverlay.keyMap(codeMirrorEditorModule);
+        final CMKeymapSetOverlay keymapsObject = CMEditorOverlay.keyMap(codeMirror);
         for (final String keymapKey : keymapsObject.getKeys()) {
             if (keymapKey.startsWith("emacs") || keymapKey.startsWith("vim")) {
                 continue;

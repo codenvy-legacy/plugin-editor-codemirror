@@ -37,4 +37,24 @@ public class CodeMirrorOverlay extends JavaScriptObject {
                                                             final JavaScriptObject options) /*-{
         return $wnd.CodeMirror(element, options);
     }-*/;
+
+    /**
+     * Creates an editor instance.
+     * @param element the element backing the editor
+     * @return an editor instance
+     */
+    public final native CMEditorOverlay createEditor(Element element) /*-{
+        return this(element, options);
+    }-*/;
+
+    /**
+     * Creates an editor instance using the given CodeMirror object.
+     * @param element the element backing the editor
+     * @param options the editor options
+     * @return an editor instance
+     */
+    public final native CMEditorOverlay createEditor(Element element,
+                                                            JavaScriptObject options) /*-{
+        return this(element, options);
+    }-*/;
 }
