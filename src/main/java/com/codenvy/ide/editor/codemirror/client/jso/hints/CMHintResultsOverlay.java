@@ -44,7 +44,7 @@ public class CMHintResultsOverlay extends JavaScriptObject {
     }-*/;
 
     public final native boolean completionItemIsString(int i) /*-{
-        return (this.list[i] instanceof String);
+        return (typeof(this.list[i]) === 'string');
     }-*/;
 
     public final native String getCompletionItemAsString(int i) /*-{
