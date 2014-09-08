@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOptionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOverlay;

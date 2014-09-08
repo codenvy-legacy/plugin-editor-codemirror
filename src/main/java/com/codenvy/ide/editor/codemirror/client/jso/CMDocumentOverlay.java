@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
@@ -73,7 +74,7 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     /**
      * Replace the text range with the new text.
-     * 
+     *
      * @param replacement the new text
      * @param fromLine the line of the beginning of the range
      * @param fromChar the char of the beginning of the range
@@ -86,7 +87,7 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     /**
      * insert the text at the given position.
-     * 
+     *
      * @param replacement the text to insert
      * @param fromLine the line of the insertion position
      * @param fromChar the char of the insertion position
@@ -120,7 +121,7 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     /**
      * Returns the position one end of the primary selection.
-     * 
+     *
      * @param whichEndOfSelection "from", "to", "head" or "anchor"
      * @return one end
      */
@@ -275,9 +276,9 @@ public class CMDocumentOverlay extends JavaScriptObject {
     /**
      * Same as {@link #extendSelection(CMPositionOverlay)}, the 'to' argument ensurse a region
      * (for example a word or paragraph) will end up selected (in addition to whatever lies
-     * between that region and the current anchor). 
+     * between that region and the current anchor).
      * @param from origin of extension
-     * @param to mandatory position that must be included in selection 
+     * @param to mandatory position that must be included in selection
      */
     public final native void extendSelection(CMPositionOverlay from, CMPositionOverlay to) /*-{
         this.extendSelection(from, to);
@@ -330,7 +331,7 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     /**
      * Replace selection(s) with replacement.
-     * 
+     *
      * @param replacement the replacement string
      * @param selectAfter if "around", the new text is selected, if "start", the selection is at the beginning of the new text
      * @return
@@ -351,14 +352,14 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     public final native void eachline(LineOperation lineOperation) /*-{
         this.eachLine(
-            lineOperation.@com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay.LineOperation::processLine(Lcom/codenvy/ide/editor/codemirror/client/jso/CMLineHandleOverlay;)
+            lineOperation.@com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay.LineOperation::processLine(Lcom/codenvy/ide/editor/codemirror/client/jso/line/CMLineHandleOverlay;)
         );
     }-*/;
 
     public final native void eachline(int start, int end, LineOperation lineOperation) /*-{
         this.eachLine(
             start, end,
-            lineOperation.@com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay.LineOperation::processLine(Lcom/codenvy/ide/editor/codemirror/client/jso/CMLineHandleOverlay;)
+            lineOperation.@com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay.LineOperation::processLine(Lcom/codenvy/ide/editor/codemirror/client/jso/line/CMLineHandleOverlay;)
         );
     }-*/;
 

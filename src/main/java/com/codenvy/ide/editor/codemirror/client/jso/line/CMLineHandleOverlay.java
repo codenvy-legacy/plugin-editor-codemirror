@@ -8,7 +8,7 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package com.codenvy.ide.editor.codemirror.client.jso;
+package com.codenvy.ide.editor.codemirror.client.jso.line;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso.line;
 
-import com.codenvy.ide.editor.codemirror.client.jso.CMLineHandleOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Node;
 
