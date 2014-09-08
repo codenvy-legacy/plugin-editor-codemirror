@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+import javax.annotation.Nullable;
+
+import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
@@ -431,4 +434,22 @@ public class CMEditorOverlay extends JavaScriptObject {
     public final native static JsArrayString keyNames(JavaScriptObject module) /*-{
         return module.keyNames;
     }-*/;
+
+    private final native boolean hasDialog() /*-{
+        return ("openDialog" in this);
+    }-*/;
+
+    /**
+     * Returns an object to display notifications, confirms and (simple) inputs in this editor.
+     * @return a dialog manager or null if not supported
+     */
+    @Nullable
+    public final CMDialogOverlay getDialog() {
+        if (hasDialog()) {
+            return this.cast();
+            // this same object with a different type
+        } else {
+            return null;
+        }
+    }
 }
