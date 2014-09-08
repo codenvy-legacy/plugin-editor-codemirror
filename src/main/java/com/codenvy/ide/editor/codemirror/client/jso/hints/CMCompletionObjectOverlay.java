@@ -13,9 +13,12 @@ package com.codenvy.ide.editor.codemirror.client.jso.hints;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class CMCompletionOverlay extends JavaScriptObject {
+/**
+ * Completion item.
+ */
+public class CMCompletionObjectOverlay extends JavaScriptObject {
 
-    protected CMCompletionOverlay() {
+    protected CMCompletionObjectOverlay() {
     }
 
     public native final String getText() /*-{

@@ -51,7 +51,7 @@ public class CMHintResultsOverlay extends JavaScriptObject {
         return this.list[i];
     }-*/;
 
-    public final native CMCompletionOverlay getCompletionItemAsObject(int i) /*-{
+    public final native CMCompletionObjectOverlay getCompletionItemAsObject(int i) /*-{
         return this.list[i];
     }-*/;
 
