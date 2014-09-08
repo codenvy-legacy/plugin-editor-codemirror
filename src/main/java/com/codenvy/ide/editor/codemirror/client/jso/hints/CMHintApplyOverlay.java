@@ -10,9 +10,21 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso.hints;
 
+import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 
 public class CMHintApplyOverlay extends JavaScriptObject {
+
     protected CMHintApplyOverlay() {
+    }
+
+    public static final native CMHintApplyOverlay create(HintApplyFunction applyFunc) /*-{
+        return $entry(function(editor, data, completion) {
+            applyFunc.@com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintApplyOverlay.HintApplyFunction::applyHint(*)(editor, data, completion);
+        });
+    }-*/;
+
+    public interface HintApplyFunction {
+        void applyHint(CMEditorOverlay editor, CMHintResultsOverlay data, JavaScriptObject completion);
     }
 }
