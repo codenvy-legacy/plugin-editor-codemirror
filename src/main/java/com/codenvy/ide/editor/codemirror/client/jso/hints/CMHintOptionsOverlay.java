@@ -16,8 +16,6 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Overlay class over CodeMirror's completion options objects.
- *
- * @author "Mickaël Leduque"
  */
 public class CMHintOptionsOverlay extends JavaScriptObject {
 
@@ -28,6 +26,10 @@ public class CMHintOptionsOverlay extends JavaScriptObject {
         return this.hint;
     }-*/;
 
+    /**
+     * Hinting function.
+     * @param hintFunction hinting function
+     */
     public final native void setHint(CMHintFunctionOverlay hintFunction) /*-{
         this.hint = hintFunction;
     }-*/;
@@ -36,6 +38,12 @@ public class CMHintOptionsOverlay extends JavaScriptObject {
         return this.completeSingle;
     }-*/;
 
+    /**
+     * Determines whether, when only a single completion is available, it is completed without showing
+     * the dialog.<br>
+     * Defaults to true.
+     * @param newValue true to autocomplete single proposals
+     */
     public final native void setCompleteSingle(boolean newValue) /*-{
         this.completeSingle = newValue;
     }-*/;
@@ -44,6 +52,11 @@ public class CMHintOptionsOverlay extends JavaScriptObject {
         return this.alignWithWord;
     }-*/;
 
+    /**
+     * Whether the pop-up should be horizontally aligned with the start of the word (true, default), or
+     * with the cursor (false).
+     * @param newValue popup align mode
+     */
     public final native void setAlignWithWord(boolean newValue) /*-{
         this.alignWithWord = newValue;
     }-*/;
@@ -52,6 +65,10 @@ public class CMHintOptionsOverlay extends JavaScriptObject {
         return this.closeOnUnfocus;
     }-*/;
 
+    /**
+     * When enabled (which is the default), the pop-up will close when the editor is unfocused.
+     * @param newValue true to autoclose on blur
+     */
     public final native void setCloseOnUnfocus(boolean newValue) /*-{
         this.closeOnUnfocus = newValue;
     }-*/;
@@ -60,6 +77,10 @@ public class CMHintOptionsOverlay extends JavaScriptObject {
         return this.customKeys;
     }-*/;
 
+    /**
+     * Allows you to provide a custom key map of keys to be active when the pop-up is active.
+     * @param newValue custom keymap
+     */
     public final native void setCustomKeys(CMKeymapOverlay newValue) /*-{
         this.customKeys = newValue;
     }-*/;
@@ -68,6 +89,11 @@ public class CMHintOptionsOverlay extends JavaScriptObject {
         return this.extraKeys;
     }-*/;
 
+    /**
+     * Like customKeys above, but the bindings will be added to the set of default bindings,
+     * instead of replacing them.
+     * @param newValue extra keys
+     */
     public final native void setExtraKeys(CMKeymapOverlay newValue) /*-{
         this.extraKeys = newValue;
     }-*/;
