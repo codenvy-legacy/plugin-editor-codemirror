@@ -123,6 +123,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private Keymap                                      keymap;
 
+    private CMKeymapOverlay keyBindings;
+
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final PreferencesManager preferencesManager,
@@ -163,25 +165,17 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private void initKeyBindings() {
 
-        final CMKeymapOverlay keyBindings = CMKeymapOverlay.create();
+        this.keyBindings = CMKeymapOverlay.create();
 
-        // keyBindings.addBinding("Ctrl-Space", new KeyBindingAction() {
-        //
-        // public void action(final CodeMirrorEditorWidget editorWidget) {
-        // LOG.fine("Completion binding used.");
-        // editorWidget.autoComplete();
-        // }
-        // }, this);
-
-        keyBindings.addBinding("Shift-Ctrl-K", new KeyBindingAction() {
+        this.keyBindings.addBinding("Shift-Ctrl-K", this,  new CodeMirrorKeyBindingAction<CodeMirrorEditorWidget>() {
 
             public void action(final CodeMirrorEditorWidget editorWidget) {
                 LOG.fine("Keybindings help binding used.");
                 editorWidget.keybindingHelp();
             }
-        }, this);
+        });
 
-        this.editorOverlay.addKeyMap(keyBindings);
+        this.editorOverlay.addKeyMap(this.keyBindings);
     }
 
     @Override

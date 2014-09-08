@@ -13,14 +13,13 @@ package com.codenvy.ide.editor.codemirror.client.jso;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
-import com.codenvy.ide.editor.codemirror.client.KeyBindingAction;
+import com.codenvy.ide.editor.codemirror.client.CodeMirrorKeyBindingAction;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
 /**
  * Overlay class over Keymap CodeMirror objects.
- * 
+ *
  * @author "Mickaël Leduque"
  */
 public class CMKeymapOverlay extends JavaScriptObject {
@@ -45,10 +44,10 @@ public class CMKeymapOverlay extends JavaScriptObject {
         return result;
     }
 
-    public final native void addBinding(String keySpec, KeyBindingAction keyBindingAction, CodeMirrorEditorWidget editorWidget) /*-{
-        var keymapFun = function(editor) {
-            var javaMethod = keyBindingAction.@com.codenvy.ide.editor.codemirror.client.KeyBindingAction::action(*);
-            javaMethod(editorWidget);
+    public final native <T> void addBinding(String keySpec, T thisInstance, CodeMirrorKeyBindingAction<T> keyBindingAction) /*-{
+        var keymapFun = function() {
+            var javaMethod = keyBindingAction.@com.codenvy.ide.editor.codemirror.client.CodeMirrorKeyBindingAction::action(*);
+            javaMethod(thisInstance);
         }
         this[keySpec] = $entry(keymapFun);
     }-*/;

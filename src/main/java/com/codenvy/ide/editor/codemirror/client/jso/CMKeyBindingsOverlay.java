@@ -11,12 +11,12 @@
 package com.codenvy.ide.editor.codemirror.client.jso;
 
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
-import com.codenvy.ide.editor.codemirror.client.KeyBindingAction;
+import com.codenvy.ide.editor.codemirror.client.CodeMirrorKeyBindingAction;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * A list of key bindings.
- * 
+ *
  * @author "Mickaël Leduque"
  */
 public class CMKeyBindingsOverlay extends JavaScriptObject {
@@ -24,9 +24,9 @@ public class CMKeyBindingsOverlay extends JavaScriptObject {
     protected CMKeyBindingsOverlay() {
     }
 
-    public final native void addBinding(String keySpec, KeyBindingAction keyBindingAction, CodeMirrorEditorWidget editorWidget) /*-{
+    public final native void addBinding(String keySpec, CodeMirrorKeyBindingAction keyBindingAction, CodeMirrorEditorWidget editorWidget) /*-{
         this[keySpec] = function(editor) {
-            keyBindingAction.@com.codenvy.ide.editor.codemirror.client.KeyBindingAction::action(*)(editorWidget);
+            keyBindingAction.@com.codenvy.ide.editor.codemirror.client.CodeMirrorKeyBindingAction::action(*)(editorWidget);
         }
     }-*/;
 
