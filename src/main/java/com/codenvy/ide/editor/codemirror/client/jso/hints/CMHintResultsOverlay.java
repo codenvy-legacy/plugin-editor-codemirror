@@ -55,4 +55,8 @@ public class CMHintResultsOverlay extends JavaScriptObject {
         return this.list[i];
     }-*/;
 
+    public static final native CMHintResultsOverlay create() /*-{
+        return {"list": []};
+    }-*/;
+
 }
