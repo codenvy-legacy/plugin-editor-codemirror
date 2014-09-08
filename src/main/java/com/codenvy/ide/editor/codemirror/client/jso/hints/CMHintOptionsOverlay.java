@@ -12,10 +12,11 @@ package com.codenvy.ide.editor.codemirror.client.jso.hints;
 
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Overlay class over CodeMirror's completion options objects.
- * 
+ *
  * @author "Mickaël Leduque"
  */
 public class CMHintOptionsOverlay extends JavaScriptObject {
@@ -69,6 +70,19 @@ public class CMHintOptionsOverlay extends JavaScriptObject {
 
     public final native void setExtraKeys(CMKeymapOverlay newValue) /*-{
         this.extraKeys = newValue;
+    }-*/;
+
+    /**
+     * Define which element will be the parent of the popup.<br>
+     * <em>Optional</em>. If not set, the document will be the parent.
+     * @param container the parent of the popup
+     */
+    public final native void setContainer(Element container) /*-{
+        this.container = container;
+    }-*/;
+
+    public final native Element getContainer() /*-{
+        return this.container;
     }-*/;
 
     public static final native CMHintOptionsOverlay create() /*-{
