@@ -12,7 +12,20 @@ package com.codenvy.ide.editor.codemirror.client.jso.hints;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
+import elemental.dom.Element;
+
 public class CMRenderFunctionOverlay extends JavaScriptObject {
+
     protected CMRenderFunctionOverlay() {
+    }
+
+    public static final native CMRenderFunctionOverlay create(RenderFunction renderFunc) /*-{
+        return $entry(function(element, data, completion) {
+            renderFunc.@com.codenvy.ide.editor.codemirror.client.jso.hints.CMRenderFunctionOverlay.RenderFunction::renderHint(Lelemental/dom/Element;Lcom/codenvy/ide/editor/codemirror/client/jso/hints/CMHintResultsOverlay;Lcom/google/gwt/core/client/JavaScriptObject;)(element, data, completion);
+        });
+    }-*/;
+
+    public interface RenderFunction {
+        void renderHint(Element element, CMHintResultsOverlay data, JavaScriptObject completion);
     }
 }
