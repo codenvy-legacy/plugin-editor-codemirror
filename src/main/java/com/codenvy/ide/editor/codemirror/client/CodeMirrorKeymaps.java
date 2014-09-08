@@ -16,12 +16,11 @@ import java.util.logging.Logger;
 
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
-import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.shared.GWT;
 
 /**
  * Keymaps supported by CodeMirror.
- * 
+ *
  * @author "Mickaël Leduque"
  */
 public final class CodeMirrorKeymaps {
@@ -38,8 +37,8 @@ public final class CodeMirrorKeymaps {
 
     public final static void init() {
         LOG.fine("Initializing codemirror keymaps.");
-        KeymapDisplayConstants constants = GWT.create(KeymapDisplayConstants.class);
-        EditorType cmEditor = EditorType.fromKey(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
+        final KeymapDisplayConstants constants = GWT.create(KeymapDisplayConstants.class);
+        final EditorType cmEditor = EditorType.fromKey(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
         DEFAULT = Keymap.newKeymap("CM_default", constants.defaultKeymap(), cmEditor);
         EMACS = Keymap.newKeymap("CM_emacs", constants.emacs(), cmEditor);
         VIM = Keymap.newKeymap("CM_vim", constants.vim(), cmEditor);
