@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -57,4 +59,60 @@ public class CodeMirrorOverlay extends JavaScriptObject {
                                                             JavaScriptObject options) /*-{
         return this(element, options);
     }-*/;
+
+    /**
+     * Version of codemirror.
+     *
+     * @return the version, major.minor.patch (all three are integers)
+     */
+    public final static native String version() /*-{
+        return this.version();
+    }-*/;
+
+    /**
+     * Returns the default configuration object for new codemirror editors.<br>
+     * This object properties can be modified to change the default options for new editors (but will not change existing ones).
+     *
+     * @return the default configuration
+     */
+    public final native CMEditorOptionsOverlay defaults() /*-{
+        return this.defaults;
+    }-*/;
+
+    /**
+     * CodeMirror modes by name.
+     *
+     * @return a javascript object such that modes[modeName] is the mode object
+     */
+    public final native JavaScriptObject modes() /*-{
+        return this.modes;
+    }-*/;
+
+    /**
+     * Names of the modes loaded in codemirror.
+     *
+     * @return an array of names of modes
+     */
+    public final native JsArrayString modeNames() /*-{
+        return Object.getOwnPropertyNames(this.modes).sort();
+    }-*/;
+
+    /**
+     * Codemirror modes by mime-types.
+     *
+     * @return a javascript object such that mimeModes[mimeType] is the matching mode object
+     */
+    public final native JavaScriptObject mimeModes() /*-{
+        return this.mimeModes;
+    }-*/;
+
+    /**
+     * Names of the mime-types known in codemirror.
+     *
+     * @return an array of names of mime-types
+     */
+    public final native JsArrayString mimeModeNames() /*-{
+        return Object.getOwnPropertyNames(this.mimeModes).sort();
+    }-*/;
+
 }
