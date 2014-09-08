@@ -15,6 +15,9 @@ import javax.annotation.Nullable;
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOptionOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
@@ -22,6 +25,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 
 public class CMEditorOverlay extends JavaScriptObject {
 
@@ -555,5 +559,71 @@ public class CMEditorOverlay extends JavaScriptObject {
      */
     public final native CMLineHandleOverlay removeLineClass(CMLineHandleOverlay lineHandle, String where) /*-{
         return this.removeLineClass(lineHandle, where);
+    }-*/;
+
+    /**
+     * Adds a line widget, an element shown below a line, spanning the whole of the editor's width, and
+     * moving the lines below it downwards.
+     * @param line the line
+     * @param node the (DOM) element to add
+     * @return an object that represents the widget placement
+     */
+    public final native CMLineWidgetOverlay addLineWidget(int line, Node node) /*-{
+        return this.addLineWidget(line, node);
+    }-*/;
+
+    /**
+     * Adds a line widget, an element shown below a line, spanning the whole of the editor's width, and
+     * moving the lines below it downwards.
+     * @param lineHandle the line handle
+     * @param node the (DOM) element to add
+     * @return an object that represents the widget placement
+     */
+    public final native CMLineWidgetOverlay addLineWidget(CMLineHandleOverlay lineHandle, Node node) /*-{
+        return this.addLineWidget(lineHandle, node);
+    }-*/;
+
+    /**
+     * Adds a line widget, an element shown below a line, spanning the whole of the editor's width, and
+     * moving the lines below it downwards.
+     * @param line the line
+     * @param node the (DOM) element to add
+     * @param options the placement options
+     * @return an object that represents the widget placement
+     */
+    public final native CMLineWidgetOverlay addLineWidget(int line, Node node, CMLineWidgetOptionOverlay options) /*-{
+        return this.addLineWidget(line, node, options);
+    }-*/;
+
+    /**
+     * Adds a line widget, an element shown below a line, spanning the whole of the editor's width, and
+     * moving the lines below it downwards.
+     * @param line the line handle
+     * @param node the (DOM) element to add
+     * @param options the placement options
+     * @return an object that represents the widget placement
+     */
+    public final native CMLineWidgetOverlay addLineWidget(CMLineHandleOverlay lineHandle, Node node, CMLineWidgetOptionOverlay options) /*-{
+        return this.addLineWidget(lineHandle, node, options);
+    }-*/;
+
+    /**
+     * Obtain information (line number, text content, and marker status of the given line) on the
+     * given line.
+     * @param line the line
+     * @return the line information
+     */
+    public final native CMLineInfoOverlay lineInfo(int line) /*-{
+        return this.lineInfo(line);
+    }-*/;
+
+    /**
+     * Obtain information (line number, text content, and marker status of the given line) on the
+     * given line.
+     * @param lineHandle the line handle
+     * @return the line information
+     */
+    public final native CMLineInfoOverlay lineInfo(CMLineHandleOverlay lineHandle) /*-{
+        return this.lineInfo(lineHandle);
     }-*/;
 }
