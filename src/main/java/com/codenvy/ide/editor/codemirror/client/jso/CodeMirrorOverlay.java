@@ -28,7 +28,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      * @param element the element backing the editor
      * @return an editor instance
      */
-    public final static native CMEditorOverlay createEditorGlobal(final Element element) /*-{
+    public static final native CMEditorOverlay createEditorGlobal(final Element element) /*-{
         return $wnd.CodeMirror(element, {});
     }-*/;
 
@@ -38,7 +38,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      * @param options the editor options
      * @return an editor instance
      */
-    public final static native CMEditorOverlay createEditorGlobal(Element element,
+    public static final native CMEditorOverlay createEditorGlobal(Element element,
                                                                   JavaScriptObject options) /*-{
         return $wnd.CodeMirror(element, options);
     }-*/;
