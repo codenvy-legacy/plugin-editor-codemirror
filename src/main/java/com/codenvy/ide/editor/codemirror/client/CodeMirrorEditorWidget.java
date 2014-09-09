@@ -560,7 +560,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private String buildKeybindingInfo() {
         final StringBuilder sb = new StringBuilder();
-        final CMKeymapSetOverlay keymapsObject = CMEditorOverlay.keyMap(codeMirror);
+        final CMKeymapSetOverlay keymapsObject = codeMirror.keyMap();
         for (final String keymapKey : keymapsObject.getKeys()) {
             if (keymapKey.startsWith("emacs") || keymapKey.startsWith("vim")) {
                 continue;

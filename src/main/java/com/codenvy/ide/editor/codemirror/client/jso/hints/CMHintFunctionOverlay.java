@@ -11,6 +11,7 @@
 package com.codenvy.ide.editor.codemirror.client.jso.hints;
 
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 
 public class CMHintFunctionOverlay extends JavaScriptObject {
@@ -22,8 +23,8 @@ public class CMHintFunctionOverlay extends JavaScriptObject {
         return this(editor, options);
     }-*/;
 
-    public static final native CMHintFunctionOverlay createFromName(String funcName) /*-{
-        return window[funcName];
+    public static final native CMHintFunctionOverlay createFromName(CodeMirrorOverlay codeMirror, String funcName) /*-{
+        return codemirror.hint[funcName];
     }-*/;
 
     public static final native CMHintFunctionOverlay createFromHintFunction(HintFunction hintFunction) /*-{

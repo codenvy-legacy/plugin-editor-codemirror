@@ -13,7 +13,6 @@ package com.codenvy.ide.editor.codemirror.client.jso;
 import javax.annotation.Nullable;
 
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
@@ -24,7 +23,6 @@ import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 
@@ -59,15 +57,6 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     public final native CMModeOverlay getMode() /*-{
         return this.getMode();
-    }-*/;
-
-    /**
-     * Tells in the showHint method is available on the CodeMirror object.
-     * @param module the CodeMirror object
-     * @return true iff CodeMirror.showHint is defined
-     */
-    public static final native boolean hasShowHint(JavaScriptObject module) /*-{
-        return (("showHint" in module) && !(typeof(module[showHint]) === 'undefined'));
     }-*/;
 
     /**
@@ -140,10 +129,6 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     public final native CMEditorOptionsOverlay getOption(final String propertyName) /*-{
         return this.getOption(propertyName);
-    }-*/;
-
-    public final static native CMHintFunctionOverlay getHintFunction(String name) /*-{
-        return $wnd.CodeMirror.hint.html;
     }-*/;
 
     // events handling - the cm.off(...) method is not that easy to do...
@@ -235,10 +220,6 @@ public class CMEditorOverlay extends JavaScriptObject {
                             }
                             handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)();
                         });
-    }-*/;
-
-    public final static native CMKeymapSetOverlay keyMap(JavaScriptObject module) /*-{
-        return module.keyMap;
     }-*/;
 
     public final native void addKeyMap(CMKeymapOverlay keymap) /*-{
@@ -353,15 +334,6 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     public final native void focus() /*-{
         this.focus();
-    }-*/;
-
-    /**
-     * Returns the list of key names by code.
-     * @param module the codemirror module instance
-     * @return the key names
-     */
-    public final native static JsArrayString keyNames(JavaScriptObject module) /*-{
-        return module.keyNames;
     }-*/;
 
     private final native boolean hasDialog() /*-{

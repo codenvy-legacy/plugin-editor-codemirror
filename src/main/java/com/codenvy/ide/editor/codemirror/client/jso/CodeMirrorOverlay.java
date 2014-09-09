@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
@@ -35,8 +36,8 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      * @param options the editor options
      * @return an editor instance
      */
-    public final static native CMEditorOverlay createEditorGlobal(final Element element,
-                                                            final JavaScriptObject options) /*-{
+    public final static native CMEditorOverlay createEditorGlobal(Element element,
+                                                                  JavaScriptObject options) /*-{
         return $wnd.CodeMirror(element, options);
     }-*/;
 
@@ -56,7 +57,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      * @return an editor instance
      */
     public final native CMEditorOverlay createEditor(Element element,
-                                                            JavaScriptObject options) /*-{
+                                                     JavaScriptObject options) /*-{
         return this(element, options);
     }-*/;
 
@@ -113,6 +114,40 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      */
     public final native JsArrayString mimeModeNames() /*-{
         return Object.getOwnPropertyNames(this.mimeModes).sort();
+    }-*/;
+
+    /**
+     * Return the registered keymaps.
+     * @return the keymaps
+     */
+    public final native CMKeymapSetOverlay keyMap() /*-{
+        return this.keyMap;
+    }-*/;
+
+    /**
+     * Returns the list of key names by code.
+     * @return the key names
+     */
+    public final native JsArrayString keyNames() /*-{
+        return this.keyNames;
+    }-*/;
+
+    /**
+     * Tells in the showHint method is available on the CodeMirror object.
+     * @param module the CodeMirror object
+     * @return true iff CodeMirror.showHint is defined
+     */
+    public static final native boolean hasShowHint(JavaScriptObject module) /*-{
+        return (("showHint" in module) && !(typeof(module[showHint]) === 'undefined'));
+    }-*/;
+
+    /**
+     * Returns the hint function matching the given name.
+     * @param name the name of the function
+     * @return the hint function
+     */
+    public final static native CMHintFunctionOverlay getHintFunction(String name) /*-{
+        return this.hint[name];
     }-*/;
 
 }
