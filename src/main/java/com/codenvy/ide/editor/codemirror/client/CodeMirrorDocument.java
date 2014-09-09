@@ -16,12 +16,11 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
-import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * CodeMirror implementation of {@link EmbeddedDocument}.
- * 
+ *
  * @author "Mickaël Leduque"
  */
 public class CodeMirrorDocument implements EmbeddedDocument {
@@ -39,7 +38,7 @@ public class CodeMirrorDocument implements EmbeddedDocument {
 
     @Override
     public TextPosition getPositionFromIndex(int index) {
-        CMPositionOverlay pos = this.documentOverlay.posFromIndex(index);
+        final CMPositionOverlay pos = this.documentOverlay.posFromIndex(index);
         return new TextPosition(pos.getLine(), pos.getCharacter());
     }
 
@@ -78,7 +77,6 @@ public class CodeMirrorDocument implements EmbeddedDocument {
         final CMPositionOverlay fromPos = this.documentOverlay.posFromIndex(region.getOffset());
         final CMPositionOverlay toPos = this.documentOverlay.posFromIndex(region.getOffset() + region.getLength());
 
-        this.documentOverlay.replaceRange(text, fromPos.getLine(), fromPos.getCharacter(),
-                                                toPos.getLine(), toPos.getCharacter());
+        this.documentOverlay.replaceRange(text, fromPos, toPos);
     }
 }

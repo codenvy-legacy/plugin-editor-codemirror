@@ -600,7 +600,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private void insertAtCursor(final String insertedText) {
         final CMPositionOverlay cursor = this.editorOverlay.getDoc().getCursor();
-        this.editorOverlay.getDoc().replaceRange(insertedText, cursor.getLine(), cursor.getCharacter());
+        this.editorOverlay.getDoc().replaceRange(insertedText, cursor);
     }
 
     @Override
