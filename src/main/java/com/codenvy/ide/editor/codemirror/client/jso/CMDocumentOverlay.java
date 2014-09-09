@@ -15,61 +15,135 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 
+/**
+ * Overlay on the cm.Doc objects.
+ */
 public class CMDocumentOverlay extends JavaScriptObject {
 
+    /**
+     * JSO-required protected constructor.
+     */
     protected CMDocumentOverlay() {
     }
 
     // history
 
+    /** Undo one edit (if any undo events are stored). */
     public final native void undo() /*-{
         return this.undo();
     }-*/;
 
+    /** Redo one undone edit. */
     public final native void redo() /*-{
         return this.redo();
     }-*/;
 
+    /** Clears the editor's undo history. */
     public final native void clearHistory() /*-{
         return this.clearHistory();
     }-*/;
 
+    /** Undo one edit or selection change. */
     public final native void undoSelection() /*-{
         return this.undoSelection();
     }-*/;
 
+    /** Redo one undone edit or selection change. */
     public final native void redoSelection() /*-{
         return this.redoSelection();
     }-*/;
 
+    /** Returns an object with {undo, redo} properties, both of which hold integers,
+     *  indicating the amount of stored undo and redo operations. */
+    public final native JavaScriptObject historySize() /*-{
+        return this.historySize();
+    }-*/;
+
+    /** Returns the amount of stored undo operations. */
     public final native int historyUndoSize() /*-{
         return this.historySize().undo;
     }-*/;
 
+    /** Returns the amount of stored redo operations. */
     public final native int historyRedoSize() /*-{
         return this.historySize().redo;
     }-*/;
 
     // content
 
+    /**
+     * Get the current editor content.<br>
+     * Lines are separated with \n.
+     * @return the editor content
+     */
     public final native String getValue() /*-{
         return this.getValue();
     }-*/;
 
+    /**
+     * Get the current editor content.<br>
+     * Lines are separated with the separator.
+     * @return the editor content
+     */
     public final native String getValue(String separator) /*-{
         return this.getValue(separator);
     }-*/;
 
+    /**
+     * Set the editor content.
+     * @param newContent the new content
+     */
     public final native void setValue(String newContent) /*-{
         this.setValue(newContent);
     }-*/;
 
+    /**
+     * Get the text between the given points in the editor. The lines are separated with \n.
+     * @param fromLine line of the range start point
+     * @param fromChar char of the range start point
+     * @param toLine line of the range end point
+     * @param toChar char of the range end point
+     * @return the text in the range
+     * @deprecated use {@link #getRange(CMPositionOverlay, CMPositionOverlay)}
+     */
+    @Deprecated
     public final native String getRange(int fromLine, int fromChar, int toLine, int toChar) /*-{
-        return this.getRange({ line : fromLine, ch : fromChar }, { line : toLine, ch : toChar });
+        return this.getRange({ "line" : fromLine, "ch" : fromChar },
+                             { "line" : toLine, "ch" : toChar });
     }-*/;
 
+    /**
+     * Get the text between the given points in the editor. The lines are separated with \n.
+     * @param from the range start point
+     * @param to the range end point
+     */
+    public final native String getRange(CMPositionOverlay from, CMPositionOverlay to) /*-{
+        return this.getRange(from, to);
+    }-*/;
+
+    /**
+     * Get the text between the given points in the editor. The lines are separated with the given separator.
+     * @param fromLine line of the range start point
+     * @param fromChar char of the range start point
+     * @param toLine line of the range end point
+     * @param toChar char of the range end point
+     * @return the text in the range
+     * @deprecated use {@link #getRange(CMPositionOverlay, CMPositionOverlay, String)}
+     */
+    @Deprecated
     public final native String getRange(int fromLine, int fromChar, int toLine, int toChar, String separator) /*-{
-        return this.getRange({ line : fromLine, ch : fromChar }, { line : toLine, ch : toChar }, separator);
+        return this.getRange({ "line" : fromLine, "ch" : fromChar },
+                             { "line" : toLine, "ch" : toChar },
+                              separator);
+    }-*/;
+
+    /**
+     * Get the text between the given points in the editor. The lines are separated with the given separator.
+     * @param from the range start point
+     * @param to the range end point
+     */
+    public final native String getRange(CMPositionOverlay from, CMPositionOverlay to, String separator) /*-{
+        return this.getRange(from, to, separator);
     }-*/;
 
     /**
@@ -80,47 +154,95 @@ public class CMDocumentOverlay extends JavaScriptObject {
      * @param fromChar the char of the beginning of the range
      * @param toLine the line of the end of the range
      * @param toChar the char of the end of the range
+     * @deprecated use {@link #replaceRange(String, CMPositionOverlay, CMPositionOverlay)}
      */
+    @Deprecated
     public final native void replaceRange(String replacement, int fromLine, int fromChar, int toLine, int toChar) /*-{
         return this.replaceRange(replacement, { line : fromLine, ch : fromChar }, { line : toLine, ch : toChar });
     }-*/;
 
     /**
-     * insert the text at the given position.
+     * Replace the text range with the new text.
+     *
+     * @param replacement the new text
+     * @param fromthe beginning of the range
+     * @param to the end of the range
+     */
+    public final native void replaceRange(String replacement, CMPositionOverlay from, CMPositionOverlay to) /*-{
+        return this.replaceRange(replacement, from, to);
+    }-*/;
+
+    /**
+     * Insert the text at the given position.
+     *
+     * @param replacement the text to insert
+     * @param fromLine the line of the insertion position
+     * @param fromChar the char of the insertion position
+     * @deprecated use {@link #replaceRange(String, CMPositionOverlay)}
+     */
+    @Deprecated
+    public final native void replaceRange(String replacement, int fromLine, int fromChar) /*-{
+        return this.replaceRange(replacement, { line : fromLine, ch : fromChar });
+    }-*/;
+
+    /**
+     * Insert the text at the given position.
      *
      * @param replacement the text to insert
      * @param fromLine the line of the insertion position
      * @param fromChar the char of the insertion position
      */
-    public final native void replaceRange(String replacement, int fromLine, int fromChar) /*-{
-        return this.replaceRange(replacement, { line : fromLine, ch : fromChar });
+    public final native void replaceRange(String replacement, CMPositionOverlay from) /*-{
+        return this.replaceRange(replacement, from);
     }-*/;
 
+    /**
+     * Returns the content of the line.
+     * @param index the line number
+     * @return the content
+     */
     public final native String getLine(int index) /*-{
         return this.getLine(index);
     }-*/;
 
+    /**
+     * Get the first line of the editor. This will usually be zero but for linked sub-views,
+     * or documents instantiated with a non-zero first line, it might return other values.
+     * @return the first line of the editor
+     */
     public final native int firstLine() /*-{
         return this.firstLine();
     }-*/;
 
+    /**
+     * Get the last line of the editor. This will usually be doc.lineCount() - 1, but for
+     * linked sub-views, it might return other values.
+     * @return the last line of the editor
+     */
     public final native int lastLine() /*-{
         return this.lastLine();
     }-*/;
 
-
+    /**
+     * Get the number of lines in the editor.
+     * @return the number of lines
+     */
     public final native int lineCount() /*-{
         return this.lineCount();
     }-*/;
 
     // position
 
+    /**
+     * Retrieve the 'head' end of the primary selection.
+     * @return the primary cursor position
+     */
     public final native CMPositionOverlay getCursor() /*-{
         return this.getCursor();
     }-*/;
 
     /**
-     * Returns the position one end of the primary selection.
+     * Returns the position of one end of the primary selection.
      *
      * @param whichEndOfSelection "from", "to", "head" or "anchor"
      * @return one end
@@ -145,10 +267,21 @@ public class CMDocumentOverlay extends JavaScriptObject {
         return this.getCursor("anchor");
     }
 
+    /**
+     * Set the cursor position.<br>
+     * Will replace all selections with a single, empty selection at the given position.
+     * @param position the new position
+     */
     public final native void setCursor(CMPositionOverlay position)/*-{
         this.setCursor(position);
     }-*/;
 
+    /**
+     * Set the cursor position.<br>
+     * Will replace all selections with a single, empty selection at the given position.
+     * @param line the line for the new position
+     * @param ch the char for the new position
+     */
     public final native void setCursor(int line, int ch)/*-{
         this.setCursor(line, ch);
     }-*/;
