@@ -18,7 +18,6 @@ import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOptionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -127,7 +126,7 @@ public class CMEditorOverlay extends JavaScriptObject {
         return this.getOption(propertyName);
     }-*/;
 
-    public final native CMEditorOptionsOverlay getOption(final String propertyName) /*-{
+    public final native JavaScriptObject getOption(final String propertyName) /*-{
         return this.getOption(propertyName);
     }-*/;
 
