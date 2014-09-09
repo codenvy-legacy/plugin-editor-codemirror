@@ -11,7 +11,7 @@
 package com.codenvy.ide.editor.codemirror.client.jso.options;
 
 import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMKeyBindingsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
@@ -171,11 +171,11 @@ public class CMEditorOptionsOverlay extends JavaScriptObject {
 
     // extraKeys = additional key bindings, added to keymap (default: null)
 
-    public final native void setExtraKeys(CMKeyBindingsOverlay extraKeys) /*-{
+    public final native void setExtraKeys(CMKeymapOverlay extraKeys) /*-{
         this.extraKeys = extraKeys;
     }-*/;
 
-    public final native CMKeyBindingsOverlay getExtraKeys() /*-{
+    public final native CMKeymapOverlay getExtraKeys() /*-{
         return this.extraKeys;
     }-*/;
 
