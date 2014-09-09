@@ -21,6 +21,8 @@ import com.google.gwt.dom.client.Element;
  */
 public class CodeMirrorOverlay extends JavaScriptObject {
 
+    protected CodeMirrorOverlay() {}
+
     /**
      * Creates an editor instance using the global CodeMirror object.
      * @param element the element backing the editor
