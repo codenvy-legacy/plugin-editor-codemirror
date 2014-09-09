@@ -235,12 +235,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public void setMode(final String modeName) {
         LOG.fine("Setting editor mode : " + modeName);
-        if (!modeName.equals("html")) {
-            this.editorOverlay.setOption("mode", modeName);
-        } else {
-            LOG.fine("... actually, changing to text/html.");
-            this.editorOverlay.setOption("mode", "text/html");
-        }
+        this.editorOverlay.setOption("mode", modeName);
     }
 
     public void selectVimKeymap() {
@@ -562,16 +557,16 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final StringBuilder sb = new StringBuilder();
         final CMKeymapSetOverlay keymapsObject = codeMirror.keyMap();
         for (final String keymapKey : keymapsObject.getKeys()) {
-            if (keymapKey.startsWith("emacs") || keymapKey.startsWith("vim")) {
+            if (keymapKey == null || keymapKey.startsWith("emacs") || keymapKey.startsWith("vim")) {
                 continue;
             }
             sb.append("# ").append(keymapKey).append("\n\n");
             final CMKeymapOverlay keymap = keymapsObject.get(keymapKey);
             for (final String binding : keymap.getKeys()) {
-                if (binding.equals("fallthrough")
-                    || binding.equals("nofallthrough")
-                    || binding.equals("disableInput")
-                    || binding.equals("auto")) {
+                if ("fallthrough".equals(binding)
+                    || "nofallthrough".equals(binding)
+                    || "disableInput".equals(binding)
+                    || "auto".equals(binding)) {
                     continue;
                 }
                 switch (keymap.getType(binding)) {
