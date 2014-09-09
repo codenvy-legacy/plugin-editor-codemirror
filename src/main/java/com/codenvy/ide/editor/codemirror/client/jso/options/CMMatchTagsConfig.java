@@ -14,7 +14,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Configuration object for the matchTag addon.<br>
- * 
+ *
  * @see https://codemirror.net/doc/manual.html#addon_matchtags
  * @see https://codemirror.net/addon/edit/matchbrackets.js
  * @author "Mickaël Leduque"
@@ -24,7 +24,7 @@ public class CMMatchTagsConfig extends JavaScriptObject {
     protected CMMatchTagsConfig() {
     }
 
-    public static native final CMMatchTagsConfig create() /*-{
+    public static final native CMMatchTagsConfig create() /*-{
         return {};
     }-*/;
 

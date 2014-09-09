@@ -30,7 +30,7 @@ public class CMKeyBindingsOverlay extends JavaScriptObject {
         }
     }-*/;
 
-    public final static native CMKeyBindingsOverlay create() /*-{
+    public static final native CMKeyBindingsOverlay create() /*-{
         return {};
     }-*/;
 }

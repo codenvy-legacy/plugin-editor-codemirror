@@ -35,7 +35,7 @@ public final class CodeMirrorKeymaps {
 
     private static final Map<Keymap, String> nativeMapping = new HashMap<>();
 
-    public final static void init() {
+    public static final void init() {
         LOG.fine("Initializing codemirror keymaps.");
         final KeymapDisplayConstants constants = GWT.create(KeymapDisplayConstants.class);
         final EditorType cmEditor = EditorType.fromKey(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);

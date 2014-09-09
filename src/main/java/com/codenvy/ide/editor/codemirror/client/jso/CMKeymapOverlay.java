@@ -27,7 +27,7 @@ public class CMKeymapOverlay extends JavaScriptObject {
     protected CMKeymapOverlay() {
     }
 
-    public final static native CMKeymapOverlay create() /*-{
+    public static final native CMKeymapOverlay create() /*-{
         return {};
     }-*/;
 
