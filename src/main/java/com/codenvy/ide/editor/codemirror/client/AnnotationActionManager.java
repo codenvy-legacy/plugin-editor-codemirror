@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.codenvy.ide.jseditor.client.annotation.AnnotationAction;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.dom.client.NativeEvent;
 
 /**
  * Manages actions on gutter annotations.
@@ -53,7 +53,7 @@ public class AnnotationActionManager {
         this.actions.remove(new AnnotationKey(line, gutter));
     }
 
-    public void onClick(final int line, final String gutterId, final ClickEvent event) {
+    public void onClick(final int line, final String gutterId, final NativeEvent event) {
         final AnnotationAction action = this.actions.get(new AnnotationKey(line, gutterId));
         if (action == null) {
             return;

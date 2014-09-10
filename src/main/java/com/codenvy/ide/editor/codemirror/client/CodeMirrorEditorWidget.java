@@ -37,6 +37,7 @@ import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.api.text.RegionImpl;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMixedParameters;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
@@ -84,10 +85,12 @@ import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -149,7 +152,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private boolean                                     viewPortHandlerAdded        = false;
     private boolean                                     gutterClickHandlerAdded     = false;
 
-    private AnnotationActionManager annotationManager;
+    private AnnotationActionManager annotationActionManager;
 
     /** The 'generation', marker to ask if changes where done since if was set. */
     private int generationMarker;
@@ -696,8 +699,22 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.editorOverlay.setGutterMarker(line, gutterId, element);
     }
 
-    public void addGutterItem(final int line, final String gutterId, final Element element, AnnotationAction action){
+    public void addGutterItem(final int line, final String gutterId, final Element element, final AnnotationAction action){
         this.editorOverlay.setGutterMarker(line, gutterId, element);
+        if (this.annotationActionManager == null) {
+            this.annotationActionManager = new AnnotationActionManager();
+            this.editorOverlay.on(GUTTER_CLICK, new EventHandlerMixedParameters() {
+
+                @Override
+                public void onEvent(final JsArrayMixed param) {
+                    // 1.cm instance / 2.line / 3.gutter / 4.event
+                    // zero based of course
+                    annotationActionManager.onClick((int)(param.getNumber(1)), param.getString(2),
+                                                    param.getObject(3).<NativeEvent>cast());
+
+                }
+            });
+        }
     }
 
     public void clearGutter(final String gutterId) {
