@@ -11,6 +11,15 @@
 package com.codenvy.ide.editor.codemirror.client;
 
 
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.BEFORE_SELECTION_CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.BLUR;
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.CURSOR_ACTIVITY;
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.FOCUS;
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.GUTTER_CLICK;
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.SCROLL;
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.VIEWPORT_CHANGE;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -278,7 +287,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addChangeHandler(final ChangeHandler handler) {
         if (!changeHandlerAdded) {
             changeHandlerAdded = true;
-            this.editorOverlay.on("change", new CMEditorOverlay.EventHandlerOneParameter<CMChangeEventOverlay>() {
+            this.editorOverlay.on(CHANGE, new CMEditorOverlay.EventHandlerOneParameter<CMChangeEventOverlay>() {
 
                 @Override
                 public void onEvent(final CMChangeEventOverlay param) {
@@ -299,7 +308,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addFocusHandler(final FocusHandler handler) {
         if (!focusHandlerAdded) {
             focusHandlerAdded = true;
-            this.editorOverlay.on("focus", new CMEditorOverlay.EventHandlerNoParameters() {
+            this.editorOverlay.on(FOCUS, new CMEditorOverlay.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -318,7 +327,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addBlurHandler(final BlurHandler handler) {
         if (!blurHandlerAdded) {
             blurHandlerAdded = true;
-            this.editorOverlay.on("blur", new CMEditorOverlay.EventHandlerNoParameters() {
+            this.editorOverlay.on(BLUR, new CMEditorOverlay.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -337,7 +346,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addScrollHandler(final ScrollHandler handler) {
         if (!scrollHandlerAdded) {
             scrollHandlerAdded = true;
-            this.editorOverlay.on("scroll", new CMEditorOverlay.EventHandlerNoParameters() {
+            this.editorOverlay.on(SCROLL, new CMEditorOverlay.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -356,7 +365,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addCursorActivityHandler(final CursorActivityHandler handler) {
         if (!cursorHandlerAdded) {
             cursorHandlerAdded = true;
-            this.editorOverlay.on("cursorActivity", new CMEditorOverlay.EventHandlerNoParameters() {
+            this.editorOverlay.on(CURSOR_ACTIVITY, new CMEditorOverlay.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -375,7 +384,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addBeforeSelectionChangeHandler(final BeforeSelectionChangeHandler handler) {
         if (!beforeSelectionHandlerAdded) {
             beforeSelectionHandlerAdded = true;
-            this.editorOverlay.on("beforeSelectionChange",
+            this.editorOverlay.on(BEFORE_SELECTION_CHANGE,
                                   new CMEditorOverlay.EventHandlerOneParameter<BeforeSelectionEventParamOverlay>() {
 
                                       @Override
@@ -395,7 +404,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addViewPortChangeHandler(ViewPortChangeHandler handler) {
         if (!viewPortHandlerAdded) {
             viewPortHandlerAdded = true;
-            this.editorOverlay.on("viewportChange", new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
+            this.editorOverlay.on(VIEWPORT_CHANGE, new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
 
                 @Override
                 public void onEvent(final JsArray<JavaScriptObject> param) {
@@ -417,7 +426,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addGutterClickHandler(GutterClickHandler handler) {
         if (!gutterClickHandlerAdded) {
             gutterClickHandlerAdded = true;
-            this.editorOverlay.on("gutterClick", new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
+            this.editorOverlay.on(GUTTER_CLICK, new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
 
                 @Override
                 public void onEvent(final JsArray<JavaScriptObject> params) {
