@@ -50,6 +50,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
+import com.codenvy.ide.jseditor.client.annotation.AnnotationAction;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
@@ -86,6 +87,7 @@ import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -146,6 +148,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private boolean                                     beforeSelectionHandlerAdded = false;
     private boolean                                     viewPortHandlerAdded        = false;
     private boolean                                     gutterClickHandlerAdded     = false;
+
+    private AnnotationActionManager annotationManager;
 
     /** The 'generation', marker to ask if changes where done since if was set. */
     private int generationMarker;
@@ -686,6 +690,18 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         } else {
             Log.info(CodeMirrorEditorWidget.class, message);
         }
+    }
+
+    public void addGutterItem(final int line, final String gutterId, final Element element){
+        this.editorOverlay.setGutterMarker(line, gutterId, element);
+    }
+
+    public void addGutterItem(final int line, final String gutterId, final Element element, AnnotationAction action){
+        this.editorOverlay.setGutterMarker(line, gutterId, element);
+    }
+
+    public void clearGutter(final String gutterId) {
+        this.editorOverlay.clearGutter(gutterId);
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
