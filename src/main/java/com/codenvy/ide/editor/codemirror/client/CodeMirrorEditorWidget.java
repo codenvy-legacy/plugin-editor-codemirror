@@ -19,6 +19,15 @@ import static com.codenvy.ide.editor.codemirror.client.EventTypes.FOCUS;
 import static com.codenvy.ide.editor.codemirror.client.EventTypes.GUTTER_CLICK;
 import static com.codenvy.ide.editor.codemirror.client.EventTypes.SCROLL;
 import static com.codenvy.ide.editor.codemirror.client.EventTypes.VIEWPORT_CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.AUTOCLOSE_BRACKETS;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.AUTOCLOSE_TAGS;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.FOLD_GUTTER;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.KEYMAP;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.MATCH_BRACKETS;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.MODE;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.READONLY;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.SHOW_CURSOR_WHEN_SELECTING;
+import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.STYLE_ACTIVE_LINE;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,6 +46,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventPa
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
+import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeEvent;
@@ -213,12 +223,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         options.setTheme("codenvy");
 
         // autoclose brackets/tags, match brackets/tags
-        options.setProperty("autoCloseBrackets", true);
-        options.setProperty("matchBrackets", true);
-        options.setProperty("autoCloseTags", true);
+        options.setProperty(AUTOCLOSE_BRACKETS, true);
+        options.setProperty(MATCH_BRACKETS, true);
+        options.setProperty(AUTOCLOSE_TAGS, true);
 
         // folding
-        options.setProperty("foldGutter", true);
+        options.setProperty(FOLD_GUTTER, true);
 
         // gutters - define 2 : line and fold
         final JsArrayString gutters = JsArray.createArray(2).cast();
@@ -229,10 +239,10 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         // highlight matching tags
         final CMMatchTagsConfig matchTagsConfig = CMMatchTagsConfig.create();
         matchTagsConfig.setBothTags(true);
-        options.setProperty("matchTags", matchTagsConfig);
+        options.setProperty(OptionKey.MATCH_TAGS, matchTagsConfig);
 
         // highlight active line
-        options.setProperty("styleActiveLine", true);
+        options.setProperty(STYLE_ACTIVE_LINE, true);
 
         return options;
     }
@@ -244,27 +254,27 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public void setMode(final String modeName) {
         LOG.fine("Setting editor mode : " + modeName);
-        this.editorOverlay.setOption("mode", modeName);
+        this.editorOverlay.setOption(MODE, modeName);
     }
 
     public void selectVimKeymap() {
-        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.VIM));
-        this.editorOverlay.setOption("showCursorWhenSelecting", true);
+        this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.VIM));
+        this.editorOverlay.setOption(SHOW_CURSOR_WHEN_SELECTING, true);
     }
 
     public void selectEmacsKeymap() {
-        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.EMACS));
-        this.editorOverlay.setOption("showCursorWhenSelecting", false);
+        this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.EMACS));
+        this.editorOverlay.setOption("SHOW_CURSOR_WHEN_SELECTING", false);
     }
 
     public void selectSublimeKeymap() {
-        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.SUBLIME));
-        this.editorOverlay.setOption("showCursorWhenSelecting", false);
+        this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.SUBLIME));
+        this.editorOverlay.setOption("SHOW_CURSOR_WHEN_SELECTING", false);
     }
 
     public void selectDefaultKeymap() {
-        this.editorOverlay.setOption("keyMap", CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.DEFAULT));
-        this.editorOverlay.setOption("showCursorWhenSelecting", false);
+        this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.DEFAULT));
+        this.editorOverlay.setOption("SHOW_CURSOR_WHEN_SELECTING", false);
     }
 
     private void selectKeymap(final Keymap keymap) {
@@ -443,12 +453,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public void setReadOnly(final boolean isReadOnly) {
-        this.editorOverlay.setOption("readOnly", isReadOnly);
+        this.editorOverlay.setOption(READONLY, isReadOnly);
     }
 
     @Override
     public boolean isReadOnly() {
-        return this.editorOverlay.getBooleanOption("readOnly");
+        return this.editorOverlay.getBooleanOption(READONLY);
     }
 
     @Override
