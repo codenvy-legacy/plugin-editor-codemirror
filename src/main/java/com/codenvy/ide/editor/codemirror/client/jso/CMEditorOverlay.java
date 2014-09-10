@@ -22,6 +22,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 
@@ -163,6 +164,19 @@ public class CMEditorOverlay extends JavaScriptObject {
                         });
     }-*/;
 
+    public final native <T extends JavaScriptObject> void on(String eventType, EventHandlerMixedParameters handler) /*-{
+        this
+                .on(
+                        eventType,
+                        function() {
+                            var params = [];
+                            for (var i = 0; i < arguments.length; i++) {
+                                params.push(arguments[i]);
+                            }
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMixedParameters::onEvent(*)(params);
+                        });
+    }-*/;
+
     public interface EventHandlerNoParameters {
         void onEvent();
     }
@@ -173,6 +187,10 @@ public class CMEditorOverlay extends JavaScriptObject {
 
     public interface EventHandlerMultipleParameters<T extends JavaScriptObject> {
         void onEvent(JsArray<T> param);
+    }
+
+    public interface EventHandlerMixedParameters {
+        void onEvent(JsArrayMixed param);
     }
 
     // editor element
@@ -218,6 +236,22 @@ public class CMEditorOverlay extends JavaScriptObject {
                                 params.push(arguments[i]);
                             }
                             handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)();
+                        });
+    }-*/;
+
+    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
+                                                                    String eventType,
+                                                                    EventHandlerMixedParameters handler,
+                                                                    JavaScriptObject module) /*-{
+        module
+                .on(
+                        eventType,
+                        function() {
+                            var params = [];
+                            for (var i = 0; i < arguments.length; i++) {
+                                params.push(arguments[i]);
+                            }
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMixedParameters::onEvent(*)();
                         });
     }-*/;
 
