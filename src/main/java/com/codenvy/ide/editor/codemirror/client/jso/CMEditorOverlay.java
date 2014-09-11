@@ -65,7 +65,7 @@ public class CMEditorOverlay extends JavaScriptObject {
      * @return true iff showHint is defined
      */
     public final native boolean hasShowHint() /*-{
-        return (("showHint" in this) && !(typeof(this["showHint"]) === 'undefined'));
+        return (("showHint" in this) && !(typeof (this["showHint"]) === 'undefined'));
     }-*/;
 
     public final native void showHint(CMHintOptionsOverlay options) /*-{
@@ -413,6 +413,20 @@ public class CMEditorOverlay extends JavaScriptObject {
         this.setGutterMarker(lineHandle, gutterId, element);
     }-*/;
 
+    /**
+     * @see #setGutterMarker(CMLineHandleOverlay, String, Element)
+     */
+    public final native void setGutterMarker(int line, String gutterId, elemental.dom.Element element) /*-{
+        this.setGutterMarker(line, gutterId, element);
+    }-*/;
+
+    /**
+     * @see #setGutterMarker(CMLineHandleOverlay, String, Element)
+     */
+    public final native void setGutterMarker(CMLineHandleOverlay lineHandle, String gutterId,
+                                             elemental.dom.Element element) /*-{
+        this.setGutterMarker(lineHandle, gutterId, element);
+    }-*/;
 
     /**
      * Remove all gutter markers in the gutter with the given ID.
