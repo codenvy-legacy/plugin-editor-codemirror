@@ -14,8 +14,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPixelCoordinatesOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
-import com.codenvy.ide.jseditor.client.document.EmbeddedDocument.TextPosition;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
+import com.codenvy.ide.jseditor.client.text.TextPosition;
 
 public class CodemirrorPositionConverter implements PositionConverter {
 

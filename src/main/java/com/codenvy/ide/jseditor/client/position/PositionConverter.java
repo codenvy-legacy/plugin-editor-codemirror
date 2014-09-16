@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.jseditor.client.position;
 
-import com.codenvy.ide.jseditor.client.document.EmbeddedDocument.TextPosition;
+import com.codenvy.ide.jseditor.client.text.TextPosition;
 
 /**
  * Conversion utility for text/pixel coordinates.
