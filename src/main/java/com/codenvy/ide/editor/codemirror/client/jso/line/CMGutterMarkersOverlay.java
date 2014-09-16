@@ -30,7 +30,11 @@ public class CMGutterMarkersOverlay extends JavaScriptObject {
      * @return the marker element
      */
     public final native Element getMarker(String gutterId) /*-{
-        return this[gutterid];
+        return this[gutterId];
+    }-*/;
+
+    public final native boolean hasMarker(String gutterId) /*-{
+        return this.hasOwnProperty(gutterId);
     }-*/;
 
     /**

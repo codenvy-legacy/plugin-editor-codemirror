@@ -37,7 +37,6 @@ import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.api.text.RegionImpl;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMixedParameters;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
@@ -48,10 +47,11 @@ import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOptionsOverla
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMGutterMarkersOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
-import com.codenvy.ide.jseditor.client.annotation.AnnotationAction;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
@@ -85,12 +85,10 @@ import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -151,8 +149,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     private boolean                                     beforeSelectionHandlerAdded = false;
     private boolean                                     viewPortHandlerAdded        = false;
     private boolean                                     gutterClickHandlerAdded     = false;
-
-    private AnnotationActionManager annotationActionManager;
 
     /** The 'generation', marker to ask if changes where done since if was set. */
     private int generationMarker;
@@ -254,6 +250,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final JsArrayString gutters = JsArray.createArray(2).cast();
         gutters.push("CodeMirror-linenumbers");
         gutters.push("CodeMirror-foldgutter");
+        gutters.push("annotation");
         options.setGutters(gutters);
 
         // highlight matching tags
@@ -699,21 +696,26 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.editorOverlay.setGutterMarker(line, gutterId, element);
     }
 
-    public void addGutterItem(final int line, final String gutterId, final Element element, final AnnotationAction action){
+    public void removeGutterItem(final int line, final String gutterId) {
+        this.editorOverlay.setGutterMarker(line, gutterId, (Element)null);
+    }
+
+    @Override
+    public void addGutterItem(final int line, final String gutterId, final elemental.dom.Element element) {
         this.editorOverlay.setGutterMarker(line, gutterId, element);
-        if (this.annotationActionManager == null) {
-            this.annotationActionManager = new AnnotationActionManager();
-            this.editorOverlay.on(GUTTER_CLICK, new EventHandlerMixedParameters() {
+    }
 
-                @Override
-                public void onEvent(final JsArrayMixed param) {
-                    // 1.cm instance / 2.line / 3.gutter / 4.event
-                    // zero based of course
-                    annotationActionManager.onClick((int)(param.getNumber(1)), param.getString(2),
-                                                    param.getObject(3).<NativeEvent>cast());
-
-                }
-            });
+    @Override
+    public elemental.dom.Element getGutterItem(final int line, final String gutterId) {
+        final CMLineInfoOverlay lineInfo = this.editorOverlay.lineInfo(line);
+        if (lineInfo == null || lineInfo.getGutterMarkers() == null) {
+            return null;
+        }
+        CMGutterMarkersOverlay markers = lineInfo.getGutterMarkers();
+        if (markers.hasMarker(gutterId)) {
+            return markers.getMarker(gutterId);
+        } else {
+            return null;
         }
     }
 
