@@ -27,11 +27,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param className the class name
      */
-    public native void setClassName(String className) /*-{
+    public final native void setClassName(String className) /*-{
         this.className = className;
     }-*/;
 
-    public native String getClassName() /*-{
+    public final native String getClassName() /*-{
         return this.className;
     }-*/;
 
@@ -40,11 +40,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to include new text
      */
-    public native void setInclusiveLeft(boolean newValue) /*-{
+    public final native void setInclusiveLeft(boolean newValue) /*-{
         this.inclusiveLeft = newValue;
     }-*/;
 
-    public native boolean getInclusiveLeft() /*-{
+    public final native boolean getInclusiveLeft() /*-{
         return this.inclusiveLeft;
     }-*/;
 
@@ -53,11 +53,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to include new text
      */
-    public native void setInclusiveRight(boolean newValue) /*-{
+    public final native void setInclusiveRight(boolean newValue) /*-{
         this.inclusiveRight = newValue;
     }-*/;
 
-    public native boolean getInclusiveRight() /*-{
+    public final native boolean getInclusiveRight() /*-{
         return this.inclusiveRight;
     }-*/;
 
@@ -69,11 +69,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to make the marked text atomic
      */
-    public native void setAtomic(boolean newValue) /*-{
+    public final native void setAtomic(boolean newValue) /*-{
         this.atomic = newValue;
     }-*/;
 
-    public native boolean getAtomic() /*-{
+    public final native boolean getAtomic() /*-{
         return this.atomic;
     }-*/;
 
@@ -83,11 +83,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to collapse the range
      */
-    public native void setCollapsed(boolean newValue) /*-{
+    public final native void setCollapsed(boolean newValue) /*-{
         this.collapsed = newValue;
     }-*/;
 
-    public native boolean getCollapsed() /*-{
+    public final native boolean getCollapsed() /*-{
         return this.collapsed;
     }-*/;
 
@@ -98,11 +98,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to clear on enter
      */
-    public native void setClearOnEnter(boolean newValue) /*-{
+    public final native void setClearOnEnter(boolean newValue) /*-{
         this.clearOnEnter = newValue;
     }-*/;
 
-    public native boolean getClearOnEnter() /*-{
+    public final native boolean getClearOnEnter() /*-{
         return this.clearOnEnter;
     }-*/;
 
@@ -112,11 +112,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to clear when region is empty
      */
-    public native void setClearWhenEmpty(boolean newValue) /*-{
+    public final native void setClearWhenEmpty(boolean newValue) /*-{
         this.clearWhenEmpty = newValue;
     }-*/;
 
-    public native boolean getClearWhenEmpty() /*-{
+    public final native boolean getClearWhenEmpty() /*-{
         return this.clearWhenEmpty;
     }-*/;
 
@@ -126,11 +126,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue the element
      */
-    public native void setReplacedWith(Element newValue) /*-{
+    public final native void setReplacedWith(Element newValue) /*-{
         this.replacedWith = newValue;
     }-*/;
 
-    public native Element getReplacedWith() /*-{
+    public final native Element getReplacedWith() /*-{
         return this.replacedWith;
     }-*/;
 
@@ -141,11 +141,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to capture mouse events
      */
-    public native void setHandleMouseEvents(boolean newValue) /*-{
+    public final native void setHandleMouseEvents(boolean newValue) /*-{
         this.handleMouseEvents = newValue;
     }-*/;
 
-    public native boolean getHandleMouseEvents() /*-{
+    public final native boolean getHandleMouseEvents() /*-{
         return this.handleMouseEvents;
     }-*/;
 
@@ -154,11 +154,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to make the text unmodifiable
      */
-    public native void setReadOnly(boolean newValue) /*-{
+    public final native void setReadOnly(boolean newValue) /*-{
         this.readOnly = newValue;
     }-*/;
 
-    public native boolean getReadOnly() /*-{
+    public final native boolean getReadOnly() /*-{
         return this.readOnly;
     }-*/;
 
@@ -168,11 +168,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to create an event in the undo history
      */
-    public native void setAddToHistory(boolean newValue) /*-{
+    public final native void setAddToHistory(boolean newValue) /*-{
         this.addToHistory = newValue;
     }-*/;
 
-    public native boolean getAddToHistory() /*-{
+    public final native boolean getAddToHistory() /*-{
         return this.addToHistory;
     }-*/;
 
@@ -181,11 +181,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue the style
      */
-    public native void setStartStyle(String newValue) /*-{
+    public final native void setStartStyle(String newValue) /*-{
         this.startStyle = newValue;
     }-*/;
 
-    public native String getStartStyle() /*-{
+    public final native String getStartStyle() /*-{
         return this.startStyle;
     }-*/;
 
@@ -194,11 +194,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue the style
      */
-    public native void setEndStyle(String newValue) /*-{
+    public final native void setEndStyle(String newValue) /*-{
         this.endStyle = newValue;
     }-*/;
 
-    public native String getEndStyle() /*-{
+    public final native String getEndStyle() /*-{
         return this.endStyle;
     }-*/;
 
@@ -207,11 +207,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue the title
      */
-    public native void setTitle(String newValue) /*-{
+    public final native void setTitle(String newValue) /*-{
         this.title = newValue;
     }-*/;
 
-    public native String getTitle() /*-{
+    public final native String getTitle() /*-{
         return this.title;
     }-*/;
 
@@ -221,11 +221,11 @@ public class CMTextMarkerOptionOverlay extends JavaScriptObject {
      * 
      * @param newValue true to shared among linked documents
      */
-    public native void setShared(boolean newValue) /*-{
+    public final native void setShared(boolean newValue) /*-{
         this.shared = newValue;
     }-*/;
 
-    public native boolean getShared() /*-{
+    public final native boolean getShared() /*-{
         return this.shared;
     }-*/;
 }
