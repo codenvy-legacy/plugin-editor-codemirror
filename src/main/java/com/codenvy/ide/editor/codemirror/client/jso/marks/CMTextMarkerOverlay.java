@@ -1,0 +1,51 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Codenvy, S.A.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Codenvy, S.A. - initial API and implementation
+ *******************************************************************************/
+package com.codenvy.ide.editor.codemirror.client.jso.marks;
+
+import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+
+/**
+ * Marker object.<br>
+ * Represents marks on text in the editor.
+ */
+public class CMTextMarkerOverlay extends JavaScriptObject {
+
+    protected CMTextMarkerOverlay() {
+    }
+
+    public final native String getType() /*-{
+        return this.type;
+    }-*/;
+
+    public final native CMDocumentOverlay getDoc() /*-{
+        return this.doc;
+    }-*/;
+
+    public final native JsArray<CMLineHandleOverlay> getLines() /*-{
+        return this.lines;
+    }-*/;
+
+    public final native void clear() /*-{
+        this.clear();
+    }-*/;
+
+    public final native CMRangeOverlay find() /*-{
+        return this.find();
+    }-*/;
+
+    public final native void changed() /*-{
+        this.changed();
+    }-*/;
+}

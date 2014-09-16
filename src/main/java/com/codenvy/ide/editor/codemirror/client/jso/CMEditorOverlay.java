@@ -18,6 +18,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOptionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.marks.MarksManager;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -555,5 +556,14 @@ public class CMEditorOverlay extends JavaScriptObject {
      */
     public final native CMLineInfoOverlay lineInfo(CMLineHandleOverlay lineHandle) /*-{
         return this.lineInfo(lineHandle);
+    }-*/;
+
+    /**
+     * Returns a component to manage text marks int he editor.
+     * 
+     * @return athe marks manager
+     */
+    public final native MarksManager asMarksManager() /*-{
+        return this;
     }-*/;
 }

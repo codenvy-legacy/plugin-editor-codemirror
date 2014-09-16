@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.marks.MarksManager;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
@@ -525,5 +527,14 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     public final native int changeGeneration(boolean closeEvent) /*-{
         return this.changeGeneration(closeEvent);
+    }-*/;
+
+    /**
+     * Returns a component to manage text marks int he editor.
+     * 
+     * @return athe marks manager
+     */
+    public final native MarksManager asMarksManager() /*-{
+        return this;
     }-*/;
 }
