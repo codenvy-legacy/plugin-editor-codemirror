@@ -24,30 +24,30 @@ public class MarksManager extends JavaScriptObject {
 
     /**
      * Mark a range of text with a specific CSS class name.
-     * 
+     *
      * @param from start of the range
      * @param to end of the range
      * @return a descriptor for the mark
      */
     public final native CMTextMarkerOverlay markText(CMPositionOverlay from, CMPositionOverlay to) /*-{
-        this.markText(from, to);
+        return this.markText(from, to);
     }-*/;
 
     /**
      * Mark a range of text with a specific CSS class name.
-     * 
+     *
      * @param from start of the range
      * @param to end of the range
      * @param options the mark options
      * @return a descriptor for the mark
      */
     public final native CMTextMarkerOverlay markText(CMPositionOverlay from, CMPositionOverlay to, CMTextMarkerOptionOverlay options) /*-{
-        this.markText(from, to, options);
+        return this.markText(from, to, options);
     }-*/;
 
     /**
      * Returns an array of all the bookmarks and marked ranges found between the given positions.
-     * 
+     *
      * @param from start of the range
      * @param to end of the range
      * @return the marks in the range
@@ -58,7 +58,7 @@ public class MarksManager extends JavaScriptObject {
 
     /**
      * Returns an array of all the bookmarks and marked ranges present at the given position.
-     * 
+     *
      * @param pos the position
      * @return the marks on the position
      */
@@ -68,7 +68,7 @@ public class MarksManager extends JavaScriptObject {
 
     /**
      * Returns an array of all the bookmarks and marked ranges found between the given positions
-     * 
+     *
      * @return all marks in the document
      */
     public final native JsArray<CMTextMarkerOverlay> getAllMarks() /*-{
