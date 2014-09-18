@@ -714,7 +714,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         if (lineInfo == null || lineInfo.getGutterMarkers() == null) {
             return null;
         }
-        CMGutterMarkersOverlay markers = lineInfo.getGutterMarkers();
+        final CMGutterMarkersOverlay markers = lineInfo.getGutterMarkers();
         if (markers.hasMarker(gutterId)) {
             return markers.getMarker(gutterId);
         } else {
@@ -731,8 +731,11 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final CMPositionOverlay to = CMPositionOverlay.create(range.getTo().getLine(), range.getTo().getCharacter());
         final CMTextMarkerOptionOverlay options = JavaScriptObject.createObject().cast();
         options.setClassName(className);
-        
+
         final CMTextMarkerOverlay textMark = this.editorOverlay.asMarksManager().markText(from, to, options);
+        if (textMark == null) {
+            return null;
+        }
         return new MarkerRegistration() {
             @Override
             public void clearMark() {
