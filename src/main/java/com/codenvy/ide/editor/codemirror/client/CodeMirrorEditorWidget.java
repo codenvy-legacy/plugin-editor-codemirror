@@ -711,13 +711,19 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public elemental.dom.Element getGutterItem(final int line, final String gutterId) {
         final CMLineInfoOverlay lineInfo = this.editorOverlay.lineInfo(line);
-        if (lineInfo == null || lineInfo.getGutterMarkers() == null) {
+        if (lineInfo == null) {
+            LOG.fine("No lineInfo for line" + line);
+            return null;
+        }
+        if (lineInfo.getGutterMarkers() == null) {
+            LOG.fine("No gutter markers for line" + line);
             return null;
         }
         final CMGutterMarkersOverlay markers = lineInfo.getGutterMarkers();
         if (markers.hasMarker(gutterId)) {
             return markers.getMarker(gutterId);
         } else {
+            LOG.fine("No markers found for gutter " + gutterId + "on line " + line);
             return null;
         }
     }
