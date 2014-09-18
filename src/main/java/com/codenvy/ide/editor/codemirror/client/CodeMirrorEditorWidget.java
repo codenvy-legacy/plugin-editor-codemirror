@@ -740,6 +740,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
         final CMTextMarkerOverlay textMark = this.editorOverlay.asMarksManager().markText(from, to, options);
         if (textMark == null) {
+            LOG.warning("addMarker: markText returned a undefined TextMarker - range=" + range);
             return null;
         }
         return new MarkerRegistration() {
