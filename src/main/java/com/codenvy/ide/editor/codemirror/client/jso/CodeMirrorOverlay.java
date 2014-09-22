@@ -159,7 +159,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
     public final native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                             String eventType,
                                                             EventHandlerOneParameter<T> handler) /*-{
-        module.on(eventType,
+        this.on(instance, eventType,
                     function(param) {
                         handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
                     });
@@ -168,7 +168,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
     public final native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                             String eventType,
                                                             EventHandlerNoParameters handler) /*-{
-        this.on(eventType,
+        this.on(instance, eventType,
                 function(param) {
                     handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
                 });
@@ -177,7 +177,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
     public final native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                             String eventType,
                                                             EventHandlerMultipleParameters<T> handler) /*-{
-        this.on(eventType,
+        this.on(instance, eventType,
                 function() {
                     var params = [];
                     for (var i = 0; i < arguments.length; i++) {
