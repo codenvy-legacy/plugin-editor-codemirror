@@ -37,6 +37,7 @@ import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.api.text.RegionImpl;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMixedParameters;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
@@ -88,6 +89,7 @@ import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
@@ -706,6 +708,53 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public void addGutterItem(final int line, final String gutterId, final elemental.dom.Element element) {
         this.editorOverlay.setGutterMarker(line, gutterId, element);
+    }
+
+    @Override
+    public void addGutterItem(final int line, final String gutterId,
+                              final elemental.dom.Element element,
+                              final LineNumberingChangeCallback lineCallback) {
+        this.editorOverlay.setGutterMarker(line, gutterId, element);
+        this.codeMirror.on(editorOverlay, EventTypes.CHANGE,
+                           new EventHandlerMixedParameters() {
+                @Override
+                public void onEvent(final JsArrayMixed params) {
+                    // 0->editor, 1->event object
+                    final CMChangeEventOverlay event = params.getObject(1);
+                    final JsArrayString newText = event.getText();
+                    final CMPositionOverlay from = event.getFrom();
+                    final CMPositionOverlay to = event.getTo();
+
+                    // if the first character of the line is not included, the (potential) line
+                    // numbering change only starts at the following line.
+                    int changeStart = from.getLine() + 1;
+
+                    int removedCount = 0;
+                    if (from.getLine() != to.getLine()) {
+                        // no lines were removed
+                        // don't count first line yet
+                        removedCount = Math.abs(from.getLine() - to.getLine()) - 1;
+                        if (from.getCharacter() == 0) {
+                            // start of first line is included, 'to' is on another line, so the line is deleted
+                            removedCount = removedCount + 1;
+                            changeStart = changeStart - 1;
+                        }
+                        // if 'to' is at the end of the line, the line is _not_ removed, just emptied
+                    }
+                    // else no lines were removed
+
+                    final int addedCount = newText.length() - 1;;
+
+                    // only call back if there is a change in the lines
+                    if (removedCount > 0 || addedCount > 0) {
+                        LOG.fine("Line change from l." + changeStart + " removed " + removedCount + " added " + addedCount);
+                        lineCallback.onLineNumberingChange(changeStart,
+                                                           removedCount,
+                                                           addedCount);
+                    }
+                }
+
+        });
     }
 
     @Override
