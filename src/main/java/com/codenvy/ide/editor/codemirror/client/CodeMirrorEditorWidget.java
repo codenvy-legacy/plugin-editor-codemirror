@@ -80,8 +80,8 @@ import com.codenvy.ide.jseditor.client.keymap.Keybinding;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
-import com.codenvy.ide.jseditor.client.keymap.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
+import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.text.TextRange;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
@@ -145,6 +145,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private final CodeMirrorOverlay                      codeMirror;
 
+    private final KeymapPrefReader keymapPrefReader;
+
     // flags to know if an event type has already be added to the native editor
     private boolean                                     changeHandlerAdded          = false;
     private boolean                                     focusHandlerAdded           = false;
@@ -164,16 +166,19 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private CMKeymapOverlay keyBindings;
 
+
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final PreferencesManager preferencesManager,
                                   final EventBus eventBus,
                                   final CompletionResources completionResources,
+                                  final KeymapPrefReader keymapPrefReader,
                                   @Assisted final String editorMode) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.preferencesManager = preferencesManager;
         this.completionResources = completionResources;
+        this.keymapPrefReader = keymapPrefReader;
 
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
@@ -559,8 +564,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     }
 
     private void setupKeymap() {
-        final String propertyValue = KeymapPrefReader.readPref(this.preferencesManager,
-                                                               CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
+        final String propertyValue = this.keymapPrefReader.readPref(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
         Keymap keymap;
         try {
             keymap = Keymap.fromKey(propertyValue);
