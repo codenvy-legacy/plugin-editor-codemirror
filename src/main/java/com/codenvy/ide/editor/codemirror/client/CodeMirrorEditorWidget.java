@@ -71,6 +71,7 @@ import com.codenvy.ide.jseditor.client.keymap.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
+import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
@@ -278,19 +279,24 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     }
 
     private void selectKeymap(final Keymap keymap) {
-        if (keymap == null || CodeMirrorKeymaps.DEFAULT.equals(keymap)) {
+        Keymap usedKeymap = keymap;
+        if (usedKeymap == null) {
+            usedKeymap = CodeMirrorKeymaps.DEFAULT;
             selectDefaultKeymap();
-        } else if (CodeMirrorKeymaps.EMACS.equals(keymap)) {
+        } else if (CodeMirrorKeymaps.DEFAULT.equals(usedKeymap)) {
+            selectDefaultKeymap();
+        } else if (CodeMirrorKeymaps.EMACS.equals(usedKeymap)) {
             selectEmacsKeymap();
-        } else if (CodeMirrorKeymaps.VIM.equals(keymap)) {
+        } else if (CodeMirrorKeymaps.VIM.equals(usedKeymap)) {
             selectVimKeymap();
-        } else if (CodeMirrorKeymaps.SUBLIME.equals(keymap)) {
+        } else if (CodeMirrorKeymaps.SUBLIME.equals(usedKeymap)) {
             selectSublimeKeymap();
         } else {
-            this.keymap = null;
-            throw new RuntimeException("Unknown keymap type: " + keymap);
+            usedKeymap = CodeMirrorKeymaps.DEFAULT;
+            selectDefaultKeymap();
+            Log.error(CodeMirrorEditorWidget.class, "Unknown keymap: " + keymap + " - replacing by default one.");
         }
-        this.keymap = keymap;
+        this.keymap = usedKeymap;
     }
 
     @Override
