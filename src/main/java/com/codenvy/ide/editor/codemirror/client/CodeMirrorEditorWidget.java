@@ -32,7 +32,6 @@ import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.STY
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.api.text.RegionImpl;
 import com.codenvy.ide.api.texteditor.HandlesUndoRedo;
@@ -68,8 +67,8 @@ import com.codenvy.ide.jseditor.client.events.ViewPortChangeHandler;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
-import com.codenvy.ide.jseditor.client.keymap.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
+import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.codenvy.ide.util.loging.Log;
@@ -121,7 +120,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     /** The native editor object. */
     private final CMEditorOverlay                       editorOverlay;
 
-    private final PreferencesManager                    preferencesManager;
 
     /** The EmbeddededDocument instance. */
     private CodeMirrorDocument                          embeddedDocument;
@@ -132,6 +130,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     /** Component that handles undo/redo. */
     private final HandlesUndoRedo undoRedo;
+
+    /** Component to read the keymap preference. */
+    private final KeymapPrefReader keymapPrefReader;
 
     // flags to know if an event type has already be added to the native editor
     private boolean                                     changeHandlerAdded          = false;
@@ -152,12 +153,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
-                                  final PreferencesManager preferencesManager,
                                   final EventBus eventBus,
+                                  final KeymapPrefReader keymapPrefReader,
                                   @Assisted final String editorMode) {
         initWidget(UIBINDER.createAndBindUi(this));
 
-        this.preferencesManager = preferencesManager;
+        this.keymapPrefReader = keymapPrefReader;
 
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
@@ -554,8 +555,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     }
 
     private void setupKeymap() {
-        final String propertyValue = KeymapPrefReader.readPref(this.preferencesManager,
-                                                               CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
+        final String propertyValue = this.keymapPrefReader.readPref(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
         Keymap keymap;
         try {
             keymap = Keymap.fromKey(propertyValue);
