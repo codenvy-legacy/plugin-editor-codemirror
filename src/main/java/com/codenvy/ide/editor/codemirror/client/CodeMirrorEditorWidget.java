@@ -641,8 +641,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.editorOverlay.focus();
     }
 
-    public void resize() {
-
+    @Override
+    public void onResize() {
+        // TODO implements editor resize
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
