@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import com.codenvy.ide.api.preferences.PreferencesManager;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.api.text.RegionImpl;
+import com.codenvy.ide.api.texteditor.HandlesUndoRedo;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
@@ -129,6 +130,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private final CodeMirrorOverlay                      codeMirror;
 
+    /** Component that handles undo/redo. */
+    private final HandlesUndoRedo undoRedo;
+
     // flags to know if an event type has already be added to the native editor
     private boolean                                     changeHandlerAdded          = false;
     private boolean                                     focusHandlerAdded           = false;
@@ -182,6 +186,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
 
         buildKeybindingInfo();
+        this.undoRedo = new CodeMirrorUndoRedo(this.editorOverlay.getDoc());
     }
 
     private void initKeyBindings() {
@@ -644,6 +649,11 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public void onResize() {
         // TODO implements editor resize
+    }
+
+    @Override
+    public HandlesUndoRedo getUndoRedo() {
+        return this.undoRedo;
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
