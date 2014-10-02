@@ -648,7 +648,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public void onResize() {
-        // TODO implements editor resize
+        this.editorOverlay.refresh();
     }
 
     @Override
