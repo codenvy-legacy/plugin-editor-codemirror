@@ -630,7 +630,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     @Override
     public EditorType getEditorType() {
-        return EditorType.fromKey(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
+        return EditorType.getInstance(CodeMirrorEditorExtension.CODEMIRROR_EDITOR_KEY);
     }
 
     @Override
