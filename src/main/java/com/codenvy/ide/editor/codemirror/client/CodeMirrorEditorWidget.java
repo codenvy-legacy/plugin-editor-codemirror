@@ -256,6 +256,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final JsArrayString gutters = JsArray.createArray(2).cast();
         gutters.push("CodeMirror-linenumbers");
         gutters.push("CodeMirror-foldgutter");
+        gutters.push("annotation");
         options.setGutters(gutters);
 
         // highlight matching tags
