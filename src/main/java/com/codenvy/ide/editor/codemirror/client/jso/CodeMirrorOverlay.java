@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters;
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerNoParameters;
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -152,4 +155,34 @@ public class CodeMirrorOverlay extends JavaScriptObject {
         return this.hint[name];
     }-*/;
 
+    public final native <T extends JavaScriptObject> void on(JavaScriptObject instance,
+                                                            String eventType,
+                                                            EventHandlerOneParameter<T> handler) /*-{
+        this.on(instance, eventType,
+                    function(param) {
+                        handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter::onEvent(*)(param);
+                    });
+    }-*/;
+
+    public final native <T extends JavaScriptObject> void on(JavaScriptObject instance,
+                                                            String eventType,
+                                                            EventHandlerNoParameters handler) /*-{
+        this.on(instance, eventType,
+                function(param) {
+                    handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerNoParameters::onEvent()();
+                });
+    }-*/;
+
+    public final native <T extends JavaScriptObject> void on(JavaScriptObject instance,
+                                                            String eventType,
+                                                            EventHandlerMixedParameters handler) /*-{
+        this.on(eventType,
+                function() {
+                    var params = [];
+                    for (var i = 0; i < arguments.length; i++) {
+                        params.push(arguments[i]);
+                    }
+                    handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters::onEvent(*)();
+                });
+    }-*/;
 }
