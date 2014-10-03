@@ -42,6 +42,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOptionsOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
@@ -656,6 +658,17 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public HandlesUndoRedo getUndoRedo() {
         return this.undoRedo;
+    }
+
+    public void showMessage(final String message) {
+        final CMDialogOptionsOverlay options = JavaScriptObject.createObject().cast();
+        options.setBottom(true);
+        final CMDialogOverlay dialog = this.editorOverlay.getDialog();
+        if (dialog != null) {
+            dialog.openNotification(message, options);
+        } else {
+            Log.info(CodeMirrorEditorWidget.class, message);
+        }
     }
 
     public void addKeybinding(final Keybinding keybinding) {
