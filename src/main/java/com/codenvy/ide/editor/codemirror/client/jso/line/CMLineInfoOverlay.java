@@ -49,7 +49,7 @@ public class CMLineInfoOverlay extends JavaScriptObject {
      * They are given as a map gutterId(classname) -> gutter element
      * @return the gutter markers
      */
-    public final native JavaScriptObject getGutterMarkers() /*-{
+    public final native CMGutterMarkersOverlay getGutterMarkers() /*-{
         return this.gutterMarkers;
     }-*/;
 
