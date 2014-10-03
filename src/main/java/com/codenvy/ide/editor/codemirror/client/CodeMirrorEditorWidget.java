@@ -49,6 +49,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventPa
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMGutterMarkersOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.marks.CMTextMarkerOptionOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.marks.CMTextMarkerOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
@@ -77,8 +79,10 @@ import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
+import com.codenvy.ide.jseditor.client.text.TextRange;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.codenvy.ide.jseditor.client.texteditor.HasGutter.LineNumberingChangeCallback;
+import com.codenvy.ide.jseditor.client.texteditor.HasTextMarkers.MarkerRegistration;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -778,6 +782,25 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     public void clearGutter(final String gutterId) {
         this.editorOverlay.clearGutter(gutterId);
+    }
+
+    public MarkerRegistration addMarker(final TextRange range, final String className) {
+        final CMPositionOverlay from = CMPositionOverlay.create(range.getFrom().getLine(), range.getFrom().getCharacter());
+        final CMPositionOverlay to = CMPositionOverlay.create(range.getTo().getLine(), range.getTo().getCharacter());
+        final CMTextMarkerOptionOverlay options = JavaScriptObject.createObject().cast();
+        options.setClassName(className);
+
+        final CMTextMarkerOverlay textMark = this.editorOverlay.asMarksManager().markText(from, to, options);
+        if (textMark == null) {
+            LOG.warning("addMarker: markText returned a undefined TextMarker - range=" + range);
+            return null;
+        }
+        return new MarkerRegistration() {
+            @Override
+            public void clearMark() {
+                textMark.clear();
+            }
+        };
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
