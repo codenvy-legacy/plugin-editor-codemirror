@@ -14,8 +14,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPixelCoordinatesOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
-import com.codenvy.ide.jseditor.client.document.EmbeddedDocument.TextPosition;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
+import com.codenvy.ide.jseditor.client.text.TextPosition;
 
 public class CodemirrorPositionConverter implements PositionConverter {
 
@@ -25,7 +25,6 @@ public class CodemirrorPositionConverter implements PositionConverter {
         this.editorOverlay = editorOverlay;
     }
 
-    @Override
     public PixelCoordinates textToPixel(final TextPosition textPosition) {
         final CMPositionOverlay position = CMPositionOverlay.create(textPosition.getLine(),
                                                                     textPosition.getCharacter());
@@ -38,13 +37,11 @@ public class CodemirrorPositionConverter implements PositionConverter {
                                     pixelPosition.getTop());
     }
 
-    @Override
     public PixelCoordinates offsetToPixel(final int textOffset) {
         final CMPositionOverlay position = this.editorOverlay.getDoc().posFromIndex(textOffset);
         return textToPixel(position);
     }
 
-    @Override
     public TextPosition pixelToText(final PixelCoordinates coordinates) {
         final CMPositionOverlay cmTextPos = pixelToCmText(coordinates);
         return new TextPosition(cmTextPos.getLine(), cmTextPos.getCharacter());
