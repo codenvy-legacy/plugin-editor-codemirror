@@ -411,8 +411,8 @@ public class CMEditorOverlay extends JavaScriptObject {
      * @param gutterId the CSS classname for the gutter
      * @param element the element to add or null to clear
      */
-    public final native void setGutterMarker(int line, String gutterId, Element element) /*-{
-        this.setGutterMarker(line, gutterId, element);
+    public final native CMLineHandleOverlay setGutterMarker(int line, String gutterId, Element element) /*-{
+        return this.setGutterMarker(line, gutterId, element);
     }-*/;
 
     /**
@@ -423,11 +423,27 @@ public class CMEditorOverlay extends JavaScriptObject {
      * @param gutterId the CSS classname for the gutter
      * @param element the element to add or null to clear
      */
-    public final native void setGutterMarker(CMLineHandleOverlay lineHandle, String gutterId,
-                                             Element element) /*-{
-        this.setGutterMarker(lineHandle, gutterId, element);
+    public final native CMLineHandleOverlay setGutterMarker(CMLineHandleOverlay lineHandle,
+                                                            String gutterId, Element element) /*-{
+        return this.setGutterMarker(lineHandle, gutterId, element);
     }-*/;
 
+    /**
+     * @see #setGutterMarker(CMLineHandleOverlay, String, Element)
+     */
+    public final native CMLineHandleOverlay setGutterMarker(int line, String gutterId,
+                                                            elemental.dom.Element element) /*-{
+        return this.setGutterMarker(line, gutterId, element);
+    }-*/;
+
+    /**
+     * @see #setGutterMarker(CMLineHandleOverlay, String, Element)
+     */
+    public final native CMLineHandleOverlay setGutterMarker(CMLineHandleOverlay lineHandle,
+                                                            String gutterId,
+                                                            elemental.dom.Element element) /*-{
+        return this.setGutterMarker(lineHandle, gutterId, element);
+    }-*/;
 
     /**
      * Remove all gutter markers in the gutter with the given ID.
