@@ -542,12 +542,6 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         final int startOffset = this.editorOverlay.getDoc().indexFromPos(from);
         final int endOffset = this.editorOverlay.getDoc().indexFromPos(to);
 
-        final int lastLine = this.editorOverlay.getDoc().lastLine();
-        final int lastPosition = this.editorOverlay.getDoc().getLine(lastLine).length();
-
-        if (startOffset < 0 || endOffset > lastPosition || startOffset > endOffset) {
-            throw new RuntimeException("Invalid selection");
-        }
         return new RegionImpl(startOffset, endOffset - startOffset);
     }
 
