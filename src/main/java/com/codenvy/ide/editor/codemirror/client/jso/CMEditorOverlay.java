@@ -65,7 +65,7 @@ public class CMEditorOverlay extends JavaScriptObject {
      * @return true iff showHint is defined
      */
     public final native boolean hasShowHint() /*-{
-        return (("showHint" in this.prototype) && !(typeof(this.prototype["showHint"]) === 'undefined'));
+        return (("showHint" in this) && !(typeof (this["showHint"]) === 'undefined'));
     }-*/;
 
     public final native void showHint(CMHintOptionsOverlay options) /*-{
