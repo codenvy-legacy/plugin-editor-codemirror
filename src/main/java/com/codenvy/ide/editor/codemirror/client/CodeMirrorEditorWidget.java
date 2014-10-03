@@ -64,6 +64,8 @@ import com.codenvy.ide.jseditor.client.events.ScrollEvent;
 import com.codenvy.ide.jseditor.client.events.ScrollHandler;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.jseditor.client.keymap.KeyBindingAction;
+import com.codenvy.ide.jseditor.client.keymap.Keybinding;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
@@ -654,6 +656,27 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public HandlesUndoRedo getUndoRedo() {
         return this.undoRedo;
+    }
+
+    public void addKeybinding(final Keybinding keybinding) {
+        final String keySpec = KeybindingTranslator.translateKeyBinding(keybinding, this.codeMirror);
+        if (keySpec == null) {
+            LOG.warning("Couldn't bind key, keycode is unknown.");
+            return;
+        }
+        final KeyBindingAction bindingAction = keybinding.getAction();
+        if (bindingAction == null) {
+            LOG.warning("Cannot bind null action on "+ keySpec +".");
+            return;
+        }
+        LOG.info("Binding action on " + keySpec + ".");
+        this.keyBindings.addBinding(keySpec, bindingAction, new CodeMirrorKeyBindingAction<KeyBindingAction>() {
+
+            @Override
+            public void action(final KeyBindingAction action) {
+                action.action();
+            }
+        });
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
