@@ -42,7 +42,7 @@ public class CodemirrorPositionConverter implements PositionConverter {
         return textToPixel(position);
     }
 
-    public TextPosition pixelToText(final PixelCoordinates coordinates) {
+    public com.codenvy.ide.jseditor.client.text.TextPosition pixelToText(final PixelCoordinates coordinates) {
         final CMPositionOverlay cmTextPos = pixelToCmText(coordinates);
         return new TextPosition(cmTextPos.getLine(), cmTextPos.getCharacter());
     }
