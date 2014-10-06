@@ -43,6 +43,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters;
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
@@ -56,8 +57,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverl
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
-import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeEvent;
@@ -88,7 +89,6 @@ import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.shared.GWT;
@@ -331,7 +331,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addChangeHandler(final ChangeHandler handler) {
         if (!changeHandlerAdded) {
             changeHandlerAdded = true;
-            this.editorOverlay.on(CHANGE, new CMEditorOverlay.EventHandlerOneParameter<CMChangeEventOverlay>() {
+            this.codeMirror.on(this.editorOverlay, CHANGE, new EventHandlers.EventHandlerOneParameter<CMChangeEventOverlay>() {
 
                 @Override
                 public void onEvent(final CMChangeEventOverlay param) {
@@ -352,7 +352,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addFocusHandler(final FocusHandler handler) {
         if (!focusHandlerAdded) {
             focusHandlerAdded = true;
-            this.editorOverlay.on(FOCUS, new CMEditorOverlay.EventHandlerNoParameters() {
+            this.codeMirror.on(this.editorOverlay, FOCUS, new EventHandlers.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -371,7 +371,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addBlurHandler(final BlurHandler handler) {
         if (!blurHandlerAdded) {
             blurHandlerAdded = true;
-            this.editorOverlay.on(BLUR, new CMEditorOverlay.EventHandlerNoParameters() {
+            this.codeMirror.on(this.editorOverlay, BLUR, new EventHandlers.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -390,7 +390,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addScrollHandler(final ScrollHandler handler) {
         if (!scrollHandlerAdded) {
             scrollHandlerAdded = true;
-            this.editorOverlay.on(SCROLL, new CMEditorOverlay.EventHandlerNoParameters() {
+            this.codeMirror.on(this.editorOverlay, SCROLL, new EventHandlers.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -409,7 +409,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addCursorActivityHandler(final CursorActivityHandler handler) {
         if (!cursorHandlerAdded) {
             cursorHandlerAdded = true;
-            this.editorOverlay.on(CURSOR_ACTIVITY, new CMEditorOverlay.EventHandlerNoParameters() {
+            this.codeMirror.on(this.editorOverlay, CURSOR_ACTIVITY, new EventHandlers.EventHandlerNoParameters() {
 
                 @Override
                 public void onEvent() {
@@ -428,8 +428,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addBeforeSelectionChangeHandler(final BeforeSelectionChangeHandler handler) {
         if (!beforeSelectionHandlerAdded) {
             beforeSelectionHandlerAdded = true;
-            this.editorOverlay.on(BEFORE_SELECTION_CHANGE,
-                                  new CMEditorOverlay.EventHandlerOneParameter<BeforeSelectionEventParamOverlay>() {
+            this.codeMirror.on(this.editorOverlay, BEFORE_SELECTION_CHANGE,
+                                  new EventHandlers.EventHandlerOneParameter<BeforeSelectionEventParamOverlay>() {
 
                                       @Override
                                       public void onEvent(final BeforeSelectionEventParamOverlay param) {
@@ -448,13 +448,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addViewPortChangeHandler(ViewPortChangeHandler handler) {
         if (!viewPortHandlerAdded) {
             viewPortHandlerAdded = true;
-            this.editorOverlay.on(VIEWPORT_CHANGE, new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
+            this.codeMirror.on(this.editorOverlay, VIEWPORT_CHANGE, new EventHandlers.EventHandlerMixedParameters() {
 
                 @Override
-                public void onEvent(final JsArray<JavaScriptObject> param) {
-                    final JsArrayInteger asIntegers = param.cast();
-                    final int from = asIntegers.get(0);
-                    final int to = asIntegers.get(1);
+                public void onEvent(final JsArrayMixed param) {
+                    final int from = Double.valueOf(param.getNumber(0)).intValue();
+                    final int to = Double.valueOf(param.getNumber(1)).intValue();
                     fireViewPortChangeEvent(from, to);
                 }
             });
@@ -470,10 +469,10 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addGutterClickHandler(GutterClickHandler handler) {
         if (!gutterClickHandlerAdded) {
             gutterClickHandlerAdded = true;
-            this.editorOverlay.on(GUTTER_CLICK, new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
+            this.codeMirror.on(this.editorOverlay, GUTTER_CLICK, new EventHandlers.EventHandlerMixedParameters() {
 
                 @Override
-                public void onEvent(final JsArray<JavaScriptObject> params) {
+                public void onEvent(final JsArrayMixed params) {
                     fireGutterClickEvent();
                 }
             });
