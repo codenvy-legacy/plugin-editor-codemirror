@@ -49,11 +49,27 @@
         <license_years>2014</license_years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- required until api/core cleanup! -->
+                <groupId>com.codenvy.ide</groupId>
+                <artifactId>codenvy-ide-core</artifactId>
+                <version>${codenvy.ide.version}</version>
+                <scope>compile</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>com.codenvy.ide</groupId>
             <artifactId>codenvy-ide-api</artifactId>
             <version>${codenvy.ide.version}</version>
+        </dependency>
+        <dependency>
+            <!-- required until api/core cleanup! -->
+            <groupId>com.codenvy.ide</groupId>
+            <artifactId>codenvy-ide-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.codenvy.ide</groupId>
