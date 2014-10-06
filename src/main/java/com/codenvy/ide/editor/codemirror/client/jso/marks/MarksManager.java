@@ -30,7 +30,7 @@ public class MarksManager extends JavaScriptObject {
      * @return a descriptor for the mark
      */
     public final native CMTextMarkerOverlay markText(CMPositionOverlay from, CMPositionOverlay to) /*-{
-        this.markText(from, to);
+        return this.markText(from, to);
     }-*/;
 
     /**
@@ -42,7 +42,7 @@ public class MarksManager extends JavaScriptObject {
      * @return a descriptor for the mark
      */
     public final native CMTextMarkerOverlay markText(CMPositionOverlay from, CMPositionOverlay to, CMTextMarkerOptionOverlay options) /*-{
-        this.markText(from, to, options);
+        return this.markText(from, to, options);
     }-*/;
 
     /**
