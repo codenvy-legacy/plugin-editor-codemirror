@@ -19,7 +19,7 @@ import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
 import com.codenvy.ide.editor.codemirror.client.style.CodeMirrorResource;
 import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
-import com.codenvy.ide.jseditor.client.editorconfig.DefaultEmbeddedTextEditorConf;
+import com.codenvy.ide.jseditor.client.editorconfig.DefaultTextEditorConfiguration;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
@@ -218,7 +218,7 @@ public class CodeMirrorEditorExtension {
             @Override
             public EditorPartPresenter buildEditor() {
                 final EmbeddedTextEditorPresenter editor = codeMirrorTextEditorFactory.createTextEditor();
-                editor.initialize(new DefaultEmbeddedTextEditorConf(), notificationManager);
+                editor.initialize(new DefaultTextEditorConfiguration(), notificationManager);
                 return editor;
             }
         });

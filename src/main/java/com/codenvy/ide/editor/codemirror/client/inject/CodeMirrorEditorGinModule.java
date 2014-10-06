@@ -15,6 +15,7 @@ import javax.inject.Named;
 import com.codenvy.ide.api.extension.ExtensionGinModule;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorExtension;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
+import com.codenvy.ide.editor.codemirror.client.CodeMirrorTextEditorViewFactory;
 import com.codenvy.ide.jseditor.client.JsEditorExtension;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -31,6 +32,8 @@ public class CodeMirrorEditorGinModule extends AbstractGinModule {
         // Bind the CodeMirror EditorWidget factory
         install(new GinFactoryModuleBuilder().build(new TypeLiteral<EditorWidgetFactory<CodeMirrorEditorWidget>>() {
         }));
+        // and the view factory
+        bind(CodeMirrorTextEditorViewFactory.class);
     }
 
     @Provides

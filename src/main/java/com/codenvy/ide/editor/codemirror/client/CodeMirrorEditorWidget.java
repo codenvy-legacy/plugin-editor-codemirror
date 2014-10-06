@@ -29,6 +29,7 @@ import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.REA
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.SHOW_CURSOR_WHEN_SELECTING;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.STYLE_ACTIVE_LINE;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,6 +55,9 @@ import com.codenvy.ide.editor.codemirror.client.jso.marks.CMTextMarkerOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
+import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.events.BeforeSelectionChangeEvent;
@@ -81,8 +85,6 @@ import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.text.TextRange;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
-import com.codenvy.ide.jseditor.client.texteditor.HasGutter.LineNumberingChangeCallback;
-import com.codenvy.ide.jseditor.client.texteditor.HasTextMarkers.MarkerRegistration;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -164,16 +166,20 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     private Keymap                                      keymap;
 
+    private final CompletionResources completionResources;
+
     private CMKeymapOverlay keyBindings;
 
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final EventBus eventBus,
                                   final KeymapPrefReader keymapPrefReader,
+                                  final CompletionResources completionResources,
                                   @Assisted final String editorMode) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.keymapPrefReader = keymapPrefReader;
+        this.completionResources = completionResources;
 
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
@@ -777,6 +783,18 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     public void clearGutter(final String gutterId) {
         this.editorOverlay.clearGutter(gutterId);
+    }
+    
+    public void showCompletionsProposals(final List<CompletionProposal> proposals) {
+        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
+                                                     proposals, this.completionResources.completionCss());
+    }
+
+    @Override
+    public void showCompletionProposals(final CompletionsSource completionsSource) {
+        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
+                                                     completionsSource,
+                                                     this.completionResources.completionCss());
     }
 
     public MarkerRegistration addMarker(final TextRange range, final String className) {
