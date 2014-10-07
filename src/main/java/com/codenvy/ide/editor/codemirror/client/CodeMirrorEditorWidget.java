@@ -28,6 +28,7 @@ import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.MOD
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.READONLY;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.SHOW_CURSOR_WHEN_SELECTING;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.STYLE_ACTIVE_LINE;
+import static com.codenvy.ide.jseditor.client.gutter.Gutters.LINE_NUMBERS_GUTTER;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -117,6 +118,8 @@ import com.google.inject.assistedinject.AssistedInject;
 import com.google.web.bindery.event.shared.EventBus;
 
 import elemental.dom.DOMTokenList;
+import elemental.events.MouseEvent;
+import elemental.js.events.JsMouseEvent;
 
 /**
  * The CodeMirror implementation of {@link EditorWidget}.
@@ -500,19 +503,30 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public HandlerRegistration addGutterClickHandler(GutterClickHandler handler) {
         if (!gutterClickHandlerAdded) {
             gutterClickHandlerAdded = true;
-            this.codeMirror.on(this.editorOverlay, GUTTER_CLICK, new EventHandlers.EventHandlerMixedParameters() {
+            this.editorOverlay.on(GUTTER_CLICK, new EventHandlers.EventHandlerMixedParameters() {
 
                 @Override
                 public void onEvent(final JsArrayMixed params) {
-                    fireGutterClickEvent();
+                    // param 0 is codemirror instance
+                    final int line = Double.valueOf(params.getNumber(1)).intValue();
+                    final String gutterId = params.getString(2);
+                    //param 3 is click event
+                    final JsMouseEvent event = params.getObject(3).cast();
+                    fireGutterClickEvent(line, gutterId, event);
                 }
             });
         }
         return addHandler(handler, GutterClickEvent.TYPE);
     }
 
-    private void fireGutterClickEvent() {
-        fireEvent(new GutterClickEvent());
+    private void fireGutterClickEvent(final int line, final String internalGutterId, final MouseEvent event) {
+        String gutterId = internalGutterId;
+        if (CODE_MIRROR_GUTTER_LINENUMBERS.equals(gutterId)) {
+            gutterId = LINE_NUMBERS_GUTTER;
+        }
+        final GutterClickEvent gutterEvent = new GutterClickEvent(line, gutterId, event);
+        fireEvent(gutterEvent);
+        this.embeddedDocument.getDocEventBus().fireEvent(gutterEvent);
     }
 
     @Override
@@ -814,7 +828,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     public void clearGutter(final String gutterId) {
         this.editorOverlay.clearGutter(gutterId);
     }
-    
+
     public void showCompletionsProposals(final List<CompletionProposal> proposals) {
         ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
                                                      proposals, this.completionResources.completionCss());
