@@ -80,6 +80,7 @@ import com.codenvy.ide.jseditor.client.events.ScrollEvent;
 import com.codenvy.ide.jseditor.client.events.ScrollHandler;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.jseditor.client.gutter.Gutters;
 import com.codenvy.ide.jseditor.client.keymap.KeyBindingAction;
 import com.codenvy.ide.jseditor.client.keymap.Keybinding;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
@@ -130,6 +131,10 @@ import elemental.js.events.JsMouseEvent;
 public class CodeMirrorEditorWidget extends Composite implements EditorWidget, HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
                                                      HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
                                                      HasViewPortChangeHandlers, HasGutterClickHandlers, HasScrollHandlers {
+
+    private static final String CODE_MIRROR_GUTTER_FOLDGUTTER = "CodeMirror-foldgutter";
+
+    private static final String CODE_MIRROR_GUTTER_LINENUMBERS = "CodeMirror-linenumbers";
 
     private static final String                         TAB_SIZE_OPTION             = "tabSize";
 
@@ -282,9 +287,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
         // gutters - define 2 : line and fold
         final JsArrayString gutters = JsArray.createArray(2).cast();
-        gutters.push("CodeMirror-linenumbers");
-        gutters.push("CodeMirror-foldgutter");
-        gutters.push("annotation");
+        gutters.push(CODE_MIRROR_GUTTER_LINENUMBERS);
+        gutters.push(CODE_MIRROR_GUTTER_FOLDGUTTER);
+        gutters.push(Gutters.ANNOTATION_GUTTER);
         options.setGutters(gutters);
 
         // highlight matching tags
