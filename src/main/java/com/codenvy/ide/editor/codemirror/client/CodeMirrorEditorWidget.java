@@ -90,6 +90,7 @@ import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.text.TextRange;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
+import com.codenvy.ide.jseditor.client.texteditor.LineStyler;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -157,6 +158,8 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     /** Component that handles undo/redo. */
     private final HandlesUndoRedo undoRedo;
+    /** Component that handles line styling. */
+    private LineStyler lineStyler;
 
     /** Component to read the keymap preference. */
     private final KeymapPrefReader keymapPrefReader;
@@ -858,6 +861,14 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                 textMark.clear();
             }
         };
+    }
+
+    @Override
+    public LineStyler getLineStyler() {
+        if (this.lineStyler == null) {
+            this.lineStyler = new CodeMirrorLineStyler(this.editorOverlay);
+        }
+        return this.lineStyler;
     }
 
     /**
