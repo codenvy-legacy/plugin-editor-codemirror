@@ -12,6 +12,9 @@ package com.codenvy.ide.editor.codemirror.client.jso;
 
 import javax.annotation.Nullable;
 
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters;
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerNoParameters;
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter;
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
@@ -24,7 +27,6 @@ import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.dom.client.Node;
 
 import elemental.dom.Element;
@@ -154,7 +156,7 @@ public class CMEditorOverlay extends JavaScriptObject {
                 .on(
                         eventType,
                         function() {
-                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerNoParameters::onEvent()();
                         });
     }-*/;
 
@@ -163,7 +165,7 @@ public class CMEditorOverlay extends JavaScriptObject {
                 .on(
                         eventType,
                         function(param) {
-                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter::onEvent(*)(param);
                         });
     }-*/;
 
@@ -176,23 +178,9 @@ public class CMEditorOverlay extends JavaScriptObject {
                             for (var i = 0; i < arguments.length; i++) {
                                 params.push(arguments[i]);
                             }
-                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMixedParameters::onEvent(*)(params);
+                            handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters::onEvent(*)(params);
                         });
     }-*/;
-
-    /** @deprecated use {@link EventHandlers.EventHandlerNoParameters} with
-     * {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerNoParameters)} */
-    @Deprecated
-    public interface EventHandlerNoParameters {
-        void onEvent();
-    }
-
-    /** @deprecated use {@link EventHandlers.EventHandlerOneParameter} with
-     * {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter)} */
-    @Deprecated
-    public interface EventHandlerOneParameter<T extends JavaScriptObject> {
-        void onEvent(T param);
-    }
 
     /** @deprecated use {@link EventHandlers.EventHandlerMultipleParameters} with
      * {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMultipleParameters)} */
@@ -201,76 +189,10 @@ public class CMEditorOverlay extends JavaScriptObject {
         void onEvent(JsArray<T> param);
     }
 
-    /** @deprecated use {@link EventHandlers.EventHandlerMixedParameters} with
-     * {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters)} */
-    public interface EventHandlerMixedParameters {
-        void onEvent(JsArrayMixed param);
-    }
-
     // editor element
 
     public final native Element getWrapperElement() /*-{
         return this.getWrapperElement();
-    }-*/;
-
-    /** @deprecated use {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter)} */
-    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
-                                                                    String eventType,
-                                                                    EventHandlerOneParameter<T> handler,
-                                                                    JavaScriptObject module) /*-{
-        module
-                .on(
-                        eventType,
-                        function(param) {
-                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerOneParameter::onEvent(*)(param);
-                        });
-    }-*/;
-
-    /** @deprecated use {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerNoParameters)} */
-    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
-                                                                    String eventType,
-                                                                    EventHandlerNoParameters handler,
-                                                                    JavaScriptObject module) /*-{
-        module
-                .on(
-                        eventType,
-                        function(param) {
-                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerNoParameters::onEvent()();
-                        });
-    }-*/;
-
-    /** @deprecated use {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMultipleParameters)} */
-    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
-                                                                    String eventType,
-                                                                    EventHandlerMultipleParameters<T> handler,
-                                                                    JavaScriptObject module) /*-{
-        module
-                .on(
-                        eventType,
-                        function() {
-                            var params = [];
-                            for (var i = 0; i < arguments.length; i++) {
-                                params.push(arguments[i]);
-                            }
-                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMultipleParameters::onEvent(*)();
-                        });
-    }-*/;
-
-    /** @deprecated use {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters)} */
-    public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
-                                                                    String eventType,
-                                                                    EventHandlerMixedParameters handler,
-                                                                    JavaScriptObject module) /*-{
-        module
-                .on(
-                        eventType,
-                        function() {
-                            var params = [];
-                            for (var i = 0; i < arguments.length; i++) {
-                                params.push(arguments[i]);
-                            }
-                            handler.@com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay.EventHandlerMixedParameters::onEvent(*)();
-                        });
     }-*/;
 
     public final native void addKeyMap(CMKeymapOverlay keymap) /*-{
