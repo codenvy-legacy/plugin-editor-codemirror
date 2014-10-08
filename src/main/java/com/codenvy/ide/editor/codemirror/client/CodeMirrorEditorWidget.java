@@ -286,10 +286,11 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         options.setProperty(FOLD_GUTTER, true);
 
         // gutters - define 2 : line and fold
-        final JsArrayString gutters = JsArray.createArray(2).cast();
+        final JsArrayString gutters = JsArray.createArray(4).cast();
         gutters.push(CODE_MIRROR_GUTTER_LINENUMBERS);
-        gutters.push(CODE_MIRROR_GUTTER_FOLDGUTTER);
+        gutters.push(Gutters.BREAKPOINTS_GUTTER);
         gutters.push(Gutters.ANNOTATION_GUTTER);
+        gutters.push(CODE_MIRROR_GUTTER_FOLDGUTTER);
         options.setGutters(gutters);
 
         // highlight matching tags
