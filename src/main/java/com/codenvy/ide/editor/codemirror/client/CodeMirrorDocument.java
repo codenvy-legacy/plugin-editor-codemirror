@@ -18,13 +18,14 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
-import com.codenvy.ide.jseditor.client.document.DocumentEventBus;
-import com.codenvy.ide.jseditor.client.document.DocumentHandle;
+import com.codenvy.ide.jseditor.client.document.AbstractEmbeddedDocument;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
 import com.codenvy.ide.jseditor.client.events.DocumentChangeEvent;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
+import com.codenvy.ide.jseditor.client.text.LinearRange;
 import com.codenvy.ide.jseditor.client.text.TextPosition;
+import com.codenvy.ide.jseditor.client.text.TextRange;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -33,14 +34,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
  *
  * @author "Mickaël Leduque"
  */
-public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
+public class CodeMirrorDocument extends AbstractEmbeddedDocument {
 
     /** The internal document representation for CodeMirror. */
     private final CMDocumentOverlay         documentOverlay;
 
     private final HasCursorActivityHandlers hasCursorActivityHandlers;
-
-    private final DocumentEventBus eventBus = new DocumentEventBus();
 
     public CodeMirrorDocument(final CMDocumentOverlay documentOverlay,
                               final CodeMirrorOverlay codeMirror,
@@ -74,7 +73,7 @@ public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
         final String text = param.getText().join("\n");
 
         final DocumentChangeEvent event = new DocumentChangeEvent(this, startOffset, length, text);
-        this.eventBus.fireEvent(event);
+        getDocEventBus().fireEvent(event);
     }
 
     @Override
@@ -121,25 +120,6 @@ public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
         this.documentOverlay.replaceRange(text, fromPos, toPos);
     }
 
-    public DocumentHandle getDocumentHandle() {
-        return this;
-    }
-
-    @Override
-    public boolean isSameAs(final DocumentHandle document) {
-        return (this.equals(document));
-    }
-
-    @Override
-    public DocumentEventBus getDocEventBus() {
-        return this.eventBus;
-    }
-
-    @Override
-    public EmbeddedDocument getDocument() {
-        return this;
-    }
-
     public int getContentsCharCount() {
         // same as last offset
         final int lastLine = this.documentOverlay.lastLine();
@@ -147,5 +127,20 @@ public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
         final int lineSize = lineContent.length();
         // zero based char position on the line
         return this.documentOverlay.indexFromPos(CMPositionOverlay.create(lastLine, lineSize - 1));
+    }
+
+    public String getLineContent(final int line) {
+        return this.documentOverlay.getLine(line);
+    }
+
+    public TextRange getTextRangeForLine(final int line) {
+        final String content = this.documentOverlay.getLine(line);
+        return new TextRange(new TextPosition(line, 0), new TextPosition(line, content.length() - 1));
+    }
+
+    public LinearRange getLinearRangeForLine(final int line) {
+        final String content = this.documentOverlay.getLine(line);
+        int start = this.documentOverlay.indexFromPos(CMPositionOverlay.create(line, 0));
+        return LinearRange.createWithStart(start).andLength(content.length());
     }
 }
