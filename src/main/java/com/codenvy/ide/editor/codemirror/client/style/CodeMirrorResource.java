@@ -12,6 +12,7 @@ package com.codenvy.ide.editor.codemirror.client.style;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface CodeMirrorResource extends ClientBundle {
 
@@ -21,4 +22,6 @@ public interface CodeMirrorResource extends ClientBundle {
     @Source({"cm_theme.css", "com/codenvy/ide/api/ui/style.css"})
     CssResource editorStyle();
 
+    @Source("com/codenvy/ide/texteditor/squiggle.gif")
+    ImageResource squiggle();
 }

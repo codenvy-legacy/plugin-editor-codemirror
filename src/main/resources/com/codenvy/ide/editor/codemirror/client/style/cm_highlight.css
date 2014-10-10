@@ -109,8 +109,11 @@
         /* no link atm */
     }
 
-    .cm-error, .cm-invalidchar {
+    @sprite .cm-error, .cm-invalidchar {
         color: error;
+        gwt-image: "squiggle";
+        background-position: bottom;
+        background-repeat: repeat-x;
     }
 
     .cm-negative {
