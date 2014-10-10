@@ -176,13 +176,13 @@ public class CodeMirrorOverlay extends JavaScriptObject {
     public final native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                             String eventType,
                                                             EventHandlerMixedParameters handler) /*-{
-        this.on(eventType,
+        this.on(instance, eventType,
                 function() {
                     var params = [];
                     for (var i = 0; i < arguments.length; i++) {
                         params.push(arguments[i]);
                     }
-                    handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters::onEvent(*)();
+                    handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters::onEvent(*)(params);
                 });
     }-*/;
 }
