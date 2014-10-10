@@ -34,7 +34,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.inject.Inject;
 
-@Extension(title = "CodeMirror Editor.", version = "1.0.0")
+@Extension(title = "CodeMirror Editor", version = "1.0.0")
 public class CodeMirrorEditorExtension {
 
     /** The logger. */
