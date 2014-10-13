@@ -23,8 +23,12 @@ public class CMHintFunctionOverlay extends JavaScriptObject {
         return this(editor, options);
     }-*/;
 
+    public final native CMHintResultsOverlay apply(CMEditorOverlay editor) /*-{
+        return this(editor);
+    }-*/;
+
     public static final native CMHintFunctionOverlay createFromName(CodeMirrorOverlay codeMirror, String funcName) /*-{
-        return codemirror.hint[funcName];
+        return codeMirror.hint[funcName];
     }-*/;
 
     public static final native CMHintFunctionOverlay createFromHintFunction(HintFunction hintFunction) /*-{
