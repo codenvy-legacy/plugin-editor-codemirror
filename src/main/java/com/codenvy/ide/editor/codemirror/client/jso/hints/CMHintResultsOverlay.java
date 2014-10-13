@@ -55,6 +55,10 @@ public class CMHintResultsOverlay extends JavaScriptObject {
         return this.list[i];
     }-*/;
 
+    public final native boolean isString(int i) /*-{
+        return typeof(this.list[i]) === "string";
+    }-*/;
+
     public static final native CMHintResultsOverlay create() /*-{
         return {"list": []};
     }-*/;
