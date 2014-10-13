@@ -90,6 +90,7 @@ import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.text.TextRange;
+import com.codenvy.ide.jseditor.client.texteditor.CompositeEditorWidget;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.codenvy.ide.jseditor.client.texteditor.LineStyler;
 import com.codenvy.ide.util.loging.Log;
@@ -113,7 +114,6 @@ import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -128,7 +128,7 @@ import elemental.js.events.JsMouseEvent;
  *
  * @author "Mickaël Leduque"
  */
-public class CodeMirrorEditorWidget extends Composite implements EditorWidget, HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
+public class CodeMirrorEditorWidget extends CompositeEditorWidget implements HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
                                                      HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
                                                      HasViewPortChangeHandlers, HasGutterClickHandlers, HasScrollHandlers {
 
@@ -850,6 +850,12 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                                      this.completionResources.completionCss());
     }
 
+    @Override
+    public void showCompletionProposals() {
+        ShowCompletionHelper.showCompletionProposals(this, this.codeMirror, this.editorOverlay, this.embeddedDocument,
+                                                     this.completionResources.completionCss());
+    }
+
     public MarkerRegistration addMarker(final TextRange range, final String className) {
         final CMPositionOverlay from = CMPositionOverlay.create(range.getFrom().getLine(), range.getFrom().getCharacter());
         final CMPositionOverlay to = CMPositionOverlay.create(range.getTo().getLine(), range.getTo().getCharacter());
@@ -875,6 +881,11 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
             this.lineStyler = new CodeMirrorLineStyler(this.editorOverlay);
         }
         return this.lineStyler;
+    }
+
+    @Override
+    protected void onLoad() {
+        this.editorOverlay.refresh();
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
