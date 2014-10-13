@@ -10,10 +10,14 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMCompletionObjectOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintApplyOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintApplyOverlay.HintApplyFunction;
@@ -42,6 +46,9 @@ import elemental.html.SpanElement;
 
 public final class ShowCompletionHelper {
 
+    /** The logger. */
+    private static final Logger LOG = Logger.getLogger(ShowCompletionHelper.class.getName());
+
     private ShowCompletionHelper() {}
 
     public static void showCompletionProposals(final CodeMirrorEditorWidget editorWidget,
@@ -69,7 +76,7 @@ public final class ShowCompletionHelper {
                 for (final CompletionProposal proposal: proposals) {
 
                     final CMHintApplyOverlay hintApply = createApplyHintFunc(editorWidget, document, proposal);
-                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, document, proposal, css);
+                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal, css);
 
                     final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
 
@@ -115,7 +122,7 @@ public final class ShowCompletionHelper {
                         for (final CompletionProposal proposal: proposals) {
 
                             final CMHintApplyOverlay hintApply = createApplyHintFunc(editorWidget, document, proposal);
-                            final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, document, proposal, css);
+                            final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal, css);
 
                             final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
 
@@ -133,6 +140,81 @@ public final class ShowCompletionHelper {
 
         // set the async hint function and trigger the delayed display of hints
         hintOptions.setHint(hintFunction);
+        editorOverlay.showHint(hintOptions);
+    }
+
+    public static void showCompletionProposals(final CodeMirrorEditorWidget editorWidget,
+                                               final CodeMirrorOverlay codeMirrorOverlay,
+                                               final CMEditorOverlay editorOverlay,
+                                               final EmbeddedDocument document,
+                                               final CompletionCss css) {
+         if (! editorOverlay.hasShowHint()) {
+             // no support for hints
+             return;
+         }
+         final CMHintFunctionOverlay hintAuto = CMHintFunctionOverlay.createFromName(codeMirrorOverlay, "auto");
+         final CMHintResultsOverlay result = hintAuto.apply(editorOverlay);
+         if (result != null) {
+             final List<String> proposals = new ArrayList<>();
+             final JsArrayMixed list = result.getList();
+             int nonStrings = 0;
+             //jsarray aren't iterable
+             for (int i = 0; i < list.length(); i++) {
+                 if (result.isString(i)) {
+                     proposals.add(result.getCompletionItemAsString(i));
+                 } else {
+                     nonStrings++;
+                 }
+             }
+             LOG.info("CM Completion returned " + list.length() + " items, of which " + nonStrings + " were not strings.");
+    
+             showCompletionProposals(editorWidget, editorOverlay, proposals, result.getFrom(), result.getTo(), css);
+         }
+    }
+
+    private static void showCompletionProposals(final CodeMirrorEditorWidget editorWidget,
+                                               final CMEditorOverlay editorOverlay,
+                                               final List<String> proposals,
+                                               final CMPositionOverlay from,
+                                               final CMPositionOverlay to,
+                                               final CompletionCss css) {
+        if (! editorOverlay.hasShowHint() || proposals == null || proposals.isEmpty()) {
+            // no support for hints or no proposals
+            return;
+        }
+
+        final CMHintOptionsOverlay hintOptions = CMHintOptionsOverlay.create();
+        hintOptions.setCloseOnUnfocus(true); //actually, default value
+        hintOptions.setAlignWithWord(true); //default
+        hintOptions.setCompleteSingle(true); //default
+
+        final CMHintFunctionOverlay hintFunction = CMHintFunctionOverlay.createFromHintFunction(new HintFunction() {
+
+            @Override
+            public CMHintResultsOverlay getHints(final CMEditorOverlay editor,
+                                                 final CMHintOptionsOverlay options) {
+                final CMHintResultsOverlay result = CMHintResultsOverlay.create();
+                final JsArrayMixed list = result.getList();
+                for (final String proposal: proposals) {
+
+
+                    final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
+
+                    completionObject.setText(proposal);
+                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal, css);
+                    completionObject.setRender(renderFunc);
+
+                    list.push(completionObject);
+                }
+                result.setFrom(from);
+                result.setTo(to);
+                return result;
+            }
+
+
+        });
+        hintOptions.setHint(hintFunction);
+
         editorOverlay.showHint(hintOptions);
     }
 
@@ -163,7 +245,6 @@ public final class ShowCompletionHelper {
     }
 
     private static CMRenderFunctionOverlay createRenderHintFunc(final CodeMirrorEditorWidget editorWidget,
-                                                                final EmbeddedDocument document,
                                                                 final CompletionProposal proposal,
                                                                 final CompletionCss css) {
         return CMRenderFunctionOverlay.create(new RenderFunction() {
@@ -183,6 +264,21 @@ public final class ShowCompletionHelper {
                 element.appendChild(icon);
                 element.appendChild(label);
                 element.appendChild(group);
+            }
+        });
+    }
+
+    private static CMRenderFunctionOverlay createRenderHintFunc(final CodeMirrorEditorWidget editorWidget,
+                                                                final String proposal,
+                                                                final CompletionCss css) {
+        return CMRenderFunctionOverlay.create(new RenderFunction() {
+
+            @Override
+            public void renderHint(final Element element, final CMHintResultsOverlay data,
+                                   final JavaScriptObject completion) {
+                final SpanElement label = Elements.createSpanElement(css.proposalLabel());
+                label.setInnerHTML(proposal);
+                element.appendChild(label);
             }
         });
     }
