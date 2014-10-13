@@ -19,6 +19,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOptionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineWidgetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.marks.MarksManager;
+import com.codenvy.ide.editor.codemirror.client.jso.parse.CMTokenOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -597,5 +598,23 @@ public class CMEditorOverlay extends JavaScriptObject {
      */
     public final native MarksManager asMarksManager() /*-{
         return this;
+    }-*/;
+
+    /**
+     * Returns the token a the given position.
+     * @param position the position
+     */
+    public final native CMTokenOverlay getTokenAt(CMPositionOverlay position) /*-{
+        return this.getTokenAt(position);
+    }-*/;
+
+    /**
+     * Returns the token a the given position.
+     * @param position the position
+     * @return if precise is true, the result is accurate, aknowledging new edits. Otherwise, the result can be taken
+     * from a cache
+     */
+    public final native CMTokenOverlay getTokenAt(CMPositionOverlay position, boolean precise) /*-{
+        return this.getTokenAt(position, precise);
     }-*/;
 }
