@@ -50,6 +50,10 @@
 .cm-s-codenvy .CodeMirror-gutter {
     background-color: editorBackgroundColor;
 }
+
+.cm-s-codenvy .CodeMirror-gutter-filler, .cm-s-codenvy .CodeMirror-scrollbar-filler {
+    background-color: editorBackgroundColor;
+}
 .cm-s-codenvy .CodeMirror-foldgutter {
     border-right: 1px dotted editorGutterSeparatorColor;
 }
