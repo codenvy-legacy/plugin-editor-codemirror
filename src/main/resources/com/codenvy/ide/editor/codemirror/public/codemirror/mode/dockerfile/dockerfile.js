@@ -152,7 +152,6 @@ CodeMirror.defineMode("dockerfile", function(config) {
       state.inMultiline = false;
       state.followInstruction = false;
       state.bracketedArg = false;
-      state.indent = 0;
       return state;
     },
     token: function (stream, state) {
