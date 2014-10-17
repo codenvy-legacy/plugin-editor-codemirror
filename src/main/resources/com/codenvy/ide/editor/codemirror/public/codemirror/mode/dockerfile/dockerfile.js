@@ -48,6 +48,12 @@ CodeMirror.defineMode("dockerfile", function(config) {
   var lineContinuation = /^\\\s*$/;
   // pattern for double quoted strings with escapes ; single quoted string are not valid here
   var quoted = /^"[^"\\]*(?:\\.[^"\\]*)*"/;
+  // pattern for start of multiline string
+  var unclosedStringStart = /^"[^"\\]*(?:\\.[^"\\]*)*\\\s*$/;
+  // pattern for not closing multiline string
+  var notClosingStringCont = /^[^"\\]*(?:\\.[^"\\]*)*/;
+  // pattern for closing multiline string
+  var closingStringCont = /^[^"\\]*(?:\\.[^"\\]*)*"/;
 
   function tokenize(stream, state) {
     if (stream.sol()) {
@@ -111,6 +117,25 @@ CodeMirror.defineMode("dockerfile", function(config) {
       state.inMultiline = false;
       return "string";
     }
+    if (! state.bracketedArg) {
+      // FIRST check if we are in a unclosed multiline string
+      if (state.inMultiline && state.inString) {
+        if (stream.match(notClosingStringCont, true)) {
+          
+        }
+      }
+      if (stream.match(quoted, true)) {
+        state.followInstruction = false;
+        state.inMultiline = false;
+        return "string-2";
+      }
+      if (stream.match(unclosedStringStart, true)) {
+        state.followInstruction = false;
+        state.inMultiline = true;
+        state.inString = true;
+        return "string-2";
+      }
+    }
     if (!state.bracketedArg) {
       while (!stream.eol()) {
         if (stream.eatWhile(/^[^\\]/)) {
@@ -152,6 +177,7 @@ CodeMirror.defineMode("dockerfile", function(config) {
       state.inMultiline = false;
       state.followInstruction = false;
       state.bracketedArg = false;
+      state.inString = false;
       return state;
     },
     copyState: function(otherState) {
