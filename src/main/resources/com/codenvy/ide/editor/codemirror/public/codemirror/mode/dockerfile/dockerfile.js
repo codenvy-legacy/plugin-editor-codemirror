@@ -154,6 +154,13 @@ CodeMirror.defineMode("dockerfile", function(config) {
       state.bracketedArg = false;
       return state;
     },
+    copyState: function(otherState) {
+      var newState = {};
+      newState.inMultiline = otherState.inMultiline;
+      newState.followInstruction = otherState.followInstruction;
+      newState.bracketedArg = otherState.bracketedArg;
+      return newState;
+    },
     token: function (stream, state) {
       return tokenize(stream, state);
     },
