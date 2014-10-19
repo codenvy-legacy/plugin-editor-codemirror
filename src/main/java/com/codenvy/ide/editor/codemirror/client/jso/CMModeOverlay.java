@@ -17,7 +17,4 @@ public class CMModeOverlay extends JavaScriptObject {
     protected CMModeOverlay() {
     }
 
-    public final native String getName() /*-{
-        return this.name;
-    }-*/;
 }
