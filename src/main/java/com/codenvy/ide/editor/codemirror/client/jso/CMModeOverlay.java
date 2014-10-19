@@ -12,8 +12,10 @@ package com.codenvy.ide.editor.codemirror.client.jso;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
+/** Description of a codemirror mode. */
 public class CMModeOverlay extends JavaScriptObject {
 
+    /** JSO mandated protected constructor. */
     protected CMModeOverlay() {
     }
 
