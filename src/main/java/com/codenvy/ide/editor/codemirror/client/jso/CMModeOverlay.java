@@ -19,4 +19,17 @@ public class CMModeOverlay extends JavaScriptObject {
     protected CMModeOverlay() {
     }
 
+    /* function startState(), returns a state instance - optional */
+
+    /* function token(stream, state, returns string=classname|null - must consume at lerast one char from stream */
+
+    /* function copyState(state), return state - optional */
+
+    /* function indent(state, textAfter), returns int (number of spaces) - optional */
+
+    /* function lineComment, blockComment, blockCommentStart, blockCommentEnd, blockCommentLead, return strings - optional */
+
+    /* string property electricChars - optional */
+
+    /* regexp property electricInput - optional */
 }
