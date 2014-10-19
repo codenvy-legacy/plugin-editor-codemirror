@@ -24,8 +24,9 @@ import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMScrollInfoOverlay;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+
+import elemental.dom.Element;
 
 public class CMEditorOverlay extends JavaScriptObject {
 
@@ -210,7 +211,7 @@ public class CMEditorOverlay extends JavaScriptObject {
     public final native Element getWrapperElement() /*-{
         return this.getWrapperElement();
     }-*/;
-    
+
     /** @deprecated use {@link CodeMirrorOverlay#on(JavaScriptObject, String, com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter)} */
     public final static native <T extends JavaScriptObject> void on(JavaScriptObject instance,
                                                                     String eventType,
@@ -432,7 +433,7 @@ public class CMEditorOverlay extends JavaScriptObject {
      * @see #setGutterMarker(CMLineHandleOverlay, String, Element)
      */
     public final native CMLineHandleOverlay setGutterMarker(int line, String gutterId,
-                                                            elemental.dom.Element element) /*-{
+                                                            com.google.gwt.dom.client.Element element) /*-{
         return this.setGutterMarker(line, gutterId, element);
     }-*/;
 
@@ -441,7 +442,7 @@ public class CMEditorOverlay extends JavaScriptObject {
      */
     public final native CMLineHandleOverlay setGutterMarker(CMLineHandleOverlay lineHandle,
                                                             String gutterId,
-                                                            elemental.dom.Element element) /*-{
+                                                            com.google.gwt.dom.client.Element element) /*-{
         return this.setGutterMarker(lineHandle, gutterId, element);
     }-*/;
 
