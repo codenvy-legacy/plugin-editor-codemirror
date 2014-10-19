@@ -68,6 +68,7 @@ public class CodeMirrorEditorExtension {
 
         highlightResource.highlightStyle().ensureInjected();
         highlightResource.editorStyle().ensureInjected();
+        highlightResource.dockerfileModeStyle().ensureInjected();
         completionResources.completionCss().ensureInjected();
 
         injectCodeMirror();

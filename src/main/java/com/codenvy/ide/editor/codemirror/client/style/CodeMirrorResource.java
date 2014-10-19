@@ -24,4 +24,7 @@ public interface CodeMirrorResource extends ClientBundle {
 
     @Source("com/codenvy/ide/texteditor/squiggle.gif")
     ImageResource squiggle();
+
+    @Source({"cm_highlight_dockerfile.css", "com/codenvy/ide/api/ui/style.css"})
+    CssResource dockerfileModeStyle();
 }
