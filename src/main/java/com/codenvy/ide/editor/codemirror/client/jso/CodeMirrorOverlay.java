@@ -19,6 +19,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 
+import elemental.util.MapFromStringTo;
+
 /**
  * Overlay on the CodeMirror javascript object.
  */
@@ -90,7 +92,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      *
      * @return a javascript object such that modes[modeName] is the mode object
      */
-    public final native JavaScriptObject modes() /*-{
+    public final native MapFromStringTo<CMModeOverlay> modes() /*-{
         return this.modes;
     }-*/;
 
@@ -108,7 +110,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      *
      * @return a javascript object such that mimeModes[mimeType] is the matching mode object
      */
-    public final native JavaScriptObject mimeModes() /*-{
+    public final native MapFromStringTo<CMModeOverlay> mimeModes() /*-{
         return this.mimeModes;
     }-*/;
 
