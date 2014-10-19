@@ -19,6 +19,10 @@ public class CMModeOverlay extends JavaScriptObject {
     protected CMModeOverlay() {
     }
 
+    public final native String getName() /*-{
+        return this.name;
+    }-*/;
+
     /* function startState(), returns a state instance - optional */
 
     /* function token(stream, state, returns string=classname|null - must consume at lerast one char from stream */
