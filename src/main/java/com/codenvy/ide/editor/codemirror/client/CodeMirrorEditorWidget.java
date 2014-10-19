@@ -39,6 +39,7 @@ import com.codenvy.ide.api.texteditor.HandlesUndoRedo;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMModeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
@@ -113,6 +114,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import com.google.web.bindery.event.shared.EventBus;
 
+import elemental.dom.DOMTokenList;
 
 /**
  * The CodeMirror implementation of {@link EditorWidget}.
@@ -130,6 +132,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
 
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(CodeMirrorEditorWidget.class.getSimpleName());
+
+    /** The prefix for mode specific style overrides. */
+    private static final String CODEMIRROR_MODE_STYLE_PREFIX = "cm-mode";
 
     @UiField
     SimplePanel                                         panel;
@@ -281,9 +286,15 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     }
 
     @Override
-    public void setMode(final String modeName) {
-        LOG.fine("Setting editor mode : " + modeName);
-        this.editorOverlay.setOption(MODE, modeName);
+    public void setMode(final String modeDesc) {
+        LOG.fine("Setting editor mode : " + modeDesc);
+        this.editorOverlay.setOption(MODE, modeDesc);
+
+        // try to add mode specific style
+        final CMModeOverlay mode = this.editorOverlay.getMode();
+        final String modeName = mode.getName();
+        final DOMTokenList classes = this.editorOverlay.getWrapperElement().getClassList();
+        classes.add(CODEMIRROR_MODE_STYLE_PREFIX + "-" + modeName);
     }
 
     public void selectVimKeymap() {
