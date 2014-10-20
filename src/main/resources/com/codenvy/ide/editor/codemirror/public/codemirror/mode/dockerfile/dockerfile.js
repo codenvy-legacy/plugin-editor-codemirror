@@ -44,6 +44,17 @@ CodeMirror.defineMode("dockerfile", function(config) {
                   "VOLUME",
                   "WORKDIR",
                   ]);
+
+  // token type constants
+  var INSTRUCTION = 'keyword';
+  var COMMENT = 'comment';
+  var CONT_MARKER = 'variable-2';
+  var BRACKET = 'bracket';
+  var EXEC_FORM_ARG = 'string';
+  var COMMA = 'atom';
+  var ERROR = 'error';
+
+
   // the pattern used by the docker parser
   var lineContinuation = /^\\\s*$/;
   // pattern for double quoted strings with escapes ; single quoted string are not valid here
@@ -55,14 +66,14 @@ CodeMirror.defineMode("dockerfile", function(config) {
       if (stream.peek() == "#") {
         stream.skipToEnd();
         state.followInstruction = false;
-        return "comment";
+        return COMMENT;
       }
       // keywords must start line
       // keywords are case-insensitive
       if (stream.match(keywords, true)) {
         state.inMultiline = false;
         state.followInstruction = true;
-        return "keyword";
+        return INSTRUCTION;
       }
       // the only other allowed line start is for line continuation
       if (!state.inMultiline) {
@@ -70,7 +81,7 @@ CodeMirror.defineMode("dockerfile", function(config) {
         state.followInstruction = false;
         state.inMultiline = false;
         state.bracketedArg = false;
-        return "error";
+        return ERROR;
       } else {
         return tokenizeArgs(stream, state);
       }
@@ -86,30 +97,30 @@ CodeMirror.defineMode("dockerfile", function(config) {
     }
     if (stream.match(lineContinuation, true)) {
       state.inMultiline = true;
-      return "variable-2";
+      return CONT_MARKER;
     }
     if (state.followInstruction && stream.eat("[")) {
       state.bracketedArg = true;
       state.followInstruction = false;
       state.inMultiline = false;
-      return "bracket";
+      return BRACKET;
     }
     if (state.bracketedArg && stream.eat("]")) {
       state.followInstruction = false;
       state.bracketedArg = false;
       state.inMultiline = false;
-      return "bracket";
+      return BRACKET;
     }
     // _inside_ the brackets, either string or comma
     if (state.bracketedArg && stream.eat(",")) {
       state.followInstruction = false;
       state.inMultiline = false;
-      return "atom";
+      return COMMA;
     }
     if (state.bracketedArg && stream.match(quoted, true)) {
       state.followInstruction = false;
       state.inMultiline = false;
-      return "string";
+      return EXEC_FORM_ARG;
     }
     if (!state.bracketedArg) {
       while (!stream.eol()) {
@@ -129,7 +140,7 @@ CodeMirror.defineMode("dockerfile", function(config) {
           if (stream.match(lineContinuation, true)) {
             state.inMultiline = true;
             state.followInstruction = false;
-            return "variable-2";
+            return CONT_MARKER;
           } else {
             stream.next();
             state.inMultiline = false;
@@ -142,7 +153,7 @@ CodeMirror.defineMode("dockerfile", function(config) {
       state.bracketedArg = false;
       state.inMultiline = false;
       state.followInstruction = false;
-      return "error";
+      return ERROR;
     }
   }
 
