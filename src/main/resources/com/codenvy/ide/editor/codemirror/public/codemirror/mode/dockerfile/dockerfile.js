@@ -124,16 +124,20 @@ CodeMirror.defineMode('dockerfile', function(config) {
     }
     if (!state.bracketedArg) {
       while (!stream.eol()) {
-        if (stream.eatWhile(/^[^\\]/)) {
-          if (stream.match(lineContinuation, false)) {
-            state.inMultiline = false;
-            state.followInstruction = false;
-            return null;
+        if (stream.eatWhile(/^[^\\\s]/)) { // eats until next whitespace or \
+          if (stream.peek() === '\\') {
+            if (stream.match(lineContinuation, false)) {
+              state.inMultiline = true;
+              state.followInstruction = false;
+              return null;
+            } else { // consume the \ and continue
+              stream.next();
+              state.inMultiline = false;
+              state.followInstruction = false;
+            }
           } else {
-            // consume the \ and continue
-            stream.next();
-            state.inMultiline = false;
-            state.followInstruction = false;
+            // it was a whitespace
+            return null;
           }
         } else {
           // next character is a \
