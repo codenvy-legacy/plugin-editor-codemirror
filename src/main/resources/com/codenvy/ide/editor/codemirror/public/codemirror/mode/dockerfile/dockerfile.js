@@ -21,28 +21,28 @@
 })(function(CodeMirror) {
 "use strict";
 
-CodeMirror.defineMode("dockerfile", function(config) {
+CodeMirror.defineMode('dockerfile', function(config) {
 
   var indentUnit = config.indentUnit;
 
   function keywordRegexp(words) {
-    return new RegExp("^\\s*((" + words.join(")|(") + "))\\b", "i");
+    return new RegExp('^\\s*((' + words.join(')|(') + '))\\b', 'i');
   }
 
   var keywords =  keywordRegexp([
-                  "ADD",
-                  "CMD",
-                  "COPY",
-                  "ENTRYPOINT",
-                  "ENV",
-                  "EXPOSE",
-                  "FROM",
-                  "MAINTAINER",
-                  "ONBUILD",
-                  "RUN",
-                  "USER",
-                  "VOLUME",
-                  "WORKDIR",
+                  'ADD',
+                  'CMD',
+                  'COPY',
+                  'ENTRYPOINT',
+                  'ENV',
+                  'EXPOSE',
+                  'FROM',
+                  'MAINTAINER',
+                  'ONBUILD',
+                  'RUN',
+                  'USER',
+                  'VOLUME',
+                  'WORKDIR',
                   ]);
 
   // token type constants
@@ -63,7 +63,7 @@ CodeMirror.defineMode("dockerfile", function(config) {
   function tokenize(stream, state) {
     if (stream.sol()) {
       // # only mark comment start when first character on the line (i.e. no leading spaces)
-      if (stream.peek() == "#") {
+      if (stream.peek() == '#') {
         stream.skipToEnd();
         state.followInstruction = false;
         return COMMENT;
@@ -99,20 +99,20 @@ CodeMirror.defineMode("dockerfile", function(config) {
       state.inMultiline = true;
       return CONT_MARKER;
     }
-    if (state.followInstruction && stream.eat("[")) {
+    if (state.followInstruction && stream.eat('[')) {
       state.bracketedArg = true;
       state.followInstruction = false;
       state.inMultiline = false;
       return BRACKET;
     }
-    if (state.bracketedArg && stream.eat("]")) {
+    if (state.bracketedArg && stream.eat(']')) {
       state.followInstruction = false;
       state.bracketedArg = false;
       state.inMultiline = false;
       return BRACKET;
     }
     // _inside_ the brackets, either string or comma
-    if (state.bracketedArg && stream.eat(",")) {
+    if (state.bracketedArg && stream.eat(',')) {
       state.followInstruction = false;
       state.inMultiline = false;
       return COMMA;
@@ -179,6 +179,6 @@ CodeMirror.defineMode("dockerfile", function(config) {
   };
 });
 
-CodeMirror.defineMIME("text/x-dockerfile-config", "dockerfile");
+CodeMirror.defineMIME('text/x-dockerfile-config', 'dockerfile');
 
 });
