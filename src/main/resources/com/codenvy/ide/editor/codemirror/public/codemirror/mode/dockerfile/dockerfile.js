@@ -75,6 +75,9 @@ CodeMirror.defineMode('dockerfile', function(config) {
         state.followInstruction = true;
         return INSTRUCTION;
       }
+      if (stream.eatSpace()) {
+        return null;
+      }
       // the only other allowed line start is for line continuation
       if (!state.inMultiline) {
         stream.skipToEnd();
