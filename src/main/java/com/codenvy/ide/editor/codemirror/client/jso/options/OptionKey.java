@@ -29,4 +29,5 @@ public final class OptionKey {
     public static final String KEYMAP = "keyMap";
     public static final String SHOW_CURSOR_WHEN_SELECTING = "showCursorWhenSelecting";
 
+    public static final String CONTINUE_COMMENT = "continueComments";
 }

@@ -278,6 +278,9 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         // highlight active line
         options.setProperty(STYLE_ACTIVE_LINE, true);
 
+        // activate continueComments addon
+        options.setProperty(OptionKey.CONTINUE_COMMENT, true);
+
         return options;
     }
 
