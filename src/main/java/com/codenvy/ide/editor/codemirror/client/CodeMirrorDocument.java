@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
+import static com.codenvy.ide.editor.codemirror.client.EventTypes.BEFORE_CHANGE;
 import static com.codenvy.ide.editor.codemirror.client.EventTypes.CHANGE;
 
 import com.codenvy.ide.api.text.Region;
@@ -17,16 +18,22 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
+import com.codenvy.ide.editor.codemirror.client.jso.event.CMBeforeChangeEventOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
+import com.codenvy.ide.jseditor.client.changeintercept.TextChange;
 import com.codenvy.ide.jseditor.client.document.AbstractEmbeddedDocument;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
 import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
 import com.codenvy.ide.jseditor.client.events.DocumentChangeEvent;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
+import com.codenvy.ide.jseditor.client.events.TextChangeEvent;
+import com.codenvy.ide.jseditor.client.events.TextChangeEvent.ChangeUpdater;
 import com.codenvy.ide.jseditor.client.text.LinearRange;
 import com.codenvy.ide.jseditor.client.text.TextPosition;
 import com.codenvy.ide.jseditor.client.text.TextRange;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
@@ -56,6 +63,18 @@ public class CodeMirrorDocument extends AbstractEmbeddedDocument {
                 fireDocumentChangeEvent(change);
             }
         });
+        codeMirror.on(this.documentOverlay, BEFORE_CHANGE, new EventHandlers.EventHandlerMixedParameters() {
+            @Override
+            public void onEvent(final JsArrayMixed params) {
+
+                // first parameter is editor instance, second is the change
+                final CMBeforeChangeEventOverlay change = params.getObject(1);
+                // undo/redo changes are not modifiable
+                if (change.hasUpdate()) {
+                    fireTextChangeEvent(change);
+                }
+            }
+        });
     }
 
     private void fireDocumentChangeEvent(final CMChangeEventOverlay param) {
@@ -73,6 +92,32 @@ public class CodeMirrorDocument extends AbstractEmbeddedDocument {
         final String text = param.getText().join("\n");
 
         final DocumentChangeEvent event = new DocumentChangeEvent(this, startOffset, length, text);
+        getDocEventBus().fireEvent(event);
+    }
+
+    private void fireTextChangeEvent(final CMBeforeChangeEventOverlay param) {
+        final TextPosition from = new TextPosition(param.getFrom().getLine(), param.getFrom().getCharacter());
+        final TextPosition to = new TextPosition(param.getTo().getLine(), param.getTo().getCharacter());
+        final TextChange change = new TextChange.Builder().from(from)
+                                                            .to(to)
+                                                            .insert(param.getText().join("\n"))
+                                                            .build();
+        final TextChangeEvent event = new TextChangeEvent(change, new ChangeUpdater() {
+            @Override
+            public void update(TextChange updatedChange) {
+                final CMPositionOverlay from = CMPositionOverlay.create(updatedChange.getFrom().getLine(),
+                                                                        updatedChange.getFrom().getLine());
+                final CMPositionOverlay to = CMPositionOverlay.create(updatedChange.getTo().getLine(),
+                                                                      updatedChange.getTo().getLine());
+                final String newText = updatedChange.getNewText();
+                final String[] split = newText.split("\n");
+                final JsArrayString text = JavaScriptObject.createArray().cast();
+                for (final String s: split) {
+                    text.push(s);
+                }
+                param.update(from, to, text);
+            }
+        });
         getDocEventBus().fireEvent(event);
     }
 
