@@ -82,7 +82,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      * @return the commands
      */
     public final native MapFromStringTo<CMCommandOverlay> commands() /*-{
-        return this.command;
+        return this.commands;
     }-*/;
 
     /**
