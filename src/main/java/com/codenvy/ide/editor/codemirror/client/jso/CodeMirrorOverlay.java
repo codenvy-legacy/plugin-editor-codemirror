@@ -78,6 +78,14 @@ public class CodeMirrorOverlay extends JavaScriptObject {
     }-*/;
 
     /**
+     * Returns the map of registered commands.
+     * @return the commands
+     */
+    public final static native MapFromStringTo<CMCommandOverlay> commands() /*-{
+        return this.command;
+    }-*/;
+
+    /**
      * Returns the default configuration object for new codemirror editors.<br>
      * This object properties can be modified to change the default options for new editors (but will not change existing ones).
      *
