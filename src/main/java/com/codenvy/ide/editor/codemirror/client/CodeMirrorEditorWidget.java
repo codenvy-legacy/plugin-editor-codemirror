@@ -33,9 +33,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.codenvy.ide.api.editor.EditorAgent;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.api.text.RegionImpl;
 import com.codenvy.ide.api.texteditor.HandlesUndoRedo;
+import com.codenvy.ide.editor.codemirror.client.jso.CMCommandOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
@@ -180,6 +182,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
                                   final EventBus eventBus,
                                   final KeymapPrefReader keymapPrefReader,
                                   final CompletionResources completionResources,
+                                  final EditorAgent editorAgent,
                                   @Assisted final String editorMode) {
         initWidget(UIBINDER.createAndBindUi(this));
 
@@ -211,6 +214,14 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
             }
         });
         this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
+
+        // configure the save command to launch the save action
+        this.codeMirror.commands().put("save", CMCommandOverlay.create(new CMCommandOverlay.CommandFunction() {
+            @Override
+            public void execCommand(final CMEditorOverlay editor) {
+                editorAgent.getActiveEditor().doSave();
+            }
+        }));
 
         buildKeybindingInfo();
         this.undoRedo = new CodeMirrorUndoRedo(this.editorOverlay.getDoc());
