@@ -45,7 +45,7 @@
     </scm>
     <properties>
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
-        <codemirror.upstream.version>4.5</codemirror.upstream.version>
+        <codemirror.upstream.version>4.7</codemirror.upstream.version>
         <license_years>2014</license_years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
