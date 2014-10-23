@@ -73,7 +73,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      *
      * @return the version, major.minor.patch (all three are integers)
      */
-    public final static native String version() /*-{
+    public final native String version() /*-{
         return this.version();
     }-*/;
 
@@ -81,7 +81,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      * Returns the map of registered commands.
      * @return the commands
      */
-    public final static native MapFromStringTo<CMCommandOverlay> commands() /*-{
+    public final native MapFromStringTo<CMCommandOverlay> commands() /*-{
         return this.command;
     }-*/;
 
@@ -161,7 +161,7 @@ public class CodeMirrorOverlay extends JavaScriptObject {
      * @param name the name of the function
      * @return the hint function
      */
-    public final static native CMHintFunctionOverlay getHintFunction(String name) /*-{
+    public final native CMHintFunctionOverlay getHintFunction(String name) /*-{
         return this.hint[name];
     }-*/;
 
