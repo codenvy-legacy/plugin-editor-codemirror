@@ -312,26 +312,24 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     }
 
     public void selectVimKeymap() {
-        this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.VIM));
-        this.editorOverlay.setOption(SHOW_CURSOR_WHEN_SELECTING, true);
+        // vim mode is a special case
+        this.editorOverlay.setOption("vimMode", true);
     }
 
     public void selectEmacsKeymap() {
         this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.EMACS));
-        this.editorOverlay.setOption("SHOW_CURSOR_WHEN_SELECTING", false);
     }
 
     public void selectSublimeKeymap() {
         this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.SUBLIME));
-        this.editorOverlay.setOption("SHOW_CURSOR_WHEN_SELECTING", false);
     }
 
     public void selectDefaultKeymap() {
         this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.DEFAULT));
-        this.editorOverlay.setOption("SHOW_CURSOR_WHEN_SELECTING", false);
     }
 
     private void selectKeymap(final Keymap keymap) {
+        resetKeymap();
         Keymap usedKeymap = keymap;
         if (usedKeymap == null) {
             usedKeymap = CodeMirrorKeymaps.DEFAULT;
@@ -350,6 +348,14 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
             Log.error(CodeMirrorEditorWidget.class, "Unknown keymap: " + keymap + " - replacing by default one.");
         }
         this.keymap = usedKeymap;
+    }
+
+    private void resetKeymap() {
+        if (this.editorOverlay.getBooleanOption("vimMode")) {
+            this.editorOverlay.setOption("vimMode", false);
+            this.editorOverlay.setOption(SHOW_CURSOR_WHEN_SELECTING, false);
+        }
+        
     }
 
     @Override
