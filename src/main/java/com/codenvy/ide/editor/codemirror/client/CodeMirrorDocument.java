@@ -178,6 +178,18 @@ public class CodeMirrorDocument extends AbstractEmbeddedDocument {
         return this.documentOverlay.getValue();
     }
 
+    public String getContentRange(final int offset, final int length) {
+        final CMPositionOverlay start = this.documentOverlay.posFromIndex(offset);
+        final CMPositionOverlay end = this.documentOverlay.posFromIndex(offset + length);
+        return this.documentOverlay.getRange(start, end);
+    }
+
+    public String getContentRange(final TextRange range) {
+        CMPositionOverlay from = CMPositionOverlay.create(range.getFrom().getLine(), range.getFrom().getCharacter());
+        CMPositionOverlay to = CMPositionOverlay.create(range.getTo().getLine(), range.getTo().getCharacter());
+        return this.documentOverlay.getRange(from, to);
+    }
+
     public void replace(final Region region, final String text) {
         final CMPositionOverlay fromPos = this.documentOverlay.posFromIndex(region.getOffset());
         final CMPositionOverlay toPos = this.documentOverlay.posFromIndex(region.getOffset() + region.getLength());
