@@ -16,7 +16,7 @@
 <module>
     <inherits name="com.google.gwt.user.User"/>
     <inherits name="com.codenvy.ide.jseditor.JsEditor"/>
-    <inherits name="com.google.gwt.logging.Logging" />
+<!--     <inherits name="com.google.gwt.logging.Logging" /> -->
     
     <!-- Default value in Logging.gwt.xml: INFO -->
     <set-property name="gwt.logging.logLevel" value="INFO"/>
@@ -27,9 +27,7 @@
     <!-- Only enable console -->
     <set-property name="gwt.logging.consoleHandler" value="ENABLED" />
     <set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
-    <set-property name="gwt.logging.firebugHandler" value="DISABLED" />
     <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
-    <set-property name="gwt.logging.popupHandler" value="DISABLED" />
     <set-property name="gwt.logging.systemHandler" value="DISABLED" />
     <set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
 </module>
