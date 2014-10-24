@@ -15,7 +15,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineHandleOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.marks.MarksManager;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayString;
+
+import elemental.util.ArrayOf;
 
 /**
  * Overlay on the cm.Doc objects.
@@ -101,42 +102,11 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     /**
      * Get the text between the given points in the editor. The lines are separated with \n.
-     * @param fromLine line of the range start point
-     * @param fromChar char of the range start point
-     * @param toLine line of the range end point
-     * @param toChar char of the range end point
-     * @return the text in the range
-     * @deprecated use {@link #getRange(CMPositionOverlay, CMPositionOverlay)}
-     */
-    @Deprecated
-    public final native String getRange(int fromLine, int fromChar, int toLine, int toChar) /*-{
-        return this.getRange({ "line" : fromLine, "ch" : fromChar },
-                             { "line" : toLine, "ch" : toChar });
-    }-*/;
-
-    /**
-     * Get the text between the given points in the editor. The lines are separated with \n.
      * @param from the range start point
      * @param to the range end point
      */
     public final native String getRange(CMPositionOverlay from, CMPositionOverlay to) /*-{
         return this.getRange(from, to);
-    }-*/;
-
-    /**
-     * Get the text between the given points in the editor. The lines are separated with the given separator.
-     * @param fromLine line of the range start point
-     * @param fromChar char of the range start point
-     * @param toLine line of the range end point
-     * @param toChar char of the range end point
-     * @return the text in the range
-     * @deprecated use {@link #getRange(CMPositionOverlay, CMPositionOverlay, String)}
-     */
-    @Deprecated
-    public final native String getRange(int fromLine, int fromChar, int toLine, int toChar, String separator) /*-{
-        return this.getRange({ "line" : fromLine, "ch" : fromChar },
-                             { "line" : toLine, "ch" : toChar },
-                              separator);
     }-*/;
 
     /**
@@ -149,18 +119,15 @@ public class CMDocumentOverlay extends JavaScriptObject {
     }-*/;
 
     /**
-     * Replace the text range with the new text.
-     *
-     * @param replacement the new text
-     * @param fromLine the line of the beginning of the range
-     * @param fromChar the char of the beginning of the range
-     * @param toLine the line of the end of the range
-     * @param toChar the char of the end of the range
-     * @deprecated use {@link #replaceRange(String, CMPositionOverlay, CMPositionOverlay)}
+     * Get the text between the given points in the editor as an array of lines.<br>
+     * Note: if the range start doesn't match a line start, the first item of the array will be a partial line, same
+     * for the last line
+     * @param from the range start point
+     * @param to the range end point
+     * @return the array of lines
      */
-    @Deprecated
-    public final native void replaceRange(String replacement, int fromLine, int fromChar, int toLine, int toChar) /*-{
-        return this.replaceRange(replacement, { line : fromLine, ch : fromChar }, { line : toLine, ch : toChar });
+    public final native ArrayOf<String> getRangeAsArray(CMPositionOverlay from, CMPositionOverlay to) /*-{
+        return this.getRange(from, to, false);
     }-*/;
 
     /**
@@ -312,18 +279,67 @@ public class CMDocumentOverlay extends JavaScriptObject {
 
     // selection
 
+    /**
+     * Get the currently selected code.<br>
+     * When multiple selections are present, they are concatenated with '\n' in between.
+     * @return the selection content
+     */
     public final native String getSelection() /*-{
         return this.getSelection();
     }-*/;
 
+    /**
+     * Get the currently selected code.<br>
+     * When multiple selections are present, they are concatenated with an instance of the line separator in between.
+     * @param lineSep a line separator to put between the lines in the output
+     * @return the selection content
+     */
     public final native String getSelection(String lineSep) /*-{
         return this.getSelection(lineSep);
     }-*/;
 
-    public final native JsArrayString getSelections(String lineSep) /*-{
+    /**
+     * Get the currently selected code in an array, separated by line.<br>
+     * When multiple selections are present, they are concatenated with an instance of the line separator in between.
+     * @param lineSep a line separator to put between the lines in the output
+     * @return the selection content
+     */
+    public final native ArrayOf<String> getSelectionAsArray() /*-{
+        return this.getSelection(false);
+    }-*/;
+
+    /**
+     * Returns an array with one item for each of the current selection.<br>
+     * Each item in the array is the concatenation of the lines for the matching selection with lineSep in between.
+     * @param lineSep the line separator
+     * @return the array of selections content
+     */
+    public final native ArrayOf<String> getSelections(String lineSep) /*-{
         return this.getSelections(lineSep);
     }-*/;
 
+    /**
+     * Returns an array with one item for each of the current selection.<br>
+     * Each item in the array is the concatenation of the lines for the matching selection with '\n' in between.
+     * @return the array of selections content
+     */
+    public final native ArrayOf<String> getSelections() /*-{
+        return this.getSelections();
+    }-*/;
+
+    /**
+     * Returns an array with one item for each of the current selection.<br>
+     * Each item in the array is the array of the lines for the matching selection
+     * @return the array of selections content
+     */
+    public final native ArrayOf<ArrayOf<String>> getSelectionsAsArrays() /*-{
+        return this.getSelections(false);
+    }-*/;
+
+    /**
+     * Return true if any text is selected.
+     * @return true if any text is selected
+     */
     public final native boolean somethingSelected() /*-{
         return this.somethingSelected();
     }-*/;
