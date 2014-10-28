@@ -88,4 +88,19 @@ public final class EventTypes {
     /** Event type constant: when the editor re-adds the widget to the DOM. */
     public static final String LINEWIDGET_REDRAW = "redraw";
 
+    /* Completion events. */
+
+
+    /** Fired when the pop-up is shown. */
+    public static final String COMPLETION_SHOWN= "shown";
+
+    /** Fired when a completion is selected. */
+    public static final String COMPLETION_SELECT= "select";
+
+    /** Fired when a completion is picked. */
+    public static final String COMPLETION_PICK = "pick";
+
+    /** Fired when the completion is finished. */
+    public static final String COMPLETION_CLOSE = "close";
+
 }
