@@ -15,6 +15,8 @@ package com.codenvy.ide.editor.codemirror.client;
  */
 public final class EventTypes {
 
+    private EventTypes() {}
+
     // not complete, added when needed
 
     /** Event type constant: before the selection changes. */
