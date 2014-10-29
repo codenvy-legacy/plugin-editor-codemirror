@@ -18,6 +18,7 @@ import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMCompletionObjectOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintApplyOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintApplyOverlay.HintApplyFunction;
@@ -29,6 +30,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintResultsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMRenderFunctionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMRenderFunctionOverlay.RenderFunction;
+import com.codenvy.ide.jseditor.client.codeassist.AdditionalInfoCallback;
 import com.codenvy.ide.jseditor.client.codeassist.Completion;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal.CompletionCallback;
@@ -40,14 +42,23 @@ import com.codenvy.ide.util.dom.Elements;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 
+import elemental.dom.Document;
 import elemental.dom.Element;
 import elemental.dom.Node;
+import elemental.dom.NodeList;
+import elemental.html.ClientRect;
 import elemental.html.SpanElement;
+import elemental.js.dom.JsElement;
+import elemental.js.util.JsMapFromStringTo;
 
 public final class ShowCompletionHelper {
 
+    private static final String PROP_ADDITIONAL_INFO = "additionalInfo";
     /** The logger. */
     private static final Logger LOG = Logger.getLogger(ShowCompletionHelper.class.getName());
+
+    /** Marker class name for additional info popups. */
+    private static final String ADDITIONAL_INFO_MARKER = "completion-additional-info-do-not-use-your-element-will-be-removed-anytime";
 
     private ShowCompletionHelper() {}
 
@@ -55,6 +66,7 @@ public final class ShowCompletionHelper {
                                                final CMEditorOverlay editorOverlay,
                                                final EmbeddedDocument document,
                                                final List<CompletionProposal> proposals,
+                                               final AdditionalInfoCallback additionalInfoCallback,
                                                final CompletionCss css) {
         if (! editorOverlay.hasShowHint() || proposals == null || proposals.isEmpty()) {
             // no support for hints or no proposals
@@ -76,16 +88,19 @@ public final class ShowCompletionHelper {
                 for (final CompletionProposal proposal: proposals) {
 
                     final CMHintApplyOverlay hintApply = createApplyHintFunc(editorWidget, document, proposal);
-                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal, css);
+                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal,
+                                                                                    additionalInfoCallback, css);
 
                     final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
 
                     completionObject.setHint(hintApply);
                     completionObject.setRender(renderFunc);
+                    setAdditionalInfo(completionObject, proposal.getAdditionalProposalInfo());
 
                     list.push(completionObject);
                 }
                 result.setFrom(editor.getDoc().getCursor());
+                setupShowAdditionalInfo(result, additionalInfoCallback, editorWidget);
                 return result;
             }
 
@@ -101,6 +116,7 @@ public final class ShowCompletionHelper {
                                                final CMEditorOverlay editorOverlay,
                                                final EmbeddedDocument document,
                                                final CompletionsSource completionsSource,
+                                               final AdditionalInfoCallback additionalInfoCallback,
                                                final CompletionCss css) {
         if (! editorOverlay.hasShowHint()) {
             // no support for hints
@@ -122,16 +138,19 @@ public final class ShowCompletionHelper {
                         for (final CompletionProposal proposal: proposals) {
 
                             final CMHintApplyOverlay hintApply = createApplyHintFunc(editorWidget, document, proposal);
-                            final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal, css);
+                            final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal,
+                                                                                            additionalInfoCallback, css);
 
                             final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
 
                             completionObject.setHint(hintApply);
                             completionObject.setRender(renderFunc);
+                            setAdditionalInfo(completionObject, proposal.getAdditionalProposalInfo());
 
                             list.push(completionObject);
                         }
                         result.setFrom(editor.getDoc().getCursor());
+                        setupShowAdditionalInfo(result, additionalInfoCallback, editorWidget);
                         callback.call(result);
                     }
                 });
@@ -246,6 +265,7 @@ public final class ShowCompletionHelper {
 
     private static CMRenderFunctionOverlay createRenderHintFunc(final CodeMirrorEditorWidget editorWidget,
                                                                 final CompletionProposal proposal,
+                                                                final AdditionalInfoCallback additionalInfoCallback,
                                                                 final CompletionCss css) {
         return CMRenderFunctionOverlay.create(new RenderFunction() {
 
@@ -264,6 +284,7 @@ public final class ShowCompletionHelper {
                 element.appendChild(icon);
                 element.appendChild(label);
                 element.appendChild(group);
+
             }
         });
     }
@@ -281,5 +302,72 @@ public final class ShowCompletionHelper {
                 element.appendChild(label);
             }
         });
+    }
+
+    private static void setupShowAdditionalInfo(final CMHintResultsOverlay data,
+                                                final AdditionalInfoCallback additionalInfoCallback,
+                                                final CodeMirrorEditorWidget editorWidget) {
+
+        if (additionalInfoCallback != null) {
+            final CodeMirrorOverlay codeMirror = editorWidget.getCodeMirror();
+            final Element bodyElement = Elements.getBody();
+            codeMirror.on(data, EventTypes.COMPLETION_SELECT, new EventHandlers.EventHandlerMixedParameters() {
+                @Override
+                public void onEvent(final JsArrayMixed param) {
+                    // param 0 -> completion object (string or object)
+                    final CMCompletionObjectOverlay completionObject = param.getObject(0);
+                    // param 1 -> DOM node in the menu
+                    final JsElement itemElement = param.getObject(1);
+                    final ClientRect itemRect = itemElement.getBoundingClientRect();
+                    Element popup = itemElement;
+                    while (popup.getParentElement() != null && ! popup.getParentElement().equals(bodyElement)) {
+                        popup = popup.getParentElement();
+                    }
+                    final ClientRect popupRect = popup.getBoundingClientRect();
+                    final float pixelX = Math.max(itemRect.getRight(), popupRect.getRight());
+                    final float pixelY = itemRect.getTop();
+                    final Element info = getAdditionalInfo(completionObject);
+
+                    // there can be only one
+                    // remove any other body child with the additional info marker
+                    removeStaleInfoPopups(ADDITIONAL_INFO_MARKER);
+
+                    final Element infoDisplayElement = additionalInfoCallback.onAdditionalInfoNeeded(pixelX, pixelY, info);
+                    // set the additional info marker on the popup element
+                    infoDisplayElement.getClassList().add(ADDITIONAL_INFO_MARKER);
+                }
+            });
+
+            // close the additional info along with the completion popup
+            codeMirror.on(data, EventTypes.COMPLETION_CLOSE, new EventHandlers.EventHandlerNoParameters() {
+                @Override
+                public void onEvent() {
+                    removeStaleInfoPopups(ADDITIONAL_INFO_MARKER);
+                }
+                
+            });
+        }
+    }
+
+    protected static void removeStaleInfoPopups(final String markerClass) {
+        final Document documentElement = Elements.getDocument();
+        final NodeList markersToRemove = documentElement.getElementsByClassName(markerClass);
+        for (int i = 0; i < markersToRemove.getLength(); i++) {
+            final Node childToRemove = markersToRemove.item(i);
+            final Node parent = childToRemove.getParentNode();
+            if (parent != null) {
+                parent.removeChild(childToRemove);
+            }
+        }
+    }
+
+    private static void setAdditionalInfo(final CMCompletionObjectOverlay completion, final Element value) {
+        JsMapFromStringTo<Element> element = completion.cast();
+        element.put(PROP_ADDITIONAL_INFO, value);
+    }
+
+    private static Element getAdditionalInfo(final CMCompletionObjectOverlay completion) {
+        JsMapFromStringTo<Element> element = completion.cast();
+        return element.get(PROP_ADDITIONAL_INFO);
     }
 }

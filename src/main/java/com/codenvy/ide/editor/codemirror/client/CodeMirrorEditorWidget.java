@@ -60,6 +60,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.marks.CMTextMarkerOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
+import com.codenvy.ide.jseditor.client.codeassist.AdditionalInfoCallback;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
@@ -838,16 +839,28 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.clearGutter(gutterId);
     }
 
-    public void showCompletionsProposals(final List<CompletionProposal> proposals) {
+    public void showCompletionsProposals(final List<CompletionProposal> proposals,
+                                         final AdditionalInfoCallback additionalInfoCallback) {
         ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
-                                                     proposals, this.completionResources.completionCss());
+                                                     proposals, additionalInfoCallback,
+                                                     this.completionResources.completionCss());
+    }
+
+    public void showCompletionsProposals(final List<CompletionProposal> proposals) {
+        showCompletionsProposals(proposals, null);
+    }
+
+    @Override
+    public void showCompletionProposals(final CompletionsSource completionsSource,
+                                        final AdditionalInfoCallback additionalInfoCallback) {
+        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
+                                                     completionsSource, additionalInfoCallback,
+                                                     this.completionResources.completionCss());
     }
 
     @Override
     public void showCompletionProposals(final CompletionsSource completionsSource) {
-        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
-                                                     completionsSource,
-                                                     this.completionResources.completionCss());
+        showCompletionProposals(completionsSource, null);
     }
 
     @Override
