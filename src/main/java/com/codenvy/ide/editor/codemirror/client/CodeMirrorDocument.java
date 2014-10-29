@@ -14,8 +14,9 @@ import static com.codenvy.ide.editor.codemirror.client.EventTypes.CHANGE;
 
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
 import com.codenvy.ide.jseditor.client.document.DocumentEventBus;
 import com.codenvy.ide.jseditor.client.document.DocumentHandle;
@@ -24,8 +25,7 @@ import com.codenvy.ide.jseditor.client.events.CursorActivityHandler;
 import com.codenvy.ide.jseditor.client.events.DocumentChangeEvent;
 import com.codenvy.ide.jseditor.client.events.HasCursorActivityHandlers;
 import com.codenvy.ide.jseditor.client.text.TextPosition;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
@@ -43,16 +43,17 @@ public class CodeMirrorDocument implements EmbeddedDocument, DocumentHandle {
     private final DocumentEventBus eventBus = new DocumentEventBus();
 
     public CodeMirrorDocument(final CMDocumentOverlay documentOverlay,
+                              final CodeMirrorOverlay codeMirror,
                               final HasCursorActivityHandlers hasCursorActivityHandlers) {
         this.documentOverlay = documentOverlay;
         this.hasCursorActivityHandlers = hasCursorActivityHandlers;
 
-        documentOverlay.getEditor().on(CHANGE, new CMEditorOverlay.EventHandlerMultipleParameters<JavaScriptObject>() {
+        codeMirror.on(this.documentOverlay, CHANGE, new EventHandlers.EventHandlerMixedParameters() {
             @Override
-            public void onEvent(final JsArray<JavaScriptObject> params) {
+            public void onEvent(final JsArrayMixed params) {
 
                 // first parameter is editor instance, second is the change
-                final CMChangeEventOverlay change = params.get(1).cast();
+                final CMChangeEventOverlay change = params.getObject(1);
                 fireDocumentChangeEvent(change);
             }
         });

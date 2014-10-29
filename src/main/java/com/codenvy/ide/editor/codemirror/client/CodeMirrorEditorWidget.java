@@ -562,7 +562,7 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
     @Override
     public EmbeddedDocument getDocument() {
         if (this.embeddedDocument == null) {
-            this.embeddedDocument = new CodeMirrorDocument(this.editorOverlay.getDoc(), this);
+            this.embeddedDocument = new CodeMirrorDocument(this.editorOverlay.getDoc(), this.codeMirror, this);
         }
         return this.embeddedDocument;
     }
