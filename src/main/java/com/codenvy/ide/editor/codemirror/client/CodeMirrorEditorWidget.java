@@ -846,6 +846,22 @@ public class CodeMirrorEditorWidget extends Composite implements EditorWidget, H
         };
     }
 
+    /**
+     * Returns the editor overlay instance.
+     * @return the editor overlay
+     */
+    CMEditorOverlay getEditorOverlay() {
+        return this.editorOverlay;
+    }
+
+    /**
+     * Return the CodeMirror object.
+     * @return the CodeMirror
+     */
+    CodeMirrorOverlay getCodeMirror() {
+        return this.codeMirror;
+    }
+
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
     }
 }
