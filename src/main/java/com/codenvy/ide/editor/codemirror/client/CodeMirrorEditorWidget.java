@@ -185,7 +185,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     private Keymap                                      keymap;
 
-    private final CompletionResources completionResources;
+    private final ShowCompletion showCompletion;
 
     private CMKeymapOverlay keyBindings;
 
@@ -199,7 +199,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.keymapPrefReader = keymapPrefReader;
-        this.completionResources = completionResources;
+        this.showCompletion = new ShowCompletion(this, completionResources.completionCss());
 
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
@@ -841,9 +841,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     public void showCompletionsProposals(final List<CompletionProposal> proposals,
                                          final AdditionalInfoCallback additionalInfoCallback) {
-        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
-                                                     proposals, additionalInfoCallback,
-                                                     this.completionResources.completionCss());
+        this.showCompletion.showCompletionProposals(proposals, additionalInfoCallback);
     }
 
     public void showCompletionsProposals(final List<CompletionProposal> proposals) {
@@ -853,9 +851,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
     @Override
     public void showCompletionProposals(final CompletionsSource completionsSource,
                                         final AdditionalInfoCallback additionalInfoCallback) {
-        ShowCompletionHelper.showCompletionProposals(this, this.editorOverlay, this.embeddedDocument,
-                                                     completionsSource, additionalInfoCallback,
-                                                     this.completionResources.completionCss());
+        this.showCompletion.showCompletionProposals(completionsSource, additionalInfoCallback);
     }
 
     @Override
@@ -865,8 +861,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     @Override
     public void showCompletionProposals() {
-        ShowCompletionHelper.showCompletionProposals(this, this.codeMirror, this.editorOverlay, this.embeddedDocument,
-                                                     this.completionResources.completionCss());
+        this.showCompletion.showCompletionProposals();
     }
 
     public MarkerRegistration addMarker(final TextRange range, final String className) {

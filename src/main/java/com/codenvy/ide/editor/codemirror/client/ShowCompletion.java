@@ -51,24 +51,33 @@ import elemental.html.SpanElement;
 import elemental.js.dom.JsElement;
 import elemental.js.util.JsMapFromStringTo;
 
-public final class ShowCompletionHelper {
+/**
+ * Component that handles the showCompletion(...) operations.
+ */
+public final class ShowCompletion {
 
-    private static final String PROP_ADDITIONAL_INFO = "additionalInfo";
     /** The logger. */
-    private static final Logger LOG = Logger.getLogger(ShowCompletionHelper.class.getName());
+    private static final Logger LOG = Logger.getLogger(ShowCompletion.class.getName());
+
+    /** Property name where the additional info is stored in the completion object. */
+    private static final String PROP_ADDITIONAL_INFO = "additionalInfo";
 
     /** Marker class name for additional info popups. */
     private static final String ADDITIONAL_INFO_MARKER = "completion-additional-info-do-not-use-your-element-will-be-removed-anytime";
 
-    private ShowCompletionHelper() {}
+    private final CompletionCss completionCss;
 
-    public static void showCompletionProposals(final CodeMirrorEditorWidget editorWidget,
-                                               final CMEditorOverlay editorOverlay,
-                                               final EmbeddedDocument document,
-                                               final List<CompletionProposal> proposals,
-                                               final AdditionalInfoCallback additionalInfoCallback,
-                                               final CompletionCss css) {
-        if (! editorOverlay.hasShowHint() || proposals == null || proposals.isEmpty()) {
+    private final CodeMirrorEditorWidget editorWidget;
+
+    public ShowCompletion(final CodeMirrorEditorWidget editorWidget,
+                                final CompletionCss css) {
+        this.completionCss = css;
+        this.editorWidget = editorWidget;
+    }
+
+    public void showCompletionProposals(final List<CompletionProposal> proposals,
+                                        final AdditionalInfoCallback additionalInfoCallback) {
+        if (! editorWidget.getEditorOverlay().hasShowHint() || proposals == null || proposals.isEmpty()) {
             // no support for hints or no proposals
             return;
         }
@@ -87,9 +96,9 @@ public final class ShowCompletionHelper {
                 final JsArrayMixed list = result.getList();
                 for (final CompletionProposal proposal: proposals) {
 
-                    final CMHintApplyOverlay hintApply = createApplyHintFunc(editorWidget, document, proposal);
-                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal,
-                                                                                    additionalInfoCallback, css);
+                    final CMHintApplyOverlay hintApply = createApplyHintFunc(proposal);
+                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(proposal,
+                                                                                    additionalInfoCallback);
 
                     final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
 
@@ -100,7 +109,7 @@ public final class ShowCompletionHelper {
                     list.push(completionObject);
                 }
                 result.setFrom(editor.getDoc().getCursor());
-                setupShowAdditionalInfo(result, additionalInfoCallback, editorWidget);
+                setupShowAdditionalInfo(result, additionalInfoCallback);
                 return result;
             }
 
@@ -108,17 +117,13 @@ public final class ShowCompletionHelper {
         });
         hintOptions.setHint(hintFunction);
 
-        editorOverlay.showHint(hintOptions);
+        editorWidget.getEditorOverlay().showHint(hintOptions);
     }
 
     /* async version */
-    public static void showCompletionProposals(final CodeMirrorEditorWidget editorWidget,
-                                               final CMEditorOverlay editorOverlay,
-                                               final EmbeddedDocument document,
-                                               final CompletionsSource completionsSource,
-                                               final AdditionalInfoCallback additionalInfoCallback,
-                                               final CompletionCss css) {
-        if (! editorOverlay.hasShowHint()) {
+    public void showCompletionProposals(final CompletionsSource completionsSource,
+                                        final AdditionalInfoCallback additionalInfoCallback) {
+        if (! editorWidget.getEditorOverlay().hasShowHint()) {
             // no support for hints
             return;
         }
@@ -137,9 +142,9 @@ public final class ShowCompletionHelper {
                         final JsArrayMixed list = result.getList();
                         for (final CompletionProposal proposal: proposals) {
 
-                            final CMHintApplyOverlay hintApply = createApplyHintFunc(editorWidget, document, proposal);
-                            final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal,
-                                                                                            additionalInfoCallback, css);
+                            final CMHintApplyOverlay hintApply = createApplyHintFunc(proposal);
+                            final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(proposal,
+                                                                                            additionalInfoCallback);
 
                             final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
 
@@ -150,7 +155,7 @@ public final class ShowCompletionHelper {
                             list.push(completionObject);
                         }
                         result.setFrom(editor.getDoc().getCursor());
-                        setupShowAdditionalInfo(result, additionalInfoCallback, editorWidget);
+                        setupShowAdditionalInfo(result, additionalInfoCallback);
                         callback.call(result);
                     }
                 });
@@ -159,20 +164,16 @@ public final class ShowCompletionHelper {
 
         // set the async hint function and trigger the delayed display of hints
         hintOptions.setHint(hintFunction);
-        editorOverlay.showHint(hintOptions);
+        editorWidget.getEditorOverlay().showHint(hintOptions);
     }
 
-    public static void showCompletionProposals(final CodeMirrorEditorWidget editorWidget,
-                                               final CodeMirrorOverlay codeMirrorOverlay,
-                                               final CMEditorOverlay editorOverlay,
-                                               final EmbeddedDocument document,
-                                               final CompletionCss css) {
-         if (! editorOverlay.hasShowHint()) {
+    public void showCompletionProposals() {
+         if (! editorWidget.getEditorOverlay().hasShowHint()) {
              // no support for hints
              return;
          }
-         final CMHintFunctionOverlay hintAuto = CMHintFunctionOverlay.createFromName(codeMirrorOverlay, "auto");
-         final CMHintResultsOverlay result = hintAuto.apply(editorOverlay);
+         final CMHintFunctionOverlay hintAuto = CMHintFunctionOverlay.createFromName(editorWidget.getCodeMirror(), "auto");
+         final CMHintResultsOverlay result = hintAuto.apply(editorWidget.getEditorOverlay());
          if (result != null) {
              final List<String> proposals = new ArrayList<>();
              final JsArrayMixed list = result.getList();
@@ -187,17 +188,14 @@ public final class ShowCompletionHelper {
              }
              LOG.info("CM Completion returned " + list.length() + " items, of which " + nonStrings + " were not strings.");
     
-             showCompletionProposals(editorWidget, editorOverlay, proposals, result.getFrom(), result.getTo(), css);
+             showCompletionProposals(proposals, result.getFrom(), result.getTo());
          }
     }
 
-    private static void showCompletionProposals(final CodeMirrorEditorWidget editorWidget,
-                                               final CMEditorOverlay editorOverlay,
-                                               final List<String> proposals,
-                                               final CMPositionOverlay from,
-                                               final CMPositionOverlay to,
-                                               final CompletionCss css) {
-        if (! editorOverlay.hasShowHint() || proposals == null || proposals.isEmpty()) {
+    private void showCompletionProposals(final List<String> proposals,
+                                         final CMPositionOverlay from,
+                                         final CMPositionOverlay to) {
+        if (! editorWidget.getEditorOverlay().hasShowHint() || proposals == null || proposals.isEmpty()) {
             // no support for hints or no proposals
             return;
         }
@@ -220,7 +218,7 @@ public final class ShowCompletionHelper {
                     final CMCompletionObjectOverlay completionObject = JavaScriptObject.createObject().cast();
 
                     completionObject.setText(proposal);
-                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(editorWidget, proposal, css);
+                    final CMRenderFunctionOverlay renderFunc = createRenderHintFunc(proposal);
                     completionObject.setRender(renderFunc);
 
                     list.push(completionObject);
@@ -234,12 +232,10 @@ public final class ShowCompletionHelper {
         });
         hintOptions.setHint(hintFunction);
 
-        editorOverlay.showHint(hintOptions);
+        editorWidget.getEditorOverlay().showHint(hintOptions);
     }
 
-    private static CMHintApplyOverlay createApplyHintFunc(final CodeMirrorEditorWidget editorWidget,
-                                                   final EmbeddedDocument document,
-                                                   final CompletionProposal proposal) {
+    private CMHintApplyOverlay createApplyHintFunc(final CompletionProposal proposal) {
         return CMHintApplyOverlay.create(new HintApplyFunction() {
 
             @Override
@@ -249,6 +245,7 @@ public final class ShowCompletionHelper {
 
                     @Override
                     public void onCompletion(final Completion completion) {
+                        EmbeddedDocument document = editorWidget.getDocument();
                         // apply the completion
                         completion.apply(document);
                         // set the selection
@@ -263,18 +260,16 @@ public final class ShowCompletionHelper {
         });
     }
 
-    private static CMRenderFunctionOverlay createRenderHintFunc(final CodeMirrorEditorWidget editorWidget,
-                                                                final CompletionProposal proposal,
-                                                                final AdditionalInfoCallback additionalInfoCallback,
-                                                                final CompletionCss css) {
+    private CMRenderFunctionOverlay createRenderHintFunc(final CompletionProposal proposal,
+                                                         final AdditionalInfoCallback additionalInfoCallback) {
         return CMRenderFunctionOverlay.create(new RenderFunction() {
 
             @Override
             public void renderHint(final Element element, final CMHintResultsOverlay data,
                                    final JavaScriptObject completion) {
-                final SpanElement icon = Elements.createSpanElement(css.proposalIcon());
-                final SpanElement label = Elements.createSpanElement(css.proposalLabel());
-                final SpanElement group = Elements.createSpanElement(css.proposalGroup());
+                final SpanElement icon = Elements.createSpanElement(completionCss.proposalIcon());
+                final SpanElement label = Elements.createSpanElement(completionCss.proposalLabel());
+                final SpanElement group = Elements.createSpanElement(completionCss.proposalGroup());
                 if (proposal.getIcon() != null && proposal.getIcon().getSVGImage() != null){
                     icon.appendChild((Node)proposal.getIcon().getSVGImage().getElement());
                 } else if (proposal.getIcon() != null && proposal.getIcon().getImage() != null) {
@@ -289,24 +284,21 @@ public final class ShowCompletionHelper {
         });
     }
 
-    private static CMRenderFunctionOverlay createRenderHintFunc(final CodeMirrorEditorWidget editorWidget,
-                                                                final String proposal,
-                                                                final CompletionCss css) {
+    private CMRenderFunctionOverlay createRenderHintFunc(final String proposal) {
         return CMRenderFunctionOverlay.create(new RenderFunction() {
 
             @Override
             public void renderHint(final Element element, final CMHintResultsOverlay data,
                                    final JavaScriptObject completion) {
-                final SpanElement label = Elements.createSpanElement(css.proposalLabel());
+                final SpanElement label = Elements.createSpanElement(completionCss.proposalLabel());
                 label.setInnerHTML(proposal);
                 element.appendChild(label);
             }
         });
     }
 
-    private static void setupShowAdditionalInfo(final CMHintResultsOverlay data,
-                                                final AdditionalInfoCallback additionalInfoCallback,
-                                                final CodeMirrorEditorWidget editorWidget) {
+    private void setupShowAdditionalInfo(final CMHintResultsOverlay data,
+                                                final AdditionalInfoCallback additionalInfoCallback) {
 
         if (additionalInfoCallback != null) {
             final CodeMirrorOverlay codeMirror = editorWidget.getCodeMirror();
