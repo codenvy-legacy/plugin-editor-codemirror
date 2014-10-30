@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
@@ -38,6 +37,7 @@ import com.codenvy.ide.jseditor.client.codeassist.CompletionReadyCallback;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources.CompletionCss;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionsSource;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;
+import com.codenvy.ide.jseditor.client.text.LinearRange;
 import com.codenvy.ide.util.dom.Elements;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -249,9 +249,9 @@ public final class ShowCompletion {
                         // apply the completion
                         completion.apply(document);
                         // set the selection
-                        final Region selection = completion.getSelection(document);
+                        final LinearRange selection = completion.getSelection(document);
                         if (selection != null) {
-                            editorWidget.setSelectedRange(selection, true);
+                            editorWidget.getDocument().setSelectedRange(selection, true);
                         }
                     }
                 });
