@@ -112,6 +112,13 @@
     transition-property: top, left, bottom, right, height, width;
 }
 
+.cm-s-codenvy .CodeMirror-matchingtag {
+    background-image: linear-gradient(to top, rgba(255, 150, 0, 0.3), rgba(255, 150, 0, 0));
+}
+
+.cm-s-codenvy .cm-bracket.CodeMirror-matchingtag {
+}
+
 /* Styling dialogs. */
 
 .cm-s-codenvy .CodeMirror-dialog {
