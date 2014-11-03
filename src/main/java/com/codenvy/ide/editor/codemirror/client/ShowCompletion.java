@@ -127,6 +127,10 @@ public final class ShowCompletion {
             // no support for hints
             return;
         }
+        if (completionsSource == null) {
+            showCompletionProposals();
+        }
+
         final CMHintOptionsOverlay hintOptions = CMHintOptionsOverlay.create();
         final CMHintFunctionOverlay hintFunction = CMHintFunctionOverlay.createFromAsyncHintFunction(new AsyncHintFunction() {
 
