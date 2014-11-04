@@ -25,8 +25,8 @@ import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
 import com.codenvy.ide.jseditor.client.requirejs.RequirejsErrorHandler.RequireError;
+import com.codenvy.ide.jseditor.client.texteditor.ConfigurableTextEditor;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
-import com.codenvy.ide.jseditor.client.texteditor.TextEditor;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
@@ -243,7 +243,7 @@ public class CodeMirrorEditorExtension {
         this.editorTypeRegistry.registerEditorType(EditorType.fromKey(CODEMIRROR_EDITOR_KEY), "CodeMirror", new EditorBuilder() {
 
             @Override
-            public TextEditor buildEditor() {
+            public ConfigurableTextEditor buildEditor() {
                 final EmbeddedTextEditorPresenter editor = codeMirrorTextEditorFactory.createTextEditor();
                 editor.initialize(new DefaultTextEditorConfiguration(), notificationManager);
                 return editor;
