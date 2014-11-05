@@ -24,12 +24,15 @@ import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
+import com.codenvy.ide.jseditor.client.requirejs.RequirejsErrorHandler.RequireError;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
 import com.codenvy.ide.jseditor.client.texteditor.TextEditor;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.inject.Inject;
@@ -192,7 +195,22 @@ public class CodeMirrorEditorExtension {
 
             @Override
             public void onFailure(final Throwable e) {
-                Log.error(CodeMirrorEditorExtension.class, "Unable to inject CodeMirror", e);
+                if (e instanceof JavaScriptException) {
+                    final JavaScriptException jsException = (JavaScriptException)e;
+                    final Object nativeException = jsException.getThrown();
+                    if (nativeException instanceof RequireError) {
+                        final RequireError requireError = (RequireError)nativeException;
+                        final String errorType = requireError.getRequireType();
+                        String message = "Codemirror injection failed: " + errorType;
+                        final JsArrayString modules = requireError.getRequireModules();
+                        if (modules != null) {
+                            message += modules.join(",");
+                        }
+                        Log.error(CodeMirrorEditorExtension.class, message);
+                    }
+                } else {
+                    Log.error(CodeMirrorEditorExtension.class, "Unable to inject CodeMirror", e);
+                }
                 initializationFailed("Unable to inject CodeMirror main script");
             }
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
