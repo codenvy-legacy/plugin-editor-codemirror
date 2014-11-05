@@ -18,12 +18,16 @@
     <ui:style>
         .editor-container {
             position: relative;
-            
+
             /* allow resize */
             flex-grow: 1;
             -wekbit-flex-grow: 1;
             flex-shrink: 1;
             -wekbit-flex-shrink: 1;
+
+            /* needed for safari - but can't replace -flex-grow/shrink as ie doesn't know fill-available */
+            min-width: -moz-fill-available;
+            min-width: -webkit-fill-available;
         }
     </ui:style>
 
