@@ -324,6 +324,11 @@ public final class ShowCompletion {
                     // remove any other body child with the additional info marker
                     removeStaleInfoPopups(ADDITIONAL_INFO_MARKER);
 
+                    // Don't show anything if there is no additional info
+                    if (info == null) {
+                        return;
+                    }
+
                     final Element infoDisplayElement = additionalInfoCallback.onAdditionalInfoNeeded(pixelX, pixelY, info);
                     // set the additional info marker on the popup element
                     infoDisplayElement.getClassList().add(ADDITIONAL_INFO_MARKER);
