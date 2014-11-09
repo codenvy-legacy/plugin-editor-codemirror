@@ -90,8 +90,7 @@
 }
 
 .cm-s-codenvy .CodeMirror-activeline-background {
-    /* duplicated from LineNumerRenderer.css -> .activeline */
-    background: editorCurrentLineColor !important;
+    background: editorCurrentLineColor;
 }
 
 .cm-s-codenvy .CodeMirror-matchingbracket {

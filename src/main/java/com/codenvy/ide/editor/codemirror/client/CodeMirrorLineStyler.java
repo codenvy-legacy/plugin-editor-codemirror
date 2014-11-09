@@ -18,7 +18,7 @@ public class CodeMirrorLineStyler implements LineStyler {
 
     // see the addLineClass javadoc for the meaning of wrap
     /** Set the style on the whole line, including gutter. */
-    private static final String STYLE_LOCATION_WRAP = "wrap";
+    private static final String STYLE_LOCATION_BACKGROUND = "background";
 
     /** The editor object. */
     private final CMEditorOverlay editorOverlay;
@@ -30,20 +30,20 @@ public class CodeMirrorLineStyler implements LineStyler {
     @Override
     public void addLineStyles(final int lineNumber, final String... styles) {
         for (final String classname: styles) {
-            this.editorOverlay.addLineClass(lineNumber, STYLE_LOCATION_WRAP, classname);
+            this.editorOverlay.addLineClass(lineNumber, STYLE_LOCATION_BACKGROUND, classname);
         }
     }
 
     @Override
     public void removeLineStyles(final int lineNumber, final String... styles) {
         for (final String classname: styles) {
-            this.editorOverlay.removeLineClass(lineNumber, STYLE_LOCATION_WRAP, classname);
+            this.editorOverlay.removeLineClass(lineNumber, STYLE_LOCATION_BACKGROUND, classname);
         }
     }
 
     @Override
     public void clearLineStyles(final int lineNumber) {
-        this.editorOverlay.removeLineClass(lineNumber, STYLE_LOCATION_WRAP);
+        this.editorOverlay.removeLineClass(lineNumber, STYLE_LOCATION_BACKGROUND);
     }
 
 }
