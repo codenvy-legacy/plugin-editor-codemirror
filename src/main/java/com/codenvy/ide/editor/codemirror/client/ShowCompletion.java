@@ -50,6 +50,7 @@ import elemental.html.ClientRect;
 import elemental.html.SpanElement;
 import elemental.js.dom.JsElement;
 import elemental.js.util.JsMapFromStringTo;
+import elemental.util.Timer;
 
 /**
  * Component that handles the showCompletion(...) operations.
@@ -343,14 +344,22 @@ public final class ShowCompletion {
             codeMirror.on(data, EventTypes.COMPLETION_CLOSE, new EventHandlers.EventHandlerNoParameters() {
                 @Override
                 public void onEvent() {
-                    removeStaleInfoPopups(ADDITIONAL_INFO_MARKER);
+                    delayedRemoveStaleInfoPopups(ADDITIONAL_INFO_MARKER);
                 }
-                
             });
         }
     }
 
-    protected static void removeStaleInfoPopups(final String markerClass) {
+    private static void delayedRemoveStaleInfoPopups(final String markerClass) {
+        new Timer() {
+            @Override
+            public void run() {
+                removeStaleInfoPopups(markerClass);
+            }
+        }.schedule(100);
+    }
+
+    private static void removeStaleInfoPopups(final String markerClass) {
         final Document documentElement = Elements.getDocument();
         final NodeList markersToRemove = documentElement.getElementsByClassName(markerClass);
         for (int i = 0; i < markersToRemove.getLength(); i++) {
