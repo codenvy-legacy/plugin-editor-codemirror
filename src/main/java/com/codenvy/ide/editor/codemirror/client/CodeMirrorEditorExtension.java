@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.codenvy.ide.api.extension.Extension;
@@ -25,6 +26,8 @@ import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
 import com.codenvy.ide.jseditor.client.requirejs.RequirejsErrorHandler.RequireError;
+import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.EditorInitializer;
+import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.InitializerCallback;
 import com.codenvy.ide.jseditor.client.texteditor.ConfigurableTextEditor;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
 import com.codenvy.ide.util.loging.Log;
@@ -33,6 +36,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.inject.Inject;
@@ -52,20 +56,25 @@ public class CodeMirrorEditorExtension {
     private final ModuleHolder                moduleHolder;
     private final RequireJsLoader             requireJsLoader;
     private final EditorTypeRegistry          editorTypeRegistry;
+    private final CodeMirrorEditorModule      editorModule;
 
     private final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory;
+
+    private boolean initFailedWarnedOnce = false;
 
     @Inject
     public CodeMirrorEditorExtension(final EditorTypeRegistry editorTypeRegistry,
                                      final ModuleHolder moduleHolder,
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
+                                     final CodeMirrorEditorModule editorModule,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
                                      final CodeMirrorResource highlightResource,
                                      final CompletionResources completionResources) {
         this.notificationManager = notificationManager;
         this.moduleHolder = moduleHolder;
         this.requireJsLoader = requireJsLoader;
+        this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
 
@@ -76,12 +85,29 @@ public class CodeMirrorEditorExtension {
 
         completionResources.completionCss().ensureInjected();
 
-        injectCodeMirror();
-        // no need to delay
+        Log.info(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);
+        editorModule.setEditorInitializer(new EditorInitializer() {
+            @Override
+            public void initialize(final InitializerCallback callback) {
+                // add code-splitting of the whole orion editor
+                GWT.runAsync(new RunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        injectCodeMirror(callback);
+                    }
+                    @Override
+                    public void onFailure(final Throwable reason) {
+                        callback.onFailure(reason);
+                    }
+                });
+            }
+        });
+        // must not delay
+        registerEditor();
         CodeMirrorKeymaps.init();
     }
 
-    private void injectCodeMirror() {
+    private void injectCodeMirror(final InitializerCallback callback) {
         /*
          * This could be simplified and optimized with a all-in-one minified js from http://codemirror.net/doc/compress.html but at least
          * while debugging, unmodified source is necessary. Another option would be to include all-in-one minified along with a source map
@@ -190,7 +216,7 @@ public class CodeMirrorEditorExtension {
         this.requireJsLoader.require(new Callback<Void, Throwable>() {
             @Override
             public void onSuccess(final Void result) {
-                registerEditor();
+                callback.onSuccess();
             }
 
             @Override
@@ -201,17 +227,15 @@ public class CodeMirrorEditorExtension {
                     if (nativeException instanceof RequireError) {
                         final RequireError requireError = (RequireError)nativeException;
                         final String errorType = requireError.getRequireType();
-                        String message = "Codemirror injection failed: " + errorType;
+                        String message = "Codemirror injection failed: " + errorType + " ";
                         final JsArrayString modules = requireError.getRequireModules();
                         if (modules != null) {
                             message += modules.join(",");
                         }
-                        Log.error(CodeMirrorEditorExtension.class, message);
+                        Log.debug(CodeMirrorEditorExtension.class, message);
                     }
-                } else {
-                    Log.error(CodeMirrorEditorExtension.class, "Unable to inject CodeMirror", e);
                 }
-                initializationFailed("Unable to inject CodeMirror main script");
+                initializationFailed(callback, "Unable to initialize CodeMirror", e);
             }
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
@@ -244,15 +268,22 @@ public class CodeMirrorEditorExtension {
 
             @Override
             public ConfigurableTextEditor buildEditor() {
-                final EmbeddedTextEditorPresenter editor = codeMirrorTextEditorFactory.createTextEditor();
+                final EmbeddedTextEditorPresenter<CodeMirrorEditorWidget> editor = codeMirrorTextEditorFactory.createTextEditor();
                 editor.initialize(new DefaultTextEditorConfiguration(), notificationManager);
                 return editor;
             }
         });
     }
 
-    private void initializationFailed(final String errorMessage) {
+    private void initializationFailed(final InitializerCallback callback, final String errorMessage, Throwable e) {
+        if (this.initFailedWarnedOnce) {
+            return;
+        }
+        this.initFailedWarnedOnce = true;
+
         this.notificationManager.showNotification(new Notification(errorMessage, Type.ERROR));
         this.notificationManager.showNotification(new Notification("CodeMirror editor is not available", Type.WARNING));
+        LOG.log(Level.SEVERE, errorMessage + " - ", e);
+        callback.onFailure(e);
     }
 }

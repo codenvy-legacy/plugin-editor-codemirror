@@ -189,13 +189,15 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     private CMKeymapOverlay keyBindings;
 
+    private String mode;
+
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final EventBus eventBus,
                                   final KeymapPrefReader keymapPrefReader,
                                   final CompletionResources completionResources,
                                   final EditorAgent editorAgent,
-                                  @Assisted final String editorMode) {
+                                  @Assisted final List<String> editorModes) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.keymapPrefReader = keymapPrefReader;
@@ -210,7 +212,10 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
         this.positionConverter = new CodemirrorPositionConverter(this.editorOverlay);
 
-        setMode(editorMode);
+        // just first choice for the moment
+        if (editorModes != null && !editorModes.isEmpty()) {
+            setMode(editorModes.get(0));
+        }
 
         initKeyBindings();
 
@@ -312,9 +317,9 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.showHint();
     }
 
-    @Override
     public void setMode(final String modeDesc) {
         LOG.fine("Setting editor mode : " + modeDesc);
+        this.mode = modeDesc;
         this.editorOverlay.setOption(MODE, modeDesc);
 
         // try to add mode specific style
@@ -322,6 +327,11 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         final String modeName = mode.getName();
         final DOMTokenList classes = this.editorOverlay.getWrapperElement().getClassList();
         classes.add(CODEMIRROR_MODE_STYLE_PREFIX + "-" + modeName);
+    }
+
+    @Override
+    public String getMode() {
+        return this.mode;
     }
 
     public void selectVimKeymap() {

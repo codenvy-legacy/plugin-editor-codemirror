@@ -12,18 +12,19 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import javax.inject.Inject;
 
+import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenterFactory;
 
 public class CodeMirrorTextEditorFactory {
 
     @Inject
-    private CodeMirrorTextEditorViewFactory    viewFactory;
+    private EditorWidgetFactory<CodeMirrorEditorWidget> widgetFactory;
 
     @Inject
-    private EmbeddedTextEditorPresenterFactory presenterFactory;
+    private EmbeddedTextEditorPresenterFactory<CodeMirrorEditorWidget> presenterFactory;
 
-    public EmbeddedTextEditorPresenter createTextEditor() {
-        return this.presenterFactory.createTextEditor(this.viewFactory);
+    public EmbeddedTextEditorPresenter<CodeMirrorEditorWidget> createTextEditor() {
+        return this.presenterFactory.createTextEditor(this.widgetFactory);
     }
 }
