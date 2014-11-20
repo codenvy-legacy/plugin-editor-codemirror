@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client.jso;
 
+import javax.annotation.Nullable;
+
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerNoParameters;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerOneParameter;
@@ -194,5 +196,67 @@ public class CodeMirrorOverlay extends JavaScriptObject {
                     }
                     handler.@com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters::onEvent(*)(params);
                 });
+    }-*/;
+
+    /**
+     * Ensures the mode is loaded and causes the given editor instance to refresh its mode when the loading succeeded.
+     * @param instance the editor instance
+     * @param mode the mode
+     */
+    public final native void autoLoadMode(CMEditorOverlay instance, String mode) /*-{
+        this.autoLoadMode(instance, mode);
+    }-*/;
+
+    /* methods related to mode auto-loading. */
+
+    /**
+     * Ensures the mode is loaded and causes the given editor instance to refresh its mode when the loading succeeded.
+     * @param instance the editor instance
+     * @param mode the mode
+     */
+    public final native void autoLoadMode(CMEditorOverlay instance, CMModeOverlay mode) /*-{
+        this.autoLoadMode(instance, mode);
+    }-*/;
+
+    /**
+     * Sets the mode url pattern.<br>
+     * The mode URL is a string that mode paths can be constructed from.<br>
+     * For example "mode/%N/%N.js"—the %N's will be replaced with the mode name.
+     * @param url the mode ur pattern
+     */
+    public final native void setModeURL(String url) /*-{
+        this.modeURL = url;
+    }-*/;
+
+    /* mime-type catalog methods. */
+
+    /**
+     * Search a mode description by mime-type.
+     * @param mime the mime-type
+     * @return a mode info object or null
+     */
+    @Nullable
+    public final native CMModeInfoOverlay findModeByMIME(String mime) /*-{
+        return this.findModeByMIME(mime);
+    }-*/;
+
+    /**
+     * Search a mode description by name.
+     * @param name the name
+     * @return a mode info object or null
+     */
+    @Nullable
+    public final native CMModeInfoOverlay findModeByName(String name) /*-{
+        return this.findModeByName(name);
+    }-*/;
+
+    /**
+     * Search a mode description by extension.
+     * @param ext the extension
+     * @return a mode info object or null
+     */
+    @Nullable
+    public final native CMModeInfoOverlay findModeByExtension(String ext) /*-{
+        return this.findModeByExtension(ext);
     }-*/;
 }
