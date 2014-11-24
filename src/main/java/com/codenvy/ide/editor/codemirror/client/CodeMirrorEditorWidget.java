@@ -24,7 +24,6 @@ import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.AUT
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.FOLD_GUTTER;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.KEYMAP;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.MATCH_BRACKETS;
-import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.MODE;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.READONLY;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.SHOW_CURSOR_WHEN_SELECTING;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.STYLE_ACTIVE_LINE;
@@ -42,7 +41,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMCommandOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMModeOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMModeInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
@@ -90,11 +89,13 @@ import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
+import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
 import com.codenvy.ide.jseditor.client.text.TextRange;
 import com.codenvy.ide.jseditor.client.texteditor.CompositeEditorWidget;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.codenvy.ide.jseditor.client.texteditor.LineStyler;
 import com.codenvy.ide.util.loging.Log;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -115,6 +116,7 @@ import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -191,16 +193,20 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     private String mode;
 
+    private final RequireJsLoader requirejs;
+
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final EventBus eventBus,
                                   final KeymapPrefReader keymapPrefReader,
                                   final CompletionResources completionResources,
                                   final EditorAgent editorAgent,
-                                  @Assisted final List<String> editorModes) {
+                                  @Assisted final List<String> editorModes,
+                                  final RequireJsLoader requirejs) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.keymapPrefReader = keymapPrefReader;
+        this.requirejs = requirejs;
         this.showCompletion = new ShowCompletion(this, completionResources.completionCss());
 
 
@@ -320,13 +326,59 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
     public void setMode(final String modeDesc) {
         LOG.fine("Setting editor mode : " + modeDesc);
         this.mode = modeDesc;
-        this.editorOverlay.setOption(MODE, modeDesc);
 
-        // try to add mode specific style
-        final CMModeOverlay mode = this.editorOverlay.getMode();
-        final String modeName = mode.getName();
-        final DOMTokenList classes = this.editorOverlay.getWrapperElement().getClassList();
-        classes.add(CODEMIRROR_MODE_STYLE_PREFIX + "-" + modeName);
+        // special-casing dockerfile
+        if ("text/x-dockerfile-config".equals(modeDesc)) {
+            this.editorOverlay.setOption("mode", "text/x-dockerfile-config");
+            final DOMTokenList classes = this.editorOverlay.getWrapperElement().getClassList();
+            classes.add(CODEMIRROR_MODE_STYLE_PREFIX + "-" + "dockerfile");
+            return;
+        }
+        final CMModeInfoOverlay modeInfo = this.codeMirror.findModeByMIME(modeDesc);
+        if (modeInfo != null) {
+            if (!modePresent(modeInfo.getMode())) {
+                loadMode(modeInfo.getMode(), modeDesc);
+            } else {
+                this.editorOverlay.setOption("mode", modeDesc);
+            }
+
+            // try to add mode specific style
+            final String modeName = modeInfo.getMode();
+            final DOMTokenList classes = this.editorOverlay.getWrapperElement().getClassList();
+            classes.add(CODEMIRROR_MODE_STYLE_PREFIX + "-" + modeName);
+        }
+    }
+
+    private boolean modePresent(final String modeName) {
+        if (modeName == null) {
+            return false;
+        }
+        final JsArrayString modeNames = this.codeMirror.modeNames();
+        for (int i = 0; i < modeNames.length(); i++) {
+            if (modeName.equals(modeNames.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void loadMode(final String modeName, final String mime) {
+        this.requirejs.require(new Callback<JavaScriptObject[], Throwable>() {
+            
+            @Override
+            public void onSuccess(final JavaScriptObject[] result) {
+                if (result != null) {
+                    editorOverlay.setOption("mode", mime);
+                } else {
+                    Log.warn(CodeMirrorEditorWidget.class, "Require result is null.");
+                }
+            }
+
+            @Override
+            public void onFailure(final Throwable reason) {
+                Log.warn(CodeMirrorEditorWidget.class, "Require " + modeName + " mode failed.");
+            }
+        }, new String[] {"codemirror/lib/codemirror", "codemirror/mode/" + modeName + "/" + modeName});
     }
 
     @Override
@@ -335,15 +387,65 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
     }
 
     public void selectVimKeymap() {
-        // vim mode is a special case
-        this.editorOverlay.setOption("vimMode", true);
+        if (CodeMirrorKeymaps.isVimLoaded()) {
+            doSelectVimKeymap();
+        } else {
+            this.requirejs.require(new Callback<JavaScriptObject[], Throwable>() {
+                @Override
+                public void onSuccess(final JavaScriptObject[] result) {
+                    doSelectVimKeymap();
+                }
+                @Override
+                public void onFailure(final Throwable reason) {
+                    Window.alert("Could not load vim keymap, reverting to the default");
+                }
+            }, new String[] {"codemirror/lib/codemirror", "codemirror/keymap/vim"});
+        }
+    }
+
+    private void doSelectVimKeymap() {
+        this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.VIM));
     }
 
     public void selectEmacsKeymap() {
+        if (CodeMirrorKeymaps.isEmacsLoaded()) {
+            doSelectEmacsKeymap();
+        } else {
+            this.requirejs.require(new Callback<JavaScriptObject[], Throwable>() {
+                @Override
+                public void onSuccess(final JavaScriptObject[] result) {
+                    doSelectEmacsKeymap();
+                }
+                @Override
+                public void onFailure(final Throwable reason) {
+                    Window.alert("Could not load emacs keymap, reverting to the default");
+                }
+            }, new String[] {"codemirror/lib/codemirror", "codemirror/keymap/emacs"});
+        }
+    }
+
+    private void doSelectEmacsKeymap() {
         this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.EMACS));
     }
 
     public void selectSublimeKeymap() {
+        if (CodeMirrorKeymaps.isSublimeLoaded()) {
+            doSelectSublimeKeymap();
+        } else {
+            this.requirejs.require(new Callback<JavaScriptObject[], Throwable>() {
+                @Override
+                public void onSuccess(final JavaScriptObject[] result) {
+                    doSelectSublimeKeymap();
+                }
+                @Override
+                public void onFailure(final Throwable reason) {
+                    Window.alert("Could not load sublime keymap, reverting to the default");
+                }
+            }, new String[] {"codemirror/lib/codemirror", "codemirror/keymap/sublime"});
+        }
+    }
+
+    private void doSelectSublimeKeymap() {
         this.editorOverlay.setOption(KEYMAP, CodeMirrorKeymaps.getNativeMapping(CodeMirrorKeymaps.SUBLIME));
     }
 
