@@ -33,6 +33,10 @@ public final class CodeMirrorKeymaps {
     public static Keymap                     VIM;
     public static Keymap                     SUBLIME;
 
+    private static boolean emacsLoaded   = false;
+    private static boolean vimLoaded     = false;
+    private static boolean sublimeLoaded = false;
+
     private static final Map<Keymap, String> nativeMapping = new HashMap<>();
 
     public static final void init() {
@@ -53,5 +57,29 @@ public final class CodeMirrorKeymaps {
 
     public static final String getNativeMapping(final Keymap keymap) {
         return nativeMapping.get(keymap);
+    }
+
+    public static boolean isEmacsLoaded() {
+        return emacsLoaded;
+    }
+
+    public static void setEmacsLoaded() {
+        CodeMirrorKeymaps.emacsLoaded = true;
+    }
+
+    public static boolean isVimLoaded() {
+        return vimLoaded;
+    }
+
+    public static void setVimLoaded() {
+        CodeMirrorKeymaps.vimLoaded = true;
+    }
+
+    public static boolean isSublimeLoaded() {
+        return sublimeLoaded;
+    }
+
+    public static void setSublimeLoaded() {
+        CodeMirrorKeymaps.sublimeLoaded = true;
     }
 }
