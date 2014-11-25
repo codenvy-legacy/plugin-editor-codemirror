@@ -14,10 +14,14 @@ import javax.inject.Named;
 
 import com.codenvy.ide.api.extension.ExtensionGinModule;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorExtension;
+import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorModule;
+import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorPresenter;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
-import com.codenvy.ide.editor.codemirror.client.CodeMirrorTextEditorViewFactory;
 import com.codenvy.ide.jseditor.client.JsEditorExtension;
+import com.codenvy.ide.jseditor.client.texteditor.EditorModule;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
+import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenterFactory;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
 import com.google.inject.Provides;
@@ -30,10 +34,12 @@ public class CodeMirrorEditorGinModule extends AbstractGinModule {
     @Override
     protected void configure() {
         // Bind the CodeMirror EditorWidget factory
-        install(new GinFactoryModuleBuilder().build(new TypeLiteral<EditorWidgetFactory<CodeMirrorEditorWidget>>() {
-        }));
-        // and the view factory
-        bind(CodeMirrorTextEditorViewFactory.class);
+        install(new GinFactoryModuleBuilder().build(new TypeLiteral<EditorWidgetFactory<CodeMirrorEditorWidget>>() {}));
+        bind(new TypeLiteral<EditorModule<CodeMirrorEditorWidget>>() {}).to(CodeMirrorEditorModule.class);
+
+        install(new GinFactoryModuleBuilder()
+            .implement(new TypeLiteral<EmbeddedTextEditorPresenter<CodeMirrorEditorWidget>>() {}, CodeMirrorEditorPresenter.class)
+            .build(new TypeLiteral<EmbeddedTextEditorPresenterFactory<CodeMirrorEditorWidget>>() {}));
     }
 
     @Provides

@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
+import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.style.CodeMirrorResource;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
@@ -25,17 +27,25 @@ import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
 import com.codenvy.ide.jseditor.client.requirejs.RequirejsErrorHandler.RequireError;
+import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.EditorInitializer;
+import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.InitializerCallback;
 import com.codenvy.ide.jseditor.client.texteditor.ConfigurableTextEditor;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
+import com.codenvy.ide.util.dom.Elements;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LinkElement;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.inject.Inject;
+
+import elemental.client.Browser;
+import elemental.dom.Element;
+import elemental.dom.NodeList;
+import elemental.html.HeadElement;
+import elemental.html.LinkElement;
 
 @Extension(title = "CodeMirror Editor", version = "1.1.0")
 public class CodeMirrorEditorExtension {
@@ -48,24 +58,32 @@ public class CodeMirrorEditorExtension {
     /** The codemirror javascript module key. */
     public static final String                CODEMIRROR_MODULE_KEY = "CodeMirror";
 
+    /** The base path for codemirror resources. */
+    private static final String CODEMIRROR_BASE = "codemirror/";
+
     private final NotificationManager         notificationManager;
     private final ModuleHolder                moduleHolder;
     private final RequireJsLoader             requireJsLoader;
     private final EditorTypeRegistry          editorTypeRegistry;
+    private final CodeMirrorEditorModule      editorModule;
 
     private final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory;
+
+    private boolean initFailedWarnedOnce = false;
 
     @Inject
     public CodeMirrorEditorExtension(final EditorTypeRegistry editorTypeRegistry,
                                      final ModuleHolder moduleHolder,
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
+                                     final CodeMirrorEditorModule editorModule,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
                                      final CodeMirrorResource highlightResource,
                                      final CompletionResources completionResources) {
         this.notificationManager = notificationManager;
         this.moduleHolder = moduleHolder;
         this.requireJsLoader = requireJsLoader;
+        this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
 
@@ -73,79 +91,64 @@ public class CodeMirrorEditorExtension {
         highlightResource.editorStyle().ensureInjected();
         highlightResource.dockerfileModeStyle().ensureInjected();
         highlightResource.gutterStyle().ensureInjected();
-
         completionResources.completionCss().ensureInjected();
 
-        injectCodeMirror();
-        // no need to delay
+        Log.info(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);
+        editorModule.setEditorInitializer(new EditorInitializer() {
+            @Override
+            public void initialize(final InitializerCallback callback) {
+                // add code-splitting of the whole orion editor
+                GWT.runAsync(new RunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        injectCodeMirror(callback, completionResources);
+                    }
+                    @Override
+                    public void onFailure(final Throwable reason) {
+                        callback.onFailure(reason);
+                    }
+                });
+            }
+        });
+        // must not delay
+        registerEditor();
         CodeMirrorKeymaps.init();
     }
 
-    private void injectCodeMirror() {
+    private void injectCodeMirror(final InitializerCallback callback, final CompletionResources completionResources) {
         /*
          * This could be simplified and optimized with a all-in-one minified js from http://codemirror.net/doc/compress.html but at least
          * while debugging, unmodified source is necessary. Another option would be to include all-in-one minified along with a source map
          */
-        final String CODEMIRROR_BASE = "codemirror/";
         final String[] scripts = new String[]{
 
                 // base script
                 CODEMIRROR_BASE + "lib/codemirror",
 
+                // library of modes
+                CODEMIRROR_BASE + "mode/meta",
+                // mode autoloading
+                CODEMIRROR_BASE + "addon/mode/loadmode",
+
+
+                /* We will preload modes that have extensions */
                 // language modes
                 CODEMIRROR_BASE + "mode/xml/xml",
                 CODEMIRROR_BASE + "mode/htmlmixed/htmlmixed", // must be defined after xml
-                CODEMIRROR_BASE + "mode/htmlembedded/htmlembedded",
-                CODEMIRROR_BASE + "mode/dtd/dtd",
 
                 CODEMIRROR_BASE + "mode/javascript/javascript",
                 CODEMIRROR_BASE + "mode/coffeescript/coffeescript",
 
                 CODEMIRROR_BASE + "mode/css/css",
-                CODEMIRROR_BASE + "mode/sass/sass",
 
                 CODEMIRROR_BASE + "mode/sql/sql",
-                CODEMIRROR_BASE + "mode/properties/properties",
-                CODEMIRROR_BASE + "mode/yaml/yaml",
-                CODEMIRROR_BASE + "mode/diff/diff",
-                CODEMIRROR_BASE + "mode/shell/shell",
 
                 CODEMIRROR_BASE + "mode/clike/clike",
-                CODEMIRROR_BASE + "mode/clojure/clojure",
-                CODEMIRROR_BASE + "mode/groovy/groovy",
-                CODEMIRROR_BASE + "mode/kotlin/kotlin",
 
-                CODEMIRROR_BASE + "mode/stex/stex",
                 CODEMIRROR_BASE + "mode/markdown/markdown",
                 CODEMIRROR_BASE + "mode/gfm/gfm", // markdown extension for github
 
-                CODEMIRROR_BASE + "mode/slim/slim",
-
-                CODEMIRROR_BASE + "mode/php/php",
-                CODEMIRROR_BASE + "mode/python/python",
-                CODEMIRROR_BASE + "mode/ruby/ruby",
-                CODEMIRROR_BASE + "mode/go/go",
-                CODEMIRROR_BASE + "mode/lua/lua",
-                CODEMIRROR_BASE + "mode/perl/perl",
-                CODEMIRROR_BASE + "mode/r/r",
-                CODEMIRROR_BASE + "mode/rust/rust",
-                CODEMIRROR_BASE + "mode/tcl/tcl",
-
-                CODEMIRROR_BASE + "mode/commonlisp/commonlisp",
-                CODEMIRROR_BASE + "mode/haskell/haskell",
-                CODEMIRROR_BASE + "mode/erlang/erlang",
-                CODEMIRROR_BASE + "mode/scheme/scheme",
-                CODEMIRROR_BASE + "mode/mllike/mllike",
-
-                CODEMIRROR_BASE + "mode/cobol/cobol",
-                CODEMIRROR_BASE + "mode/fortran/fortran",
-                CODEMIRROR_BASE + "mode/pascal/pascal",
-                CODEMIRROR_BASE + "mode/smalltalk/smalltalk",
-                CODEMIRROR_BASE + "mode/vb/vb",
-                CODEMIRROR_BASE + "mode/vbscript/vbscript",
-
-                CODEMIRROR_BASE + "mode/puppet/puppet",
-                CODEMIRROR_BASE + "mode/dockerfile/dockerfile",
+                CODEMIRROR_BASE + "mode/dockerfile/dockerfile_codenvy",
 
                 // hints
                 CODEMIRROR_BASE + "addon/hint/show-hint",
@@ -164,10 +167,7 @@ public class CodeMirrorEditorExtension {
                 // the two following are added to repair actual functionality in 'classic' editor
                 CODEMIRROR_BASE + "addon/selection/mark-selection",
                 CODEMIRROR_BASE + "addon/selection/active-line",
-                // editor keymaps
-                CODEMIRROR_BASE + "keymap/emacs",
-                CODEMIRROR_BASE + "keymap/vim",
-                CODEMIRROR_BASE + "keymap/sublime",
+
                 // for search
                 CODEMIRROR_BASE + "addon/search/search",
                 CODEMIRROR_BASE + "addon/dialog/dialog",
@@ -187,10 +187,10 @@ public class CodeMirrorEditorExtension {
         };
 
 
-        this.requireJsLoader.require(new Callback<Void, Throwable>() {
+        this.requireJsLoader.require(new Callback<JavaScriptObject[], Throwable>() {
             @Override
-            public void onSuccess(final Void result) {
-                registerEditor();
+            public void onSuccess(final JavaScriptObject[] result) {
+                finishInit(callback);
             }
 
             @Override
@@ -201,42 +201,64 @@ public class CodeMirrorEditorExtension {
                     if (nativeException instanceof RequireError) {
                         final RequireError requireError = (RequireError)nativeException;
                         final String errorType = requireError.getRequireType();
-                        String message = "Codemirror injection failed: " + errorType;
+                        String message = "Codemirror injection failed: " + errorType + " ";
                         final JsArrayString modules = requireError.getRequireModules();
                         if (modules != null) {
                             message += modules.join(",");
                         }
-                        Log.error(CodeMirrorEditorExtension.class, message);
+                        Log.debug(CodeMirrorEditorExtension.class, message);
                     }
-                } else {
-                    Log.error(CodeMirrorEditorExtension.class, "Unable to inject CodeMirror", e);
                 }
-                initializationFailed("Unable to inject CodeMirror main script");
+                initializationFailed(callback, "Unable to initialize CodeMirror", e);
             }
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "lib/codemirror.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/dialog/dialog.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/fold/foldgutter.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/hint/show-hint.css");
+        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/hint/show-hint.css");
 
     }
 
+    private void finishInit(final InitializerCallback callback) {
+        final CodeMirrorOverlay codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
+        codeMirror.setModeURL(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "mode/%N/%N.js");
+        callback.onSuccess();
+    }
+
+
     private static void injectCssLink(final String url) {
-        LinkElement link = Document.get().createLinkElement();
+        LinkElement link = Browser.getDocument().createLinkElement();
         link.setRel("stylesheet");
         link.setHref(url);
         nativeAttachToHead(link);
     }
 
+    private static void injectCssLinkAtTop(final String url) {
+        LinkElement link = Browser.getDocument().createLinkElement();
+        link.setRel("stylesheet");
+        link.setHref(url);
+        nativeAttachFirstLink(link);
+    }
+
     /**
      * Attach an element to document head.
      * 
-     * @param scriptElement the element to attach
+     * @param newElement the element to attach
      */
-    private static native void nativeAttachToHead(JavaScriptObject scriptElement) /*-{
-        $doc.getElementsByTagName("head")[0].appendChild(scriptElement);
-    }-*/;
+    private static void nativeAttachToHead(Element newElement) {
+        Elements.getDocument().getHead().appendChild(newElement);
+    }
+
+    private static void nativeAttachFirstLink(Element styleElement) {
+        final HeadElement head = Elements.getDocument().getHead();
+        final NodeList nodes = head.getElementsByTagName("link");
+        if (nodes.length() > 0) {
+            head.insertBefore(styleElement, nodes.item(0));
+        } else {
+            head.appendChild(styleElement);
+        }
+    }
 
     private void registerEditor() {
         LOG.fine("Registering CodeMirror editor type.");
@@ -244,15 +266,22 @@ public class CodeMirrorEditorExtension {
 
             @Override
             public ConfigurableTextEditor buildEditor() {
-                final EmbeddedTextEditorPresenter editor = codeMirrorTextEditorFactory.createTextEditor();
+                final EmbeddedTextEditorPresenter<CodeMirrorEditorWidget> editor = codeMirrorTextEditorFactory.createTextEditor();
                 editor.initialize(new DefaultTextEditorConfiguration(), notificationManager);
                 return editor;
             }
         });
     }
 
-    private void initializationFailed(final String errorMessage) {
+    private void initializationFailed(final InitializerCallback callback, final String errorMessage, Throwable e) {
+        if (this.initFailedWarnedOnce) {
+            return;
+        }
+        this.initFailedWarnedOnce = true;
+
         this.notificationManager.showNotification(new Notification(errorMessage, Type.ERROR));
         this.notificationManager.showNotification(new Notification("CodeMirror editor is not available", Type.WARNING));
+        LOG.log(Level.SEVERE, errorMessage + " - ", e);
+        callback.onFailure(e);
     }
 }
