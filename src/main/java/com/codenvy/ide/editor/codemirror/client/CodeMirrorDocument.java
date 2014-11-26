@@ -16,6 +16,7 @@ import static com.codenvy.ide.editor.codemirror.client.EventTypes.CHANGE;
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMBeforeChangeEventOverlay;
@@ -161,6 +162,34 @@ public class CodeMirrorDocument extends AbstractEmbeddedDocument {
         final int fromOffset = this.documentOverlay.indexFromPos(from);
         final int toOffset = this.documentOverlay.indexFromPos(to);
         return LinearRange.createWithStart(fromOffset).andEnd(toOffset);
+    }
+
+    @Override
+    public void setSelectedRange(final TextRange range, final boolean show) {
+        CMPositionOverlay from = CMPositionOverlay.create(range.getFrom().getLine(), range.getFrom().getCharacter());
+        CMPositionOverlay to = CMPositionOverlay.create(range.getTo().getLine(), range.getTo().getCharacter());
+        setSelectedRange(from, to, show);
+    }
+
+    @Override
+    public void setSelectedRange(final LinearRange range, final boolean show) {
+        final CMPositionOverlay from = this.documentOverlay.posFromIndex(range.getStartOffset());
+        final CMPositionOverlay to = this.documentOverlay.posFromIndex(range.getStartOffset() + range.getLength());
+        setSelectedRange(from, to, show);
+    }
+
+    /**
+     * Sets the selected range.
+     * @param from the start osition of the range
+     * @param to the end position of the range
+     * @param show whether to show the new selection
+     */
+    private void setSelectedRange(final CMPositionOverlay from, final CMPositionOverlay to, final boolean show) {
+        if (show) {
+            this.documentOverlay.setSelection(from, to, CMSetSelectionOptions.create());
+        } else {
+            this.documentOverlay.setSelection(from, to, CMSetSelectionOptions.createNoScroll());
+        }
     }
 
     @Override
