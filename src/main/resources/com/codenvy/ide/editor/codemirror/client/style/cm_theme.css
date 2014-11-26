@@ -175,6 +175,10 @@
 .cm-s-codenvy .CodeMirror-dialog button {
 }
 
+.cm-s-codenvy .cm-searching {
+    background: rgba(255, 255, 0, .2);
+}
+
 /* This one has the document as parent so it cannot be themed. */ 
 .CodeMirror-hints {
     /* from codenvy classic AutoComplete.css .container class. */
