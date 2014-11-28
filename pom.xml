@@ -44,6 +44,8 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
+        <codemirror.extract.location>${project.build.directory}/codemirror-extract</codemirror.extract.location>
+        <codemirror.final.location>${project.build.directory}/codemirror/com/codenvy/ide/editor/codemirror/public/codemirror</codemirror.final.location>
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
         <codemirror.upstream.version>4.8</codemirror.upstream.version>
         <license_years>2014</license_years>
@@ -106,10 +108,11 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>target/codemirror-${codemirror.upstream.version}</directory>
+                <directory>target/codemirror</directory>
                 <includes>
                     <include>**/*.js</include>
                     <include>**/*.css</include>
+                    <include>**/*.map</include>
                 </includes>
                 <excludes>
                     <exclude>**/test/**</exclude>
@@ -149,14 +152,32 @@
                         <configuration>
                             <target>
                                 <unzip dest="${project.build.directory}" src="${project.build.directory}/codemirror-${codemirror.upstream.version}.zip" />
-                                <mkdir dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/" />
-                                <move todir="${project.build.directory}/codemirror-${codemirror.upstream.version}/com/codenvy/ide/editor/codemirror/public/codemirror/">
+                                <mkdir dir="${codemirror.extract.location}/" />
+                                <move todir="${codemirror.extract.location}/">
                                     <fileset dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/" />
                                 </move>
                             </target>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.bringking</groupId>
+                <artifactId>requirejs-maven-plugin</artifactId>
+                <version>2.0.4</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>optimize</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <runner>rhino</runner>
+                    <configFile>${basedir}/src/main/config/buildconfig.js</configFile>
+                    <filterConfig>true</filterConfig>
+                </configuration>
             </plugin>
         </plugins>
     </build>
