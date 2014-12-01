@@ -1024,6 +1024,10 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.refresh();
     }
 
+    public void refresh() {
+        this.editorOverlay.refresh();
+    }
+
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
     }
 }
