@@ -1028,6 +1028,10 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.refresh();
     }
 
+    public void scrollToLine(int line) {
+        this.editorOverlay.scrollIntoView(CMPositionOverlay.create(line, 0));
+    }
+
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
     }
 }
