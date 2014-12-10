@@ -32,7 +32,7 @@ public class CodemirrorPositionConverter implements PositionConverter {
     }
 
     private PixelCoordinates textToPixel(final CMPositionOverlay position) {
-        final CMPixelRangeOverlay pixelPosition = this.editorOverlay.charCoords(position, "local");
+        final CMPixelRangeOverlay pixelPosition = this.editorOverlay.charCoords(position, "window");
         return new PixelCoordinates(pixelPosition.getLeft(),
                                     pixelPosition.getTop());
     }
@@ -50,7 +50,7 @@ public class CodemirrorPositionConverter implements PositionConverter {
     private CMPositionOverlay pixelToCmText(final PixelCoordinates coordinates) {
         final CMPixelCoordinatesOverlay cmPixel = CMPixelCoordinatesOverlay.create(coordinates.getX(),
                                                                                    coordinates.getY());
-        return  this.editorOverlay.coordsChar(cmPixel, "local");
+        return  this.editorOverlay.coordsChar(cmPixel, "window");
     }
 
     @Override
