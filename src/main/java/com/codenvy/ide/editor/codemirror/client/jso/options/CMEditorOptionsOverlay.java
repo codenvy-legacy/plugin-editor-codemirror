@@ -240,6 +240,24 @@ public class CMEditorOptionsOverlay extends JavaScriptObject {
         return this.fixedGutter;
     }-*/;
 
+    /**
+     * Sets the scrollbar style.<br>
+     * The current options are "native", "simple" or "overlay" (the last two iff simplescrollbar.js is loaded).
+     * @param style the value
+     */
+    public final native void setScrollbarStyle(String style) /*-{
+        this.scrollbarStyle = style;
+    }-*/;
+
+    /**
+     * Returns the current scrollbar style.<br>
+     * @see #setScrollbarStyle(String)
+     * @return the scrollbar style
+     */
+    public final native String getScrollbarStyle() /*-{
+        return this.scrollbarStyle;
+    }-*/;
+
     // coverGutterNextToScrollbar - not implemented
 
     // readOnly = true (readonly), false (edit allowed) or "nocursor" (readonly + disallow focus) (default false)
