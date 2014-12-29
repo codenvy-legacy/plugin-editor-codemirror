@@ -83,25 +83,6 @@
      */
     removeCombined: false,
 
-
-//    //List the modules that will be optimized. All their immediate and deep
-//    //dependencies will be included in the module's file when the build is
-//    //done. If that module or any of its dependencies includes i18n bundles,
-//    //only the root bundles will be included unless the locale: section is set above.
-//    modules: [
-//        {
-//          name: "lib/codemirror-min",
-//          include: "lib/codemirror",
-//          create: true
-//        },
-//        {
-//          name: "keymap/vim-min",
-//          include: "keymap/vim",
-//          exclude: ["lib/codemirror", "addon/dialog/dialog", "addon/search/searchcursor", "addon/edit/matchbrackets"],
-//          create: true
-//        }
-//    ],
-
     fileExclusionRegExp: /^demo|bin|doc|test|theme/,
 
     optimizeCss: false
