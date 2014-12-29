@@ -17,6 +17,8 @@ import com.google.gwt.core.client.JsArrayString;
 
 public class CMEditorOptionsOverlay extends JavaScriptObject {
 
+    private static final String READONLY_VALUE_NOFOCUS = "nofocus";
+
     protected CMEditorOptionsOverlay() {
     }
 
@@ -262,20 +264,43 @@ public class CMEditorOptionsOverlay extends JavaScriptObject {
 
     // readOnly = true (readonly), false (edit allowed) or "nocursor" (readonly + disallow focus) (default false)
 
-    public final native void setReadOnly(ReadOnlyOptions readOnly) /*-{
-        var name = readOnly
-                .@com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay.ReadOnlyOptions::name();
+    /**
+     * Set the read only attribute of the editor.
+     * @param readOnly the new value
+     */
+    public final void setReadOnly(final ReadOnlyOptions readOnly) {
+        final String name = readOnly.name();
         switch (name) {
-        case "READONLY":
-            this.setReadOnly(true);
-            return;
-        case "EDIT":
-            this.setReadOnly(false);
-            return;
-        case "NOFOCUS":
-            this.setReadOnly("nofocus");
-            return;
+            case "READONLY":
+                this.setReadOnly(true);
+                return;
+            case "EDIT":
+                this.setReadOnly(false);
+                return;
+            case "NOFOCUS":
+                this.setReadOnly(READONLY_VALUE_NOFOCUS);
+                return;
+            default:
+                break;
         }
+    }
+
+    /**
+     * Set the read only attribute of the editor to one of the boolean values.
+     * 
+     * @param readOnly the new value
+     */
+    public final native void setReadOnly(boolean readonly) /*-{
+        this.setReadOnly(readonly);
+    }-*/;
+
+    /**
+     * Set the read only attribute of the editor to one of the String values.<br>
+     * Currently, the only String value is "nofocus".
+     * @param readOnly the new value
+     */
+    public final native void setReadOnly(String readonly) /*-{
+        this.setReadOnly(readonly);
     }-*/;
 
     private final native boolean isReadOnlyString() /*-{
@@ -292,7 +317,7 @@ public class CMEditorOptionsOverlay extends JavaScriptObject {
 
     public final ReadOnlyOptions getReadOnly() {
         if (isReadOnlyString()) {
-            if ("nofocus".equals(getReadOnlyAsString())) {
+            if (READONLY_VALUE_NOFOCUS.equals(getReadOnlyAsString())) {
                 return ReadOnlyOptions.NOFOCUS;
             } else {
                 throw new RuntimeException("unknown value for readOnly");
