@@ -150,8 +150,6 @@ public class CodeMirrorEditorExtension {
                 codemirrorBase + "mode/markdown/markdown",
                 codemirrorBase + "mode/gfm/gfm", // markdown extension for github
 
-                codemirrorBase + "mode/dockerfile/dockerfile_codenvy",
-
                 // hints
                 codemirrorBase + "addon/hint/show-hint",
                 codemirrorBase + "addon/hint/xml-hint",

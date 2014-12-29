@@ -132,14 +132,14 @@ import elemental.js.events.JsMouseEvent;
  * @author "Mickaël Leduque"
  */
 public class CodeMirrorEditorWidget extends CompositeEditorWidget implements HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
-                                                     HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
-                                                     HasViewPortChangeHandlers, HasGutterClickHandlers, HasScrollHandlers {
+                                                                 HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
+                                                                 HasViewPortChangeHandlers, HasGutterClickHandlers, HasScrollHandlers {
 
     private static final String CODE_MIRROR_GUTTER_FOLDGUTTER = "CodeMirror-foldgutter";
 
     private static final String CODE_MIRROR_GUTTER_LINENUMBERS = "CodeMirror-linenumbers";
 
-    private static final String                         TAB_SIZE_OPTION             = "tabSize";
+    private static final String TAB_SIZE_OPTION = "tabSize";
 
     /** The UI binder instance. */
     private static final CodeMirrorEditorWidgetUiBinder UIBINDER = GWT.create(CodeMirrorEditorWidgetUiBinder.class);
@@ -151,18 +151,18 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
     private static final String CODEMIRROR_MODE_STYLE_PREFIX = "cm-mode";
 
     @UiField
-    SimplePanel                                         panel;
+    SimplePanel panel;
 
     /** The native editor object. */
-    private final CMEditorOverlay                       editorOverlay;
+    private final CMEditorOverlay editorOverlay;
 
 
     /** The EmbeddededDocument instance. */
-    private CodeMirrorDocument                          embeddedDocument;
+    private CodeMirrorDocument embeddedDocument;
     /** The position converter instance. */
-    private final PositionConverter                           positionConverter;
+    private final PositionConverter positionConverter;
 
-    private final CodeMirrorOverlay                      codeMirror;
+    private final CodeMirrorOverlay codeMirror;
 
     /** Component that handles undo/redo. */
     private final HandlesUndoRedo undoRedo;
@@ -173,19 +173,19 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
     private final KeymapPrefReader keymapPrefReader;
 
     // flags to know if an event type has already be added to the native editor
-    private boolean                                     changeHandlerAdded          = false;
-    private boolean                                     focusHandlerAdded           = false;
-    private boolean                                     blurHandlerAdded            = false;
-    private boolean                                     scrollHandlerAdded          = false;
-    private boolean                                     cursorHandlerAdded          = false;
-    private boolean                                     beforeSelectionHandlerAdded = false;
-    private boolean                                     viewPortHandlerAdded        = false;
-    private boolean                                     gutterClickHandlerAdded     = false;
+    private boolean changeHandlerAdded = false;
+    private boolean focusHandlerAdded = false;
+    private boolean blurHandlerAdded = false;
+    private boolean scrollHandlerAdded = false;
+    private boolean cursorHandlerAdded = false;
+    private boolean beforeSelectionHandlerAdded = false;
+    private boolean viewPortHandlerAdded = false;
+    private boolean gutterClickHandlerAdded = false;
 
     /** The 'generation', marker to ask if changes where done since if was set. */
     private int generationMarker;
 
-    private Keymap                                      keymap;
+    private Keymap keymap;
 
     private final ShowCompletion showCompletion;
 
@@ -260,7 +260,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
         this.keyBindings = CMKeymapOverlay.create();
 
-        this.keyBindings.addBinding("Shift-Ctrl-K", this,  new CodeMirrorKeyBindingAction<CodeMirrorEditorWidget>() {
+        this.keyBindings.addBinding("Shift-Ctrl-K", this, new CodeMirrorKeyBindingAction<CodeMirrorEditorWidget>() {
 
             public void action(final CodeMirrorEditorWidget editorWidget) {
                 LOG.fine("Keybindings help binding used.");
@@ -333,19 +333,18 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         LOG.fine("Setting editor mode : " + modeDesc);
         this.mode = modeDesc;
 
+        String actualFileType = modeDesc;
         // special-casing dockerfile
         if ("text/x-dockerfile-config".equals(modeDesc)) {
-            this.editorOverlay.setOption("mode", "text/x-dockerfile-config");
-            final DOMTokenList classes = this.editorOverlay.getWrapperElement().getClassList();
-            classes.add(CODEMIRROR_MODE_STYLE_PREFIX + "-" + "dockerfile");
-            return;
+            actualFileType = "text/x-dockerfile";
         }
-        final CMModeInfoOverlay modeInfo = this.codeMirror.findModeByMIME(modeDesc);
+
+        final CMModeInfoOverlay modeInfo = this.codeMirror.findModeByMIME(actualFileType);
         if (modeInfo != null) {
             if (!modePresent(modeInfo.getMode())) {
-                loadMode(modeInfo.getMode(), modeDesc);
+                loadMode(modeInfo.getMode(), actualFileType);
             } else {
-                this.editorOverlay.setOption("mode", modeDesc);
+                this.editorOverlay.setOption("mode", actualFileType);
             }
 
             // try to add mode specific style
@@ -370,7 +369,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     private void loadMode(final String modeName, final String mime) {
         this.requirejs.require(new Callback<JavaScriptObject[], Throwable>() {
-            
+
             @Override
             public void onSuccess(final JavaScriptObject[] result) {
                 if (result != null) {
@@ -384,8 +383,8 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
             public void onFailure(final Throwable reason) {
                 Log.warn(CodeMirrorEditorWidget.class, "Require " + modeName + " mode failed.");
             }
-        }, new String[] {codemirrorBasePath + "lib/codemirror",
-                         codemirrorBasePath + "mode/" + modeName + "/" + modeName});
+        }, new String[]{codemirrorBasePath + "lib/codemirror",
+                        codemirrorBasePath + "mode/" + modeName + "/" + modeName});
     }
 
     @Override
@@ -402,12 +401,13 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                 public void onSuccess(final JavaScriptObject[] result) {
                     doSelectVimKeymap();
                 }
+
                 @Override
                 public void onFailure(final Throwable reason) {
                     Window.alert("Could not load vim keymap, reverting to the default");
                 }
-            }, new String[] {codemirrorBasePath + "lib/codemirror",
-                             codemirrorBasePath + "keymap/vim"});
+            }, new String[]{codemirrorBasePath + "lib/codemirror",
+                            codemirrorBasePath + "keymap/vim"});
         }
     }
 
@@ -424,12 +424,13 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                 public void onSuccess(final JavaScriptObject[] result) {
                     doSelectEmacsKeymap();
                 }
+
                 @Override
                 public void onFailure(final Throwable reason) {
                     Window.alert("Could not load emacs keymap, reverting to the default");
                 }
-            }, new String[] {codemirrorBasePath + "lib/codemirror",
-                             codemirrorBasePath + "keymap/emacs"});
+            }, new String[]{codemirrorBasePath + "lib/codemirror",
+                            codemirrorBasePath + "keymap/emacs"});
         }
     }
 
@@ -446,12 +447,13 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                 public void onSuccess(final JavaScriptObject[] result) {
                     doSelectSublimeKeymap();
                 }
+
                 @Override
                 public void onFailure(final Throwable reason) {
                     Window.alert("Could not load sublime keymap, reverting to the default");
                 }
-            }, new String[] {codemirrorBasePath + "lib/codemirror",
-                             codemirrorBasePath + "keymap/sublime"});
+            }, new String[]{codemirrorBasePath + "lib/codemirror",
+                            codemirrorBasePath + "keymap/sublime"});
         }
     }
 
@@ -490,7 +492,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
             this.editorOverlay.setOption("vimMode", false);
             this.editorOverlay.setOption(SHOW_CURSOR_WHEN_SELECTING, false);
         }
-        
+
     }
 
     @Override
@@ -502,7 +504,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                 @Override
                 public void onEvent(final CMChangeEventOverlay param) {
                     LOG.fine("Change event - state clean=" + editorOverlay.getDoc().isClean(getGenerationMarker())
-                                  + " (generation=" + getGenerationMarker() + ").");
+                             + " (generation=" + getGenerationMarker() + ").");
                     fireChangeEvent();
                 }
             });
@@ -595,13 +597,13 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         if (!beforeSelectionHandlerAdded) {
             beforeSelectionHandlerAdded = true;
             this.codeMirror.on(this.editorOverlay, BEFORE_SELECTION_CHANGE,
-                                  new EventHandlers.EventHandlerOneParameter<BeforeSelectionEventParamOverlay>() {
+                               new EventHandlers.EventHandlerOneParameter<BeforeSelectionEventParamOverlay>() {
 
-                                      @Override
-                                      public void onEvent(final BeforeSelectionEventParamOverlay param) {
-                                          fireBeforeSelectionChangeEvent();
-                                      }
-                                  });
+                                   @Override
+                                   public void onEvent(final BeforeSelectionEventParamOverlay param) {
+                                       fireBeforeSelectionChangeEvent();
+                                   }
+                               });
         }
         return addHandler(handler, BeforeSelectionChangeEvent.TYPE);
     }
@@ -642,7 +644,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                     // param 0 is codemirror instance
                     final int line = Double.valueOf(params.getNumber(1)).intValue();
                     final String gutterId = params.getString(2);
-                    //param 3 is click event
+                    // param 3 is click event
                     final JsMouseEvent event = params.getObject(3).cast();
                     fireGutterClickEvent(line, gutterId, event);
                 }
@@ -867,7 +869,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         }
         final KeyBindingAction bindingAction = keybinding.getAction();
         if (bindingAction == null) {
-            LOG.warning("Cannot bind null action on "+ keySpec +".");
+            LOG.warning("Cannot bind null action on " + keySpec + ".");
             return;
         }
         LOG.info("Binding action on " + keySpec + ".");
@@ -880,7 +882,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         });
     }
 
-    public void addGutterItem(final int line, final String gutterId, final Element element){
+    public void addGutterItem(final int line, final String gutterId, final Element element) {
         this.editorOverlay.setGutterMarker(line, gutterId, element);
     }
 
@@ -898,44 +900,44 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.setGutterMarker(line, gutterId, element);
         this.codeMirror.on(editorOverlay, EventTypes.CHANGE,
                            new EventHandlerMixedParameters() {
-                @Override
-                public void onEvent(final JsArrayMixed params) {
-                    // 0->editor, 1->event object
-                    final CMChangeEventOverlay event = params.getObject(1);
-                    final JsArrayString newText = event.getText();
-                    final CMPositionOverlay from = event.getFrom();
-                    final CMPositionOverlay to = event.getTo();
+                               @Override
+                               public void onEvent(final JsArrayMixed params) {
+                                   // 0->editor, 1->event object
+                                   final CMChangeEventOverlay event = params.getObject(1);
+                                   final JsArrayString newText = event.getText();
+                                   final CMPositionOverlay from = event.getFrom();
+                                   final CMPositionOverlay to = event.getTo();
 
-                    // if the first character of the line is not included, the (potential) line
-                    // numbering change only starts at the following line.
-                    int changeStart = from.getLine() + 1;
+                                   // if the first character of the line is not included, the (potential) line
+                                   // numbering change only starts at the following line.
+                                   int changeStart = from.getLine() + 1;
 
-                    int removedCount = 0;
-                    if (from.getLine() != to.getLine()) {
-                        // no lines were removed
-                        // don't count first line yet
-                        removedCount = Math.abs(from.getLine() - to.getLine()) - 1;
-                        if (from.getCharacter() == 0) {
-                            // start of first line is included, 'to' is on another line, so the line is deleted
-                            removedCount = removedCount + 1;
-                            changeStart = changeStart - 1;
-                        }
-                        // if 'to' is at the end of the line, the line is _not_ removed, just emptied
-                    }
-                    // else no lines were removed
+                                   int removedCount = 0;
+                                   if (from.getLine() != to.getLine()) {
+                                       // no lines were removed
+                                       // don't count first line yet
+                                       removedCount = Math.abs(from.getLine() - to.getLine()) - 1;
+                                       if (from.getCharacter() == 0) {
+                                           // start of first line is included, 'to' is on another line, so the line is deleted
+                                           removedCount = removedCount + 1;
+                                           changeStart = changeStart - 1;
+                                       }
+                                       // if 'to' is at the end of the line, the line is _not_ removed, just emptied
+                                   }
+                                   // else no lines were removed
 
-                    final int addedCount = newText.length() - 1;
+                                   final int addedCount = newText.length() - 1;
 
-                    // only call back if there is a change in the lines
-                    if (removedCount > 0 || addedCount > 0) {
-                        LOG.fine("Line change from l." + changeStart + " removed " + removedCount + " added " + addedCount);
-                        lineCallback.onLineNumberingChange(changeStart,
-                                                           removedCount,
-                                                           addedCount);
-                    }
-                }
+                                   // only call back if there is a change in the lines
+                                   if (removedCount > 0 || addedCount > 0) {
+                                       LOG.fine("Line change from l." + changeStart + " removed " + removedCount + " added " + addedCount);
+                                       lineCallback.onLineNumberingChange(changeStart,
+                                                                          removedCount,
+                                                                          addedCount);
+                                   }
+                               }
 
-        });
+                           });
     }
 
     public elemental.dom.Element getGutterItem(final int line, final String gutterId) {
@@ -1015,6 +1017,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     /**
      * Returns the editor overlay instance.
+     * 
      * @return the editor overlay
      */
     CMEditorOverlay getEditorOverlay() {
@@ -1023,6 +1026,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     /**
      * Return the CodeMirror object.
+     * 
      * @return the CodeMirror
      */
     CodeMirrorOverlay getCodeMirror() {
