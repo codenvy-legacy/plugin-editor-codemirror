@@ -90,6 +90,12 @@
             <version>${com.google.gwt.gin.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>codemirror</artifactId>
+            <version>${codemirror.upstream.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
