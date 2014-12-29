@@ -52,6 +52,7 @@
              most of the time it should stay at 1
               -->
         <codemirror.plugin.revision>1</codemirror.plugin.revision>
+        <codemirror.unpack.location>${project.build.directory}/codemirror-${codemirror.upstream.version}</codemirror.unpack.location>
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
         <codemirror.upstream.version>4.10</codemirror.upstream.version>
         <license_years>2014</license_years>
@@ -147,19 +148,27 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>wagon-maven-plugin</artifactId>
-                <version>1.0-beta-4</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>unpack</id>
                         <phase>generate-resources</phase>
                         <goals>
-                            <goal>download-single</goal>
+                            <goal>unpack</goal>
                         </goals>
                         <configuration>
-                            <url>${codemirror.upstream.url}</url>
-                            <fromFile>codemirror-${codemirror.upstream.version}.zip</fromFile>
-                            <toFile>${project.build.directory}/codemirror-${codemirror.upstream.version}.zip</toFile>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.webjars</groupId>
+                                    <artifactId>codemirror</artifactId>
+                                    <version>${codemirror.upstream.version}</version>
+                                    <type>jar</type>
+                                    <includes>**/lib/**,**/addon/**,**/mode/**,**/keymap/**</includes>
+                                    <excludes>**/*_test.js,**/index.html</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${codemirror.unpack.location}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -174,11 +183,9 @@
                         </goals>
                         <configuration>
                             <target>
-                                <unzip dest="${project.build.directory}" src="${project.build.directory}/codemirror-${codemirror.upstream.version}.zip" />
                                 <mkdir dir="${codemirror.extract.location}/" />
                                 <move todir="${codemirror.extract.location}/">
-                                    <fileset dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/"
-                                            excludes="demo/**,bin/**,doc/**,test/**,theme/**,**/*_test.js,**/idex.html" />
+                                    <fileset dir="${codemirror.unpack.location}/META-INF/resources/webjars/codemirror/4.10/" />
                                 </move>
                             </target>
                         </configuration>
