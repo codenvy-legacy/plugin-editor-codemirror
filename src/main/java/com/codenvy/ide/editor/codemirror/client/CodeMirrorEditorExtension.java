@@ -59,7 +59,7 @@ public class CodeMirrorEditorExtension {
     public static final String                CODEMIRROR_MODULE_KEY = "CodeMirror";
 
     /** The base path for codemirror resources. */
-    private static final String CODEMIRROR_BASE = "codemirror/";
+    private final String codemirrorBase;
 
     private final NotificationManager         notificationManager;
     private final ModuleHolder                moduleHolder;
@@ -76,6 +76,7 @@ public class CodeMirrorEditorExtension {
                                      final ModuleHolder moduleHolder,
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
+                                     final CodeMirrorBasePath codemirrorBasePath,
                                      final CodeMirrorEditorModule editorModule,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
                                      final CodeMirrorResource highlightResource,
@@ -86,6 +87,7 @@ public class CodeMirrorEditorExtension {
         this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
+        this.codemirrorBase = codemirrorBasePath.basePath();
 
         highlightResource.highlightStyle().ensureInjected();
         highlightResource.editorStyle().ensureInjected();
@@ -123,67 +125,67 @@ public class CodeMirrorEditorExtension {
         final String[] scripts = new String[]{
 
                 // base script
-                CODEMIRROR_BASE + "lib/codemirror",
+                codemirrorBase + "lib/codemirror",
 
                 // library of modes
-                CODEMIRROR_BASE + "mode/meta",
+                codemirrorBase + "mode/meta",
                 // mode autoloading
-                CODEMIRROR_BASE + "addon/mode/loadmode",
+                codemirrorBase + "addon/mode/loadmode",
 
 
                 /* We will preload modes that have extensions */
                 // language modes
-                CODEMIRROR_BASE + "mode/xml/xml",
-                CODEMIRROR_BASE + "mode/htmlmixed/htmlmixed", // must be defined after xml
+                codemirrorBase + "mode/xml/xml",
+                codemirrorBase + "mode/htmlmixed/htmlmixed", // must be defined after xml
 
-                CODEMIRROR_BASE + "mode/javascript/javascript",
-                CODEMIRROR_BASE + "mode/coffeescript/coffeescript",
+                codemirrorBase + "mode/javascript/javascript",
+                codemirrorBase + "mode/coffeescript/coffeescript",
 
-                CODEMIRROR_BASE + "mode/css/css",
+                codemirrorBase + "mode/css/css",
 
-                CODEMIRROR_BASE + "mode/sql/sql",
+                codemirrorBase + "mode/sql/sql",
 
-                CODEMIRROR_BASE + "mode/clike/clike",
+                codemirrorBase + "mode/clike/clike",
 
-                CODEMIRROR_BASE + "mode/markdown/markdown",
-                CODEMIRROR_BASE + "mode/gfm/gfm", // markdown extension for github
+                codemirrorBase + "mode/markdown/markdown",
+                codemirrorBase + "mode/gfm/gfm", // markdown extension for github
 
-                CODEMIRROR_BASE + "mode/dockerfile/dockerfile_codenvy",
+                codemirrorBase + "mode/dockerfile/dockerfile_codenvy",
 
                 // hints
-                CODEMIRROR_BASE + "addon/hint/show-hint",
-                CODEMIRROR_BASE + "addon/hint/xml-hint",
-                CODEMIRROR_BASE + "addon/hint/html-hint",
-                CODEMIRROR_BASE + "addon/hint/javascript-hint",
-                CODEMIRROR_BASE + "addon/hint/css-hint",
-                CODEMIRROR_BASE + "addon/hint/anyword-hint",
-                CODEMIRROR_BASE + "addon/hint/sql-hint",
+                codemirrorBase + "addon/hint/show-hint",
+                codemirrorBase + "addon/hint/xml-hint",
+                codemirrorBase + "addon/hint/html-hint",
+                codemirrorBase + "addon/hint/javascript-hint",
+                codemirrorBase + "addon/hint/css-hint",
+                codemirrorBase + "addon/hint/anyword-hint",
+                codemirrorBase + "addon/hint/sql-hint",
 
                 // pair matching
-                CODEMIRROR_BASE + "addon/edit/closebrackets",
-                CODEMIRROR_BASE + "addon/edit/closetag",
-                CODEMIRROR_BASE + "addon/edit/matchbrackets",
-                CODEMIRROR_BASE + "addon/edit/matchtags",
+                codemirrorBase + "addon/edit/closebrackets",
+                codemirrorBase + "addon/edit/closetag",
+                codemirrorBase + "addon/edit/matchbrackets",
+                codemirrorBase + "addon/edit/matchtags",
                 // the two following are added to repair actual functionality in 'classic' editor
-                CODEMIRROR_BASE + "addon/selection/mark-selection",
-                CODEMIRROR_BASE + "addon/selection/active-line",
+                codemirrorBase + "addon/selection/mark-selection",
+                codemirrorBase + "addon/selection/active-line",
 
                 // for search
-                CODEMIRROR_BASE + "addon/search/search",
-                CODEMIRROR_BASE + "addon/dialog/dialog",
-                CODEMIRROR_BASE + "addon/search/searchcursor",
-                CODEMIRROR_BASE + "addon/search/match-highlighter",
+                codemirrorBase + "addon/search/search",
+                codemirrorBase + "addon/dialog/dialog",
+                codemirrorBase + "addon/search/searchcursor",
+                codemirrorBase + "addon/search/match-highlighter",
                 // comment management
-                CODEMIRROR_BASE + "addon/comment/comment",
-                CODEMIRROR_BASE + "addon/comment/continuecomment",
+                codemirrorBase + "addon/comment/comment",
+                codemirrorBase + "addon/comment/continuecomment",
                 // folding
-                CODEMIRROR_BASE + "addon/fold/foldcode",
-                CODEMIRROR_BASE + "addon/fold/foldgutter",
-                CODEMIRROR_BASE + "addon/fold/brace-fold",
-                CODEMIRROR_BASE + "addon/fold/xml-fold", // also required by matchbrackets and closebrackets
-                CODEMIRROR_BASE + "addon/fold/comment-fold",
-                CODEMIRROR_BASE + "addon/fold/indent-fold",
-                CODEMIRROR_BASE + "addon/fold/markdown-fold",
+                codemirrorBase + "addon/fold/foldcode",
+                codemirrorBase + "addon/fold/foldgutter",
+                codemirrorBase + "addon/fold/brace-fold",
+                codemirrorBase + "addon/fold/xml-fold", // also required by matchbrackets and closebrackets
+                codemirrorBase + "addon/fold/comment-fold",
+                codemirrorBase + "addon/fold/indent-fold",
+                codemirrorBase + "addon/fold/markdown-fold",
         };
 
 
@@ -213,16 +215,16 @@ public class CodeMirrorEditorExtension {
             }
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "lib/codemirror.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/dialog/dialog.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/fold/foldgutter.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "addon/hint/show-hint.css");
+        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "lib/codemirror.css");
+        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/dialog/dialog.css");
+        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/fold/foldgutter.css");
+        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/hint/show-hint.css");
 
     }
 
     private void finishInit(final InitializerCallback callback) {
         final CodeMirrorOverlay codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
-        codeMirror.setModeURL(GWT.getModuleBaseForStaticFiles() + CODEMIRROR_BASE + "mode/%N/%N.js");
+        codeMirror.setModeURL(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "mode/%N/%N.js");
         callback.onSuccess();
     }
 

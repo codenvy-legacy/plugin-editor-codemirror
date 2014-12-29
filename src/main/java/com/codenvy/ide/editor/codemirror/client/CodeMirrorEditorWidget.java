@@ -195,10 +195,16 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     private final RequireJsLoader requirejs;
 
+    /**
+     * The base path of codemirror resources.
+     */
+    private final String codemirrorBasePath;
+
     @AssistedInject
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final EventBus eventBus,
                                   final KeymapPrefReader keymapPrefReader,
+                                  final CodeMirrorBasePath basePath,
                                   final CompletionResources completionResources,
                                   final EditorAgent editorAgent,
                                   @Assisted final List<String> editorModes,
@@ -208,7 +214,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.keymapPrefReader = keymapPrefReader;
         this.requirejs = requirejs;
         this.showCompletion = new ShowCompletion(this, completionResources.completionCss());
-
+        this.codemirrorBasePath = basePath.basePath();
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
 
@@ -378,7 +384,8 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
             public void onFailure(final Throwable reason) {
                 Log.warn(CodeMirrorEditorWidget.class, "Require " + modeName + " mode failed.");
             }
-        }, new String[] {"codemirror/lib/codemirror", "codemirror/mode/" + modeName + "/" + modeName});
+        }, new String[] {codemirrorBasePath + "lib/codemirror",
+                         codemirrorBasePath + "mode/" + modeName + "/" + modeName});
     }
 
     @Override
@@ -399,7 +406,8 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                 public void onFailure(final Throwable reason) {
                     Window.alert("Could not load vim keymap, reverting to the default");
                 }
-            }, new String[] {"codemirror/lib/codemirror", "codemirror/keymap/vim"});
+            }, new String[] {codemirrorBasePath + "lib/codemirror",
+                             codemirrorBasePath + "keymap/vim"});
         }
     }
 
@@ -420,7 +428,8 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                 public void onFailure(final Throwable reason) {
                     Window.alert("Could not load emacs keymap, reverting to the default");
                 }
-            }, new String[] {"codemirror/lib/codemirror", "codemirror/keymap/emacs"});
+            }, new String[] {codemirrorBasePath + "lib/codemirror",
+                             codemirrorBasePath + "keymap/emacs"});
         }
     }
 
@@ -441,7 +450,8 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                 public void onFailure(final Throwable reason) {
                     Window.alert("Could not load sublime keymap, reverting to the default");
                 }
-            }, new String[] {"codemirror/lib/codemirror", "codemirror/keymap/sublime"});
+            }, new String[] {codemirrorBasePath + "lib/codemirror",
+                             codemirrorBasePath + "keymap/sublime"});
         }
     }
 
