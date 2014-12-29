@@ -83,7 +83,7 @@
      */
     removeCombined: false,
 
-    fileExclusionRegExp: /^demo|bin|doc|test|theme/,
+    fileExclusionRegExp: /^\./,
 
     optimizeCss: false
 })

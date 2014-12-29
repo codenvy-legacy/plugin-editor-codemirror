@@ -171,7 +171,8 @@
                                 <unzip dest="${project.build.directory}" src="${project.build.directory}/codemirror-${codemirror.upstream.version}.zip" />
                                 <mkdir dir="${codemirror.extract.location}/" />
                                 <move todir="${codemirror.extract.location}/">
-                                    <fileset dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/" />
+                                    <fileset dir="${project.build.directory}/codemirror-${codemirror.upstream.version}/"
+                                            excludes="demo/**,bin/**,doc/**,test/**,theme/**,**/*_test.js,**/idex.html" />
                                 </move>
                             </target>
                         </configuration>
