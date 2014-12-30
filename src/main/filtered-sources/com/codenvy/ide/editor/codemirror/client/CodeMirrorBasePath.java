@@ -10,13 +10,23 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-import com.google.gwt.i18n.client.Constants;
-
 /**
  * Defines the codemirror resources path.
- * Note: uses {@link Constants} interface for proactical reason. Should not be translated.
  */
-public interface CodeMirrorBasePath extends Constants {
+public final class CodeMirrorBasePath {
 
-    String basePath();
+    /**
+     * The base path (in the source file, it should contain version placeholders, evaluated during compilation).
+     */
+    private final static String BASE_PATH = "codemirror-${codemirror.upstream.version}-${codemirror.plugin.revision}/";
+
+    private CodeMirrorBasePath() {}
+
+    /**
+     * Returns the base path for codemirror resources.
+     * @return the base path
+     */
+    public static String basePath() {
+        return BASE_PATH;
+    }
 }

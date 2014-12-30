@@ -55,6 +55,7 @@
         <codemirror.unpack.location>${project.build.directory}/codemirror-${codemirror.upstream.version}</codemirror.unpack.location>
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
         <codemirror.upstream.version>4.10</codemirror.upstream.version>
+        <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
         <license_years>2014</license_years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -118,18 +119,13 @@
                 <directory>src/main/java</directory>
             </resource>
             <resource>
+                <targetPath>${filtered.source.path}</targetPath>
                 <filtering>true</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>com/codenvy/ide/editor/codemirror/client/CodeMirrorBasePath.properties</include>
-                </includes>
+                <directory>src/main/filtered-sources</directory>
             </resource>
             <resource>
                 <filtering>false</filtering>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>com/codenvy/ide/editor/codemirror/client/CodeMirrorBasePath.properties</exclude>
-                </excludes>
             </resource>
             <resource>
                 <directory>target/codemirror</directory>
@@ -145,8 +141,29 @@
                     <exclude>**/demo/**</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>${filtered.source.path}</directory>
+            </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${filtered.source.path}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

@@ -204,7 +204,6 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
     public CodeMirrorEditorWidget(final ModuleHolder moduleHolder,
                                   final EventBus eventBus,
                                   final KeymapPrefReader keymapPrefReader,
-                                  final CodeMirrorBasePath basePath,
                                   final CompletionResources completionResources,
                                   final EditorAgent editorAgent,
                                   @Assisted final List<String> editorModes,
@@ -214,7 +213,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.keymapPrefReader = keymapPrefReader;
         this.requirejs = requirejs;
         this.showCompletion = new ShowCompletion(this, completionResources.completionCss());
-        this.codemirrorBasePath = basePath.basePath();
+        this.codemirrorBasePath = CodeMirrorBasePath.basePath();
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
 

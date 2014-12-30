@@ -76,7 +76,6 @@ public class CodeMirrorEditorExtension {
                                      final ModuleHolder moduleHolder,
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
-                                     final CodeMirrorBasePath codemirrorBasePath,
                                      final CodeMirrorEditorModule editorModule,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
                                      final CodeMirrorResource highlightResource,
@@ -87,7 +86,7 @@ public class CodeMirrorEditorExtension {
         this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
-        this.codemirrorBase = codemirrorBasePath.basePath();
+        this.codemirrorBase = CodeMirrorBasePath.basePath();
 
         highlightResource.highlightStyle().ensureInjected();
         highlightResource.editorStyle().ensureInjected();
