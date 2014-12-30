@@ -92,6 +92,7 @@ public class CodeMirrorEditorExtension {
         highlightResource.editorStyle().ensureInjected();
         highlightResource.dockerfileModeStyle().ensureInjected();
         highlightResource.gutterStyle().ensureInjected();
+        highlightResource.scrollStyle().ensureInjected();
         completionResources.completionCss().ensureInjected();
 
         Log.info(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);

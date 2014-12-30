@@ -25,6 +25,9 @@ public interface CodeMirrorResource extends ClientBundle {
     @Source({"cm_gutters.css", "com/codenvy/ide/api/ui/style.css"})
     CssResource gutterStyle();
 
+    @Source({"cm_simplescrollbars.css", "com/codenvy/ide/common/constants.css", "com/codenvy/ide/api/ui/style.css"})
+    CssResource scrollStyle();
+
     @Source("com/codenvy/ide/texteditor/squiggle.gif")
     ImageResource squiggle();
 
