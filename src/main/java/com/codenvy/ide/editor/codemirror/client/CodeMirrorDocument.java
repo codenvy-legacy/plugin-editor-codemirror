@@ -107,9 +107,9 @@ public class CodeMirrorDocument extends AbstractEmbeddedDocument {
             @Override
             public void update(TextChange updatedChange) {
                 final CMPositionOverlay from = CMPositionOverlay.create(updatedChange.getFrom().getLine(),
-                                                                        updatedChange.getFrom().getLine());
+                                                                        updatedChange.getFrom().getCharacter());
                 final CMPositionOverlay to = CMPositionOverlay.create(updatedChange.getTo().getLine(),
-                                                                      updatedChange.getTo().getLine());
+                                                                      updatedChange.getTo().getCharacter());
                 final String newText = updatedChange.getNewText();
                 final String[] split = newText.split("\n");
                 final JsArrayString text = JavaScriptObject.createArray().cast();
