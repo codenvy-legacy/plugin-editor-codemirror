@@ -244,6 +244,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.generationMarker = this.editorOverlay.getDoc().changeGeneration(true);
 
         // configure the save command to launch the save action
+        // so the alternate keybinding save shortcut work (for example :w in vim)
         this.codeMirror.commands().put("save", CMCommandOverlay.create(new CMCommandOverlay.CommandFunction() {
             @Override
             public void execCommand(final CMEditorOverlay editor) {
