@@ -202,7 +202,7 @@
                             <target>
                                 <mkdir dir="${codemirror.extract.location}/" />
                                 <move todir="${codemirror.extract.location}/">
-                                    <fileset dir="${codemirror.unpack.location}/META-INF/resources/webjars/codemirror/4.10/" />
+                                    <fileset dir="${codemirror.unpack.location}/META-INF/resources/webjars/codemirror/${codemirror.upstream.version}/" />
                                 </move>
                             </target>
                         </configuration>
