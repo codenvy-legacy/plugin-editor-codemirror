@@ -59,6 +59,8 @@ import com.codenvy.ide.editor.codemirror.client.jso.marks.CMTextMarkerOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
+import com.codenvy.ide.editor.codemirror.client.minimap.MinimapFactory;
+import com.codenvy.ide.editor.codemirror.client.minimap.MinimapPresenter;
 import com.codenvy.ide.jseditor.client.codeassist.AdditionalInfoCallback;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
@@ -117,6 +119,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -125,6 +128,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import elemental.dom.DOMTokenList;
 import elemental.events.MouseEvent;
 import elemental.js.events.JsMouseEvent;
+import elemental.js.html.JsDivElement;
 
 /**
  * The CodeMirror implementation of {@link EditorWidget}.
@@ -152,6 +156,9 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     @UiField
     SimplePanel panel;
+
+    @UiField
+    Element rightGutter;
 
     /** The native editor object. */
     private final CMEditorOverlay editorOverlay;
@@ -193,6 +200,11 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     private String mode;
 
+    /**
+     * The minimap.
+     */
+    private final MinimapPresenter minimap;
+
     private final RequireJsLoader requirejs;
 
     /**
@@ -207,7 +219,8 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                                   final CompletionResources completionResources,
                                   final EditorAgent editorAgent,
                                   @Assisted final List<String> editorModes,
-                                  final RequireJsLoader requirejs) {
+                                  final RequireJsLoader requirejs,
+                                  final MinimapFactory minimapFactory) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.keymapPrefReader = keymapPrefReader;
@@ -222,6 +235,9 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.refresh();
 
         this.positionConverter = new CodemirrorPositionConverter(this.editorOverlay);
+
+        this.minimap = minimapFactory.createMinimap(rightGutter.<JsDivElement> cast());
+        this.minimap.setDocument(getDocument());
 
         // just first choice for the moment
         if (editorModes != null && !editorModes.isEmpty()) {
@@ -1049,6 +1065,6 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.scrollIntoView(CMPositionOverlay.create(line, 0));
     }
 
-    interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
+    interface CodeMirrorEditorWidgetUiBinder extends UiBinder<HTMLPanel, CodeMirrorEditorWidget> {
     }
 }
