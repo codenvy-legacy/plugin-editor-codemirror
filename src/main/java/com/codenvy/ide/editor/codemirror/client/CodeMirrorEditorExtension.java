@@ -92,6 +92,7 @@ public class CodeMirrorEditorExtension {
         highlightResource.editorStyle().ensureInjected();
         highlightResource.dockerfileModeStyle().ensureInjected();
         highlightResource.gutterStyle().ensureInjected();
+        highlightResource.scrollStyle().ensureInjected();
         completionResources.completionCss().ensureInjected();
 
         Log.info(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);
@@ -183,6 +184,11 @@ public class CodeMirrorEditorExtension {
                 codemirrorBase + "addon/fold/comment-fold",
                 codemirrorBase + "addon/fold/indent-fold",
                 codemirrorBase + "addon/fold/markdown-fold",
+
+                codemirrorBase + "addon/scroll/simplescrollbars",
+                codemirrorBase + "addon/scroll/annotatescrollbar",
+                codemirrorBase + "addon/scroll/scrollpastend",
+                codemirrorBase + "addon/search/matchesonscrollbar",
         };
 
 
@@ -216,6 +222,8 @@ public class CodeMirrorEditorExtension {
         injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/dialog/dialog.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/fold/foldgutter.css");
         injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/hint/show-hint.css");
+        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/search/matchesonscrollbar.css");
+        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/scroll/simplescrollbars.css");
 
     }
 

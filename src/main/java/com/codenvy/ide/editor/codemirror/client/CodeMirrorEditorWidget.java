@@ -322,6 +322,9 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         // activate continueComments addon
         options.setProperty(OptionKey.CONTINUE_COMMENT, true);
 
+        /* simple and overlay style scrollbar fix appearance on firefox */
+        options.setScrollbarStyle("simple");
+
         return options;
     }
 
