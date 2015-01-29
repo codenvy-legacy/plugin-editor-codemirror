@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2014 Codenvy, S.A.
+    Copyright (c) 2014-2015 Codenvy, S.A.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
         <codemirror.upstream.version>4.12</codemirror.upstream.version>
         <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
-        <license_years>2014</license_years>
+        <license_years>2014-2015</license_years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencyManagement>
