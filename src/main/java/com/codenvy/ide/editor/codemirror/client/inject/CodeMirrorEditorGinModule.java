@@ -17,6 +17,7 @@ import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorExtension;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorModule;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorPresenter;
 import com.codenvy.ide.editor.codemirror.client.CodeMirrorEditorWidget;
+import com.codenvy.ide.editor.codemirror.client.minimap.MinimapFactory;
 import com.codenvy.ide.jseditor.client.JsEditorExtension;
 import com.codenvy.ide.jseditor.client.texteditor.EditorModule;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
@@ -40,6 +41,8 @@ public class CodeMirrorEditorGinModule extends AbstractGinModule {
         install(new GinFactoryModuleBuilder()
             .implement(new TypeLiteral<EmbeddedTextEditorPresenter<CodeMirrorEditorWidget>>() {}, CodeMirrorEditorPresenter.class)
             .build(new TypeLiteral<EmbeddedTextEditorPresenterFactory<CodeMirrorEditorWidget>>() {}));
+
+        bind(MinimapFactory.class);
     }
 
     @Provides
