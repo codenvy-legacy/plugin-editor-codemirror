@@ -51,12 +51,13 @@
              _Should be rare_ mostly when changing minification parameters without changing codemirror version so
              most of the time it should stay at 1
               -->
-        <codemirror.plugin.revision>1</codemirror.plugin.revision>
+        <codemirror.plugin.revision>2</codemirror.plugin.revision>
         <codemirror.unpack.location>${project.build.directory}/codemirror-${codemirror.upstream.version}</codemirror.unpack.location>
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
         <codemirror.upstream.version>4.12</codemirror.upstream.version>
         <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
         <license_years>2014-2015</license_years>
+        <patches.location>${basedir}/src/main/patches</patches.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencyManagement>
@@ -205,6 +206,31 @@
                                     <fileset dir="${codemirror.unpack.location}/META-INF/resources/webjars/codemirror/${codemirror.upstream.version}/" />
                                 </move>
                             </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Apply patches -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-patch-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>bugfix-patches</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <configuration>
+                            <patchDirectory>${patches.location}</patchDirectory>
+                            <patches>
+                                <patch>4.12-slash-IDEX-1961.diff</patch>
+                            </patches>
+                            <optimizations>false</optimizations>
+                            <strictPatching>true</strictPatching>
+                            <strip>1</strip>
+                            <targetDirectory>${codemirror.extract.location}</targetDirectory>
                         </configuration>
                     </execution>
                 </executions>
