@@ -88,6 +88,8 @@ import com.codenvy.ide.jseditor.client.keymap.Keybinding;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
+import com.codenvy.ide.jseditor.client.minimap.HasMinimap;
+import com.codenvy.ide.jseditor.client.minimap.Minimap;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
@@ -135,9 +137,19 @@ import elemental.js.html.JsDivElement;
  *
  * @author "Mickaël Leduque"
  */
-public class CodeMirrorEditorWidget extends CompositeEditorWidget implements HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
-                                                                 HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
-                                                                 HasViewPortChangeHandlers, HasGutterClickHandlers, HasScrollHandlers {
+public class CodeMirrorEditorWidget extends CompositeEditorWidget implements 
+                                                                             /* handler interfaces */
+                                                                             HasBeforeSelectionChangeHandlers,
+                                                                             HasBlurHandlers,
+                                                                             HasChangeHandlers,
+                                                                             HasCursorActivityHandlers,
+                                                                             HasFocusHandlers,
+                                                                             HasGutterClickHandlers,
+                                                                             HasScrollHandlers,
+                                                                             HasViewPortChangeHandlers,
+                                                                             /* capabilities */
+                                                                             HasMinimap
+                                                                             {
 
     private static final String CODE_MIRROR_GUTTER_FOLDGUTTER = "CodeMirror-foldgutter";
 
@@ -1063,6 +1075,11 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     public void scrollToLine(int line) {
         this.editorOverlay.scrollIntoView(CMPositionOverlay.create(line, 0));
+    }
+
+    @Override
+    public Minimap getMinimap() {
+        return this.minimap;
     }
 
     interface CodeMirrorEditorWidgetUiBinder extends UiBinder<HTMLPanel, CodeMirrorEditorWidget> {
