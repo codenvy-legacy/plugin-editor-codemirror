@@ -18,6 +18,8 @@ import com.codenvy.ide.jseditor.client.codeassist.CodeAssistantFactory;
 import com.codenvy.ide.jseditor.client.debug.BreakpointRendererFactory;
 import com.codenvy.ide.jseditor.client.document.DocumentStorage;
 import com.codenvy.ide.jseditor.client.filetype.FileTypeIdentifier;
+import com.codenvy.ide.jseditor.client.gutter.Gutter;
+import com.codenvy.ide.jseditor.client.gutter.HasGutter;
 import com.codenvy.ide.jseditor.client.minimap.HasMinimap;
 import com.codenvy.ide.jseditor.client.minimap.Minimap;
 import com.codenvy.ide.jseditor.client.quickfix.QuickAssistantFactory;
@@ -35,7 +37,8 @@ import com.google.web.bindery.event.shared.EventBus;
  * {@link EmbeddedTextEditorPresenter} using codemirror.
  * This class is only defined to allow the Gin binding to be performed.
  */
-public class CodeMirrorEditorPresenter extends EmbeddedTextEditorPresenter<CodeMirrorEditorWidget> implements HasMinimap {
+public class CodeMirrorEditorPresenter extends EmbeddedTextEditorPresenter<CodeMirrorEditorWidget> implements HasMinimap,
+                                                                                                              HasGutter {
 
     @AssistedInject
     public CodeMirrorEditorPresenter(final CodeAssistantFactory codeAssistantFactory,
@@ -61,6 +64,16 @@ public class CodeMirrorEditorPresenter extends EmbeddedTextEditorPresenter<CodeM
         final EditorWidget editorWidget = getEditorWidget();
         if (editorWidget instanceof HasMinimap) {
             return ((HasMinimap)editorWidget).getMinimap();
+        } else {
+            throw new IllegalStateException("incorrect editor state");
+        }
+    }
+
+    @Override
+    public Gutter getGutter() {
+        final EditorWidget editorWidget = getEditorWidget();
+        if (editorWidget instanceof HasGutter) {
+            return ((HasGutter)editorWidget).getGutter();
         } else {
             throw new IllegalStateException("incorrect editor state");
         }
