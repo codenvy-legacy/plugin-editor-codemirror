@@ -18,8 +18,11 @@ import com.codenvy.ide.jseditor.client.codeassist.CodeAssistantFactory;
 import com.codenvy.ide.jseditor.client.debug.BreakpointRendererFactory;
 import com.codenvy.ide.jseditor.client.document.DocumentStorage;
 import com.codenvy.ide.jseditor.client.filetype.FileTypeIdentifier;
+import com.codenvy.ide.jseditor.client.minimap.HasMinimap;
+import com.codenvy.ide.jseditor.client.minimap.Minimap;
 import com.codenvy.ide.jseditor.client.quickfix.QuickAssistantFactory;
 import com.codenvy.ide.jseditor.client.texteditor.EditorModule;
+import com.codenvy.ide.jseditor.client.texteditor.EditorWidget;
 import com.codenvy.ide.jseditor.client.texteditor.EditorWidgetFactory;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPartView;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
@@ -32,7 +35,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * {@link EmbeddedTextEditorPresenter} using codemirror.
  * This class is only defined to allow the Gin binding to be performed.
  */
-public class CodeMirrorEditorPresenter extends EmbeddedTextEditorPresenter<CodeMirrorEditorWidget> {
+public class CodeMirrorEditorPresenter extends EmbeddedTextEditorPresenter<CodeMirrorEditorWidget> implements HasMinimap {
 
     @AssistedInject
     public CodeMirrorEditorPresenter(final CodeAssistantFactory codeAssistantFactory,
@@ -53,6 +56,13 @@ public class CodeMirrorEditorPresenter extends EmbeddedTextEditorPresenter<CodeM
               editorModule, editorView, eventBus, fileTypeIdentifier, quickAssistantFactory, resources, workspaceAgent);
     }
 
-
-
+    @Override
+    public Minimap getMinimap() {
+        final EditorWidget editorWidget = getEditorWidget();
+        if (editorWidget instanceof HasMinimap) {
+            return ((HasMinimap)editorWidget).getMinimap();
+        } else {
+            throw new IllegalStateException("incorrect editor state");
+        }
+    }
 }
