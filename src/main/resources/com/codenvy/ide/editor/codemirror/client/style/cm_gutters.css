@@ -12,10 +12,10 @@
 
 @def gutterWidth 1em;
 
-.annotation {
+.CodeMirror-annotations {
     width: gutterWidth;
 }
 
-.breakpoints {
+.CodeMirror-breakpoints {
     width: gutterWidth;
 }

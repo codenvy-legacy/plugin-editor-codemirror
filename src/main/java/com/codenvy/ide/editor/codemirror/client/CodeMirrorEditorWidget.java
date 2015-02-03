@@ -80,7 +80,6 @@ import com.codenvy.ide.jseditor.client.events.ScrollHandler;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeHandler;
 import com.codenvy.ide.jseditor.client.gutter.Gutter;
-import com.codenvy.ide.jseditor.client.gutter.Gutters;
 import com.codenvy.ide.jseditor.client.gutter.HasGutter;
 import com.codenvy.ide.jseditor.client.keymap.KeyBindingAction;
 import com.codenvy.ide.jseditor.client.keymap.Keybinding;
@@ -150,10 +149,6 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements
                                                                              HasMinimap,
                                                                              HasGutter
                                                                              {
-
-    private static final String CODE_MIRROR_GUTTER_FOLDGUTTER = "CodeMirror-foldgutter";
-
-    private static final String CODE_MIRROR_GUTTER_LINENUMBERS = "CodeMirror-linenumbers";
 
     private static final String TAB_SIZE_OPTION = "tabSize";
 
@@ -340,10 +335,10 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements
 
         // gutters - define 2 : line and fold
         final JsArrayString gutters = JsArray.createArray(4).cast();
-        gutters.push(Gutters.ANNOTATION_GUTTER);
-        gutters.push(Gutters.BREAKPOINTS_GUTTER);
-        gutters.push(CODE_MIRROR_GUTTER_LINENUMBERS);
-        gutters.push(CODE_MIRROR_GUTTER_FOLDGUTTER);
+        gutters.push(CodemirrorGutter.CODE_MIRROR_GUTTER_BREAKPOINTS);
+        gutters.push(CodemirrorGutter.CODE_MIRROR_GUTTER_ANNOTATIONS);
+        gutters.push(CodemirrorGutter.CODE_MIRROR_GUTTER_LINENUMBERS);
+        gutters.push(CodemirrorGutter.CODE_MIRROR_GUTTER_FOLDGUTTER);
         options.setGutters(gutters);
 
         // highlight matching tags
@@ -693,7 +688,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements
 
     private void fireGutterClickEvent(final int line, final String internalGutterId, final MouseEvent event) {
         String gutterId = internalGutterId;
-        if (CODE_MIRROR_GUTTER_LINENUMBERS.equals(gutterId)) {
+        if (CodemirrorGutter.CODE_MIRROR_GUTTER_LINENUMBERS.equals(gutterId)) {
             gutterId = LINE_NUMBERS_GUTTER;
         }
         final GutterClickEvent gutterEvent = new GutterClickEvent(line, gutterId, event);
