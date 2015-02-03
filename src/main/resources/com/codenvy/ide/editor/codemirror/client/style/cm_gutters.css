@@ -17,5 +17,5 @@
 }
 
 .CodeMirror-breakpoints {
-    width: gutterWidth;
+    width: 0;
 }
