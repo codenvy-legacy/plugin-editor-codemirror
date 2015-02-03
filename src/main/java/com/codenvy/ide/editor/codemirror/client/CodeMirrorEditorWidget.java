@@ -47,18 +47,17 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMRangeOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
-import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters;
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.dialog.CMDialogOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.BeforeSelectionEventParamOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.line.CMGutterMarkersOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.marks.CMTextMarkerOptionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.marks.CMTextMarkerOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMEditorOptionsOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.options.CMMatchTagsConfig;
 import com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey;
+import com.codenvy.ide.editor.codemirror.client.minimap.MinimapFactory;
+import com.codenvy.ide.editor.codemirror.client.minimap.MinimapPresenter;
 import com.codenvy.ide.jseditor.client.codeassist.AdditionalInfoCallback;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionProposal;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
@@ -80,12 +79,16 @@ import com.codenvy.ide.jseditor.client.events.ScrollEvent;
 import com.codenvy.ide.jseditor.client.events.ScrollHandler;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeEvent;
 import com.codenvy.ide.jseditor.client.events.ViewPortChangeHandler;
+import com.codenvy.ide.jseditor.client.gutter.Gutter;
 import com.codenvy.ide.jseditor.client.gutter.Gutters;
+import com.codenvy.ide.jseditor.client.gutter.HasGutter;
 import com.codenvy.ide.jseditor.client.keymap.KeyBindingAction;
 import com.codenvy.ide.jseditor.client.keymap.Keybinding;
 import com.codenvy.ide.jseditor.client.keymap.Keymap;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeEvent;
 import com.codenvy.ide.jseditor.client.keymap.KeymapChangeHandler;
+import com.codenvy.ide.jseditor.client.minimap.HasMinimap;
+import com.codenvy.ide.jseditor.client.minimap.Minimap;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.prefmodel.KeymapPrefReader;
 import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
@@ -117,6 +120,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -125,15 +129,27 @@ import com.google.web.bindery.event.shared.EventBus;
 import elemental.dom.DOMTokenList;
 import elemental.events.MouseEvent;
 import elemental.js.events.JsMouseEvent;
+import elemental.js.html.JsDivElement;
 
 /**
  * The CodeMirror implementation of {@link EditorWidget}.
  *
  * @author "Mickaël Leduque"
  */
-public class CodeMirrorEditorWidget extends CompositeEditorWidget implements HasChangeHandlers, HasFocusHandlers, HasBlurHandlers,
-                                                                 HasCursorActivityHandlers, HasBeforeSelectionChangeHandlers,
-                                                                 HasViewPortChangeHandlers, HasGutterClickHandlers, HasScrollHandlers {
+public class CodeMirrorEditorWidget extends CompositeEditorWidget implements 
+                                                                             /* handler interfaces */
+                                                                             HasBeforeSelectionChangeHandlers,
+                                                                             HasBlurHandlers,
+                                                                             HasChangeHandlers,
+                                                                             HasCursorActivityHandlers,
+                                                                             HasFocusHandlers,
+                                                                             HasGutterClickHandlers,
+                                                                             HasScrollHandlers,
+                                                                             HasViewPortChangeHandlers,
+                                                                             /* capabilities */
+                                                                             HasMinimap,
+                                                                             HasGutter
+                                                                             {
 
     private static final String CODE_MIRROR_GUTTER_FOLDGUTTER = "CodeMirror-foldgutter";
 
@@ -152,6 +168,9 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     @UiField
     SimplePanel panel;
+
+    @UiField
+    Element rightGutter;
 
     /** The native editor object. */
     private final CMEditorOverlay editorOverlay;
@@ -193,6 +212,16 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
 
     private String mode;
 
+    /**
+     * The minimap.
+     */
+    private final MinimapPresenter minimap;
+
+    /**
+     * The gutter.
+     */
+    private final Gutter gutter;
+
     private final RequireJsLoader requirejs;
 
     /**
@@ -207,7 +236,8 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
                                   final CompletionResources completionResources,
                                   final EditorAgent editorAgent,
                                   @Assisted final List<String> editorModes,
-                                  final RequireJsLoader requirejs) {
+                                  final RequireJsLoader requirejs,
+                                  final MinimapFactory minimapFactory) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.keymapPrefReader = keymapPrefReader;
@@ -222,6 +252,11 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.refresh();
 
         this.positionConverter = new CodemirrorPositionConverter(this.editorOverlay);
+
+        this.minimap = minimapFactory.createMinimap(rightGutter.<JsDivElement> cast());
+        this.minimap.setDocument(getDocument());
+
+        this.gutter = new CodemirrorGutter(this.codeMirror, this.editorOverlay);
 
         // just first choice for the moment
         if (editorModes != null && !editorModes.isEmpty()) {
@@ -885,87 +920,6 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         });
     }
 
-    public void addGutterItem(final int line, final String gutterId, final Element element) {
-        this.editorOverlay.setGutterMarker(line, gutterId, element);
-    }
-
-    public void removeGutterItem(final int line, final String gutterId) {
-        this.editorOverlay.setGutterMarker(line, gutterId, (Element)null);
-    }
-
-    public void addGutterItem(final int line, final String gutterId, final elemental.dom.Element element) {
-        this.editorOverlay.setGutterMarker(line, gutterId, element);
-    }
-
-    public void addGutterItem(final int line, final String gutterId,
-                              final elemental.dom.Element element,
-                              final LineNumberingChangeCallback lineCallback) {
-        this.editorOverlay.setGutterMarker(line, gutterId, element);
-        this.codeMirror.on(editorOverlay, EventTypes.CHANGE,
-                           new EventHandlerMixedParameters() {
-                               @Override
-                               public void onEvent(final JsArrayMixed params) {
-                                   // 0->editor, 1->event object
-                                   final CMChangeEventOverlay event = params.getObject(1);
-                                   final JsArrayString newText = event.getText();
-                                   final CMPositionOverlay from = event.getFrom();
-                                   final CMPositionOverlay to = event.getTo();
-
-                                   // if the first character of the line is not included, the (potential) line
-                                   // numbering change only starts at the following line.
-                                   int changeStart = from.getLine() + 1;
-
-                                   int removedCount = 0;
-                                   if (from.getLine() != to.getLine()) {
-                                       // no lines were removed
-                                       // don't count first line yet
-                                       removedCount = Math.abs(from.getLine() - to.getLine()) - 1;
-                                       if (from.getCharacter() == 0) {
-                                           // start of first line is included, 'to' is on another line, so the line is deleted
-                                           removedCount = removedCount + 1;
-                                           changeStart = changeStart - 1;
-                                       }
-                                       // if 'to' is at the end of the line, the line is _not_ removed, just emptied
-                                   }
-                                   // else no lines were removed
-
-                                   final int addedCount = newText.length() - 1;
-
-                                   // only call back if there is a change in the lines
-                                   if (removedCount > 0 || addedCount > 0) {
-                                       LOG.fine("Line change from l." + changeStart + " removed " + removedCount + " added " + addedCount);
-                                       lineCallback.onLineNumberingChange(changeStart,
-                                                                          removedCount,
-                                                                          addedCount);
-                                   }
-                               }
-
-                           });
-    }
-
-    public elemental.dom.Element getGutterItem(final int line, final String gutterId) {
-        final CMLineInfoOverlay lineInfo = this.editorOverlay.lineInfo(line);
-        if (lineInfo == null) {
-            LOG.fine("No lineInfo for line" + line);
-            return null;
-        }
-        if (lineInfo.getGutterMarkers() == null) {
-            LOG.fine("No gutter markers for line" + line);
-            return null;
-        }
-        final CMGutterMarkersOverlay markers = lineInfo.getGutterMarkers();
-        if (markers.hasMarker(gutterId)) {
-            return markers.getMarker(gutterId);
-        } else {
-            LOG.fine("No markers found for gutter " + gutterId + "on line " + line);
-            return null;
-        }
-    }
-
-    public void clearGutter(final String gutterId) {
-        this.editorOverlay.clearGutter(gutterId);
-    }
-
     public void showCompletionsProposals(final List<CompletionProposal> proposals,
                                          final AdditionalInfoCallback additionalInfoCallback) {
         this.showCompletion.showCompletionProposals(proposals, additionalInfoCallback);
@@ -1049,6 +1003,16 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements Has
         this.editorOverlay.scrollIntoView(CMPositionOverlay.create(line, 0));
     }
 
-    interface CodeMirrorEditorWidgetUiBinder extends UiBinder<SimplePanel, CodeMirrorEditorWidget> {
+    @Override
+    public Minimap getMinimap() {
+        return this.minimap;
+    }
+
+    @Override
+    public Gutter getGutter() {
+        return this.gutter;
+    }
+
+    interface CodeMirrorEditorWidgetUiBinder extends UiBinder<HTMLPanel, CodeMirrorEditorWidget> {
     }
 }
