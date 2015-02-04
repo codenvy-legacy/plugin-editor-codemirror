@@ -83,10 +83,7 @@ public final class ShowCompletion {
             return;
         }
 
-        final CMHintOptionsOverlay hintOptions = CMHintOptionsOverlay.create();
-        hintOptions.setCloseOnUnfocus(true); //actually, default value
-        hintOptions.setAlignWithWord(true); //default
-        hintOptions.setCompleteSingle(true); //default
+        final CMHintOptionsOverlay hintOptions = createDefaultHintOptions();
 
         final CMHintFunctionOverlay hintFunction = CMHintFunctionOverlay.createFromHintFunction(new HintFunction() {
 
@@ -121,6 +118,14 @@ public final class ShowCompletion {
         editorWidget.getEditorOverlay().showHint(hintOptions);
     }
 
+    private CMHintOptionsOverlay createDefaultHintOptions() {
+        final CMHintOptionsOverlay hintOptions = CMHintOptionsOverlay.create();
+        hintOptions.setCloseOnUnfocus(false); // default=true
+        hintOptions.setAlignWithWord(true); //default
+        hintOptions.setCompleteSingle(true); //default
+        return hintOptions;
+    }
+
     /* async version */
     public void showCompletionProposals(final CompletionsSource completionsSource,
                                         final AdditionalInfoCallback additionalInfoCallback) {
@@ -132,7 +137,7 @@ public final class ShowCompletion {
             showCompletionProposals();
         }
 
-        final CMHintOptionsOverlay hintOptions = CMHintOptionsOverlay.create();
+        final CMHintOptionsOverlay hintOptions = createDefaultHintOptions();
         final CMHintFunctionOverlay hintFunction = CMHintFunctionOverlay.createFromAsyncHintFunction(new AsyncHintFunction() {
 
             @Override
@@ -205,10 +210,7 @@ public final class ShowCompletion {
             return;
         }
 
-        final CMHintOptionsOverlay hintOptions = CMHintOptionsOverlay.create();
-        hintOptions.setCloseOnUnfocus(true); //actually, default value
-        hintOptions.setAlignWithWord(true); //default
-        hintOptions.setCompleteSingle(true); //default
+        final CMHintOptionsOverlay hintOptions = createDefaultHintOptions();
 
         final CMHintFunctionOverlay hintFunction = CMHintFunctionOverlay.createFromHintFunction(new HintFunction() {
 
