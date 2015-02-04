@@ -112,6 +112,7 @@
 
 .cm-s-codenvy .CodeMirror-matchingtag {
     background-image: linear-gradient(to top, rgba(255, 150, 0, 0.3), rgba(255, 150, 0, 0));
+    background-color: transparent;
 }
 
 .cm-s-codenvy .cm-bracket.CodeMirror-matchingtag {
