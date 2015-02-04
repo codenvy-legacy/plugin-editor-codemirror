@@ -111,7 +111,7 @@
 }
 
 .cm-s-codenvy .CodeMirror-matchingtag {
-    background-image: linear-gradient(to top, rgba(255, 150, 0, 0.3), rgba(255, 150, 0, 0));
+    background-image: linear-gradient(to top, rgba(255, 150, 0, 0.8), rgba(255, 150, 0, 0.1) 20%, rgba(255, 150, 0, 0));
     background-color: transparent;
 }
 
