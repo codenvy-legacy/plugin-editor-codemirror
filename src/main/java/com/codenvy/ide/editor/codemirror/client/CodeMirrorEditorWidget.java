@@ -27,7 +27,6 @@ import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.MAT
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.READONLY;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.SHOW_CURSOR_WHEN_SELECTING;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.STYLE_ACTIVE_LINE;
-import static com.codenvy.ide.jseditor.client.gutter.Gutters.LINE_NUMBERS_GUTTER;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -687,10 +686,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements
     }
 
     private void fireGutterClickEvent(final int line, final String internalGutterId, final MouseEvent event) {
-        String gutterId = internalGutterId;
-        if (CodemirrorGutter.CODE_MIRROR_GUTTER_LINENUMBERS.equals(gutterId)) {
-            gutterId = LINE_NUMBERS_GUTTER;
-        }
+        String gutterId = CodemirrorGutter.GUTTER_MAP.cmToLogical(internalGutterId);
         final GutterClickEvent gutterEvent = new GutterClickEvent(line, gutterId, event);
         fireEvent(gutterEvent);
         this.embeddedDocument.getDocEventBus().fireEvent(gutterEvent);

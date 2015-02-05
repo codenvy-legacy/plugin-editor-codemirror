@@ -59,9 +59,9 @@ public class CodemirrorGutter implements Gutter {
     /**
      * The gutter map.
      */
-    private static final GutterMap GUTTER_MAP = new GutterMap() {
+    public static final GutterMap GUTTER_MAP = new GutterMap() {
         @Override
-        public String get(final String gutterId) {
+        public String logicalToCm(final String gutterId) {
             if (gutterId == null) {
                 return null;
             }
@@ -74,6 +74,23 @@ public class CodemirrorGutter implements Gutter {
                     return CODE_MIRROR_GUTTER_ANNOTATIONS;
                 default:
                     return gutterId;
+            }
+        }
+
+        @Override
+        public String cmToLogical(final String gutterStyle) {
+            if (gutterStyle == null) {
+                return null;
+            }
+            switch (gutterStyle) {
+                case CODE_MIRROR_GUTTER_LINENUMBERS:
+                    return Gutters.LINE_NUMBERS_GUTTER;
+                case CODE_MIRROR_GUTTER_BREAKPOINTS:
+                    return Gutters.BREAKPOINTS_GUTTER;
+                case CODE_MIRROR_GUTTER_ANNOTATIONS:
+                    return Gutters.ANNOTATION_GUTTER;
+                default:
+                    return gutterStyle;
             }
         }
 
@@ -113,7 +130,7 @@ public class CodemirrorGutter implements Gutter {
         if (GUTTER_MAP.isProtected(gutterId)) {
             return;
         }
-        this.editorOverlay.setGutterMarker(line, GUTTER_MAP.get(gutterId), element);
+        this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), element);
         this.codeMirror.on(editorOverlay, EventTypes.CHANGE,
                            new EventHandlerMixedParameters() {
                                @Override
@@ -186,26 +203,26 @@ public class CodemirrorGutter implements Gutter {
 
     public void addGutterItem(final int line, final String gutterId, final com.google.gwt.dom.client.Element element) {
         if (!GUTTER_MAP.isProtected(gutterId)) {
-            this.editorOverlay.setGutterMarker(line, GUTTER_MAP.get(gutterId), element);
+            this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), element);
         }
     }
 
     public void removeGutterItem(final int line, final String gutterId) {
         if (!GUTTER_MAP.isProtected(gutterId)) {
-            this.editorOverlay.setGutterMarker(line, GUTTER_MAP.get(gutterId), (Element)null);
+            this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), (Element)null);
         }
     }
 
     public void addGutterItem(final int line, final String gutterId, final elemental.dom.Element element) {
         if (!GUTTER_MAP.isProtected(gutterId)) {
-            this.editorOverlay.setGutterMarker(line, GUTTER_MAP.get(gutterId), element);
+            this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), element);
         }
     }
 
     /**
      * Interface to map generic gutter identifiers to codemirror gutter styles.
      */
-    private interface GutterMap {
+    interface GutterMap {
 
         /**
          * Return the native sutter style for this gutter id.
@@ -213,7 +230,9 @@ public class CodemirrorGutter implements Gutter {
          * @param gutterId the gutter id
          * @return the codemirror name
          */
-        String get(String gutterId);
+        String logicalToCm(String gutterId);
+
+        String cmToLogical(String gutterStyle);
 
         /**
          * Tells if the given gutter is protected against change.
