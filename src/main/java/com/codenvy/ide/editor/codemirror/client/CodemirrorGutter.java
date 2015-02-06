@@ -95,7 +95,7 @@ public class CodemirrorGutter implements Gutter {
         }
 
         @Override
-        public boolean isProtected(final String gutterId) {
+        public boolean isProtectedLogical(final String gutterId) {
             if (gutterId == null) {
                 return true;
             }
@@ -127,7 +127,7 @@ public class CodemirrorGutter implements Gutter {
     public void addGutterItem(final int line, final String gutterId, final Element element,
                               final LineNumberingChangeCallback lineCallback) {
         // condition reversed from the other methods here
-        if (GUTTER_MAP.isProtected(gutterId)) {
+        if (GUTTER_MAP.isProtectedLogical(gutterId)) {
             return;
         }
         this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), element);
@@ -186,35 +186,35 @@ public class CodemirrorGutter implements Gutter {
             return null;
         }
         final CMGutterMarkersOverlay markers = lineInfo.getGutterMarkers();
-        if (markers.hasMarker(gutterId)) {
-            return markers.getMarker(gutterId);
+        if (markers.hasMarker(GUTTER_MAP.logicalToCm(gutterId))) {
+            return markers.getMarker(GUTTER_MAP.logicalToCm(gutterId));
         } else {
-            LOG.fine("No markers found for gutter " + gutterId + "on line " + line);
+            LOG.fine("No markers found for gutter " + gutterId + "/" + GUTTER_MAP.logicalToCm(gutterId) + "on line " + line);
             return null;
         }
     }
 
     @Override
     public void clearGutter(final String gutterId) {
-        if (!GUTTER_MAP.isProtected(gutterId)) {
-            this.editorOverlay.clearGutter(gutterId);
+        if (!GUTTER_MAP.isProtectedLogical(gutterId)) {
+            this.editorOverlay.clearGutter(GUTTER_MAP.logicalToCm(gutterId));
         }
     }
 
     public void addGutterItem(final int line, final String gutterId, final com.google.gwt.dom.client.Element element) {
-        if (!GUTTER_MAP.isProtected(gutterId)) {
+        if (!GUTTER_MAP.isProtectedLogical(gutterId)) {
             this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), element);
         }
     }
 
     public void removeGutterItem(final int line, final String gutterId) {
-        if (!GUTTER_MAP.isProtected(gutterId)) {
+        if (!GUTTER_MAP.isProtectedLogical(gutterId)) {
             this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), (Element)null);
         }
     }
 
     public void addGutterItem(final int line, final String gutterId, final elemental.dom.Element element) {
-        if (!GUTTER_MAP.isProtected(gutterId)) {
+        if (!GUTTER_MAP.isProtectedLogical(gutterId)) {
             this.editorOverlay.setGutterMarker(line, GUTTER_MAP.logicalToCm(gutterId), element);
         }
     }
@@ -240,6 +240,6 @@ public class CodemirrorGutter implements Gutter {
          * @param gutterId the gutter identifier
          * @return true iff the gutter is protected
          */
-        boolean isProtected(String gutterId);
+        boolean isProtectedLogical(String gutterId);
     }
 }
