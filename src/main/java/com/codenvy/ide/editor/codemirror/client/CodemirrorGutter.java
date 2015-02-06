@@ -232,6 +232,12 @@ public class CodemirrorGutter implements Gutter {
          */
         String logicalToCm(String gutterId);
 
+        /**
+         * Convert the logical gutter id for the native gutter style.
+         * 
+         * @param gutterStyle the gutter style
+         * @return the logical gutter id
+         */
         String cmToLogical(String gutterStyle);
 
         /**
