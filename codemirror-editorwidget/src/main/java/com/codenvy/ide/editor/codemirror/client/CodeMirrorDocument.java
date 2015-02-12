@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.BEFORE_CHANGE;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.BEFORE_CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.CHANGE;
 
 import com.codenvy.ide.api.text.Region;
 import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
