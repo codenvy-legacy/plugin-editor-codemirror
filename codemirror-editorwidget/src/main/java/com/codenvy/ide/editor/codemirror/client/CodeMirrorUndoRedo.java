@@ -11,7 +11,7 @@
 package com.codenvy.ide.editor.codemirror.client;
 
 import com.codenvy.ide.api.texteditor.HandlesUndoRedo;
-import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMDocumentOverlay;
 
 /**
  * Undo/redo handler for codemirror editors.
