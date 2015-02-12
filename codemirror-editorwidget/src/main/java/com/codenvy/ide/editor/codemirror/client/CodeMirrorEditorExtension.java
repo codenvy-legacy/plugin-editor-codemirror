@@ -17,7 +17,7 @@ import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
-import com.codenvy.ide.editor.codemirror.client.style.CodeMirrorResource;
+import com.codenvy.ide.editor.codemirror.style.client.CodeMirrorResource;
 import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
