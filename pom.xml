@@ -42,6 +42,7 @@
         <module>codemirror-ide-style</module>
         <module>codemirror-jso</module>
         <module>codemirror-editorwidget</module>
+        <module>codemirror-resources</module>
     </modules>
     <scm>
         <connection>scm:git:git@github.com:codenvy/plugin-editor-codemirror.git</connection>
@@ -49,20 +50,8 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-        <codemirror.extract.location>${project.build.directory}/codemirror-extract</codemirror.extract.location>
-        <codemirror.final.location>${project.build.directory}/codemirror/com/codenvy/ide/editor/codemirror/public/codemirror-${codemirror.upstream.version}-${codemirror.plugin.revision}</codemirror.final.location>
-        <!-- appended to the upstream version to allow plugin updates with resources changes for the same codemirror
-             upstream version.
-             _Should be rare_ mostly when changing minification parameters without changing codemirror version so
-             most of the time it should stay at 1
-              -->
         <codemirror.plugin.revision>2</codemirror.plugin.revision>
-        <codemirror.unpack.location>${project.build.directory}/codemirror-${codemirror.upstream.version}</codemirror.unpack.location>
-        <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
-        <codemirror.upstream.version>4.12</codemirror.upstream.version>
-        <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
         <license_years>2014-2015</license_years>
-        <patches.location>${basedir}/src/main/patches</patches.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencyManagement>

@@ -22,6 +22,9 @@
     <artifactId>codemirror-editorwidget</artifactId>
     <packaging>jar</packaging>
     <name>CodeMirror Editor Widget</name>
+    <properties>
+        <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -31,6 +34,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>codemirror-jso</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>codemirror-resources</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
