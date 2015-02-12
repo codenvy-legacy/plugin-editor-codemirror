@@ -50,7 +50,7 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-        <codemirror.plugin.revision>2</codemirror.plugin.revision>
+        <codemirror.plugin.revision>1</codemirror.plugin.revision>
         <license_years>2014-2015</license_years>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
