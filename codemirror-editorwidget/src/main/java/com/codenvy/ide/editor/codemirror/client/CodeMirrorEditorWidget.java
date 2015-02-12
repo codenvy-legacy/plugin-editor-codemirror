@@ -11,14 +11,14 @@
 package com.codenvy.ide.editor.codemirror.client;
 
 
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.BEFORE_SELECTION_CHANGE;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.BLUR;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.CHANGE;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.CURSOR_ACTIVITY;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.FOCUS;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.GUTTER_CLICK;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.SCROLL;
-import static com.codenvy.ide.editor.codemirror.client.EventTypes.VIEWPORT_CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.BEFORE_SELECTION_CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.BLUR;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.CHANGE;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.CURSOR_ACTIVITY;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.FOCUS;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.GUTTER_CLICK;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.SCROLL;
+import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.VIEWPORT_CHANGE;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.AUTOCLOSE_BRACKETS;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.AUTOCLOSE_TAGS;
 import static com.codenvy.ide.editor.codemirror.client.jso.options.OptionKey.FOLD_GUTTER;
@@ -39,6 +39,7 @@ import com.codenvy.ide.api.texteditor.HandlesUndoRedo;
 import com.codenvy.ide.editor.codemirror.client.jso.CMCommandOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay;
+import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapOverlay.CMKeyBindingAction;
 import com.codenvy.ide.editor.codemirror.client.jso.CMKeymapSetOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMModeInfoOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
@@ -289,7 +290,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements
 
         this.keyBindings = CMKeymapOverlay.create();
 
-        this.keyBindings.addBinding("Shift-Ctrl-K", this, new CodeMirrorKeyBindingAction<CodeMirrorEditorWidget>() {
+        this.keyBindings.addBinding("Shift-Ctrl-K", this, new CMKeyBindingAction<CodeMirrorEditorWidget>() {
 
             public void action(final CodeMirrorEditorWidget editorWidget) {
                 LOG.fine("Keybindings help binding used.");
@@ -902,7 +903,7 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements
             return;
         }
         LOG.info("Binding action on " + keySpec + ".");
-        this.keyBindings.addBinding(keySpec, bindingAction, new CodeMirrorKeyBindingAction<KeyBindingAction>() {
+        this.keyBindings.addBinding(keySpec, bindingAction, new CMKeyBindingAction<KeyBindingAction>() {
 
             @Override
             public void action(final KeyBindingAction action) {

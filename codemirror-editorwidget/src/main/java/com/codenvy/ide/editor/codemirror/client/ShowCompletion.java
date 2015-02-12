@@ -18,6 +18,7 @@ import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
+import com.codenvy.ide.editor.codemirror.client.jso.EventTypes;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMCompletionObjectOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintApplyOverlay;
 import com.codenvy.ide.editor.codemirror.client.jso.hints.CMHintApplyOverlay.HintApplyFunction;

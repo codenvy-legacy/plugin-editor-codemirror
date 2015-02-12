@@ -13,7 +13,6 @@ package com.codenvy.ide.editor.codemirror.client.jso;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.codenvy.ide.editor.codemirror.client.CodeMirrorKeyBindingAction;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
@@ -44,7 +43,7 @@ public class CMKeymapOverlay extends JavaScriptObject {
         return result;
     }
 
-    public final native <T> void addBinding(String keySpec, T thisInstance, CodeMirrorKeyBindingAction<T> keyBindingAction) /*-{
+    public final native <T> void addBinding(String keySpec, T thisInstance, CMKeyBindingAction<T> keyBindingAction) /*-{
         var keymapFun = function() {
             var javaMethod = keyBindingAction.@com.codenvy.ide.editor.codemirror.client.CodeMirrorKeyBindingAction::action(*);
             javaMethod(thisInstance);
@@ -97,5 +96,15 @@ public class CMKeymapOverlay extends JavaScriptObject {
         FUNCTION,
         PASS,
         UNKNOWN
+    }
+
+    /**
+     * An action executed on a keybinding in the editor.
+     * @param <T> the type of the 'this' instance
+     */
+    public interface CMKeyBindingAction<T> {
+
+        /** The triggered action. */
+        void action(T thisInstance);
     }
 }
