@@ -39,6 +39,7 @@
         </developer>
     </developers>
     <modules>
+        <module>codemirror-ide-style</module>
         <module>codemirror-jso</module>
         <module>codemirror-editorwidget</module>
     </modules>
