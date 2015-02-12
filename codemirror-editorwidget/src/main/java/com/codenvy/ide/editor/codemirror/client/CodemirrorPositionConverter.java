@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMPixelCoordinatesOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.scroll.CMPixelRangeOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMPixelCoordinatesOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.scroll.CMPixelRangeOverlay;
 import com.codenvy.ide.jseditor.client.position.PositionConverter;
 import com.codenvy.ide.jseditor.client.text.TextPosition;
 

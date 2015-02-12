@@ -10,17 +10,17 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.BEFORE_CHANGE;
-import static com.codenvy.ide.editor.codemirror.client.jso.EventTypes.CHANGE;
+import static com.codenvy.ide.editor.codemirrorjso.client.EventTypes.BEFORE_CHANGE;
+import static com.codenvy.ide.editor.codemirrorjso.client.EventTypes.CHANGE;
 
 import com.codenvy.ide.api.text.Region;
-import com.codenvy.ide.editor.codemirror.client.jso.CMDocumentOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMSetSelectionOptions;
-import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers;
-import com.codenvy.ide.editor.codemirror.client.jso.event.CMBeforeChangeEventOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMDocumentOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMSetSelectionOptions;
+import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.EventHandlers;
+import com.codenvy.ide.editor.codemirrorjso.client.event.CMBeforeChangeEventOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.event.CMChangeEventOverlay;
 import com.codenvy.ide.jseditor.client.changeintercept.TextChange;
 import com.codenvy.ide.jseditor.client.document.AbstractEmbeddedDocument;
 import com.codenvy.ide.jseditor.client.document.EmbeddedDocument;

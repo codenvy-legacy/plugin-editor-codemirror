@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMEditorOverlay;
 import com.codenvy.ide.jseditor.client.texteditor.LineStyler;
 
 /** Implementation of {@link LineStyler} for codemirror. */

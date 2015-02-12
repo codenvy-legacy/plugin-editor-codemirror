@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
 import com.codenvy.ide.jseditor.client.keymap.Keybinding;
 import com.google.gwt.core.client.JsArrayString;
 

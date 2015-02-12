@@ -12,14 +12,14 @@ package com.codenvy.ide.editor.codemirror.client;
 
 import java.util.logging.Logger;
 
-import com.codenvy.ide.editor.codemirror.client.jso.CMEditorOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CMPositionOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.CodeMirrorOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.EventTypes;
-import com.codenvy.ide.editor.codemirror.client.jso.EventHandlers.EventHandlerMixedParameters;
-import com.codenvy.ide.editor.codemirror.client.jso.event.CMChangeEventOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.line.CMGutterMarkersOverlay;
-import com.codenvy.ide.editor.codemirror.client.jso.line.CMLineInfoOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMEditorOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CMPositionOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.EventTypes;
+import com.codenvy.ide.editor.codemirrorjso.client.EventHandlers.EventHandlerMixedParameters;
+import com.codenvy.ide.editor.codemirrorjso.client.event.CMChangeEventOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.line.CMGutterMarkersOverlay;
+import com.codenvy.ide.editor.codemirrorjso.client.line.CMLineInfoOverlay;
 import com.codenvy.ide.jseditor.client.gutter.Gutter;
 import com.codenvy.ide.jseditor.client.gutter.Gutters;
 import com.google.gwt.core.client.JsArrayMixed;
