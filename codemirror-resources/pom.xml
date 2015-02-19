@@ -46,6 +46,9 @@
     <build>
         <resources>
             <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
                 <directory>target/codemirror</directory>
                 <includes>
                     <include>**/*.js</include>
