@@ -16,7 +16,7 @@
 <module>
     <inherits name="com.google.gwt.user.User"/>
     <inherits name="com.codenvy.ide.jseditor.JsEditor"/>
-    <inherits name="com.codenvy.ide.editor.codemirrorjso.CodeMirrorJSO"/>
+    <inherits name="com.codenvy.ide.editor.codemirrorjso.CodeMirrorJso"/>
     <inherits name="com.codenvy.ide.editor.codemirror.style.CodeMirrorIDEStyle"/>
     <inherits name="com.codenvy.ide.editor.codemirror.resources.CodeMirrorResources"/>
 
