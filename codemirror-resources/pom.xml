@@ -32,7 +32,6 @@
               -->
         <codemirror.unpack.location>${project.build.directory}/codemirror-${codemirror.upstream.version}</codemirror.unpack.location>
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
-        <codemirror.upstream.version>4.12</codemirror.upstream.version>
         <patches.location>${basedir}/src/main/patches</patches.location>
     </properties>
     <dependencies>
