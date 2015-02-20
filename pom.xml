@@ -20,10 +20,10 @@
         <relativePath />
     </parent>
     <groupId>com.codenvy.plugin-editor-codemirror</groupId>
-    <artifactId>plugin-editor-codemirror</artifactId>
+    <artifactId>plugin-editor-codemirror-parent</artifactId>
     <version>1.7.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>CodeMirror Editor Plugin</name>
+    <packaging>pom</packaging>
+    <name>CodeMirror Editor Plugin :: Parent</name>
     <licenses>
         <license>
             <name>Eclipse Public License</name>
@@ -38,26 +38,21 @@
             <organizationUrl>http://www.serli.com</organizationUrl>
         </developer>
     </developers>
+    <modules>
+        <module>codemirror-ide-style</module>
+        <module>codemirror-jso</module>
+        <module>codemirror-editorwidget</module>
+        <module>codemirror-resources</module>
+    </modules>
     <scm>
         <connection>scm:git:git@github.com:codenvy/plugin-editor-codemirror.git</connection>
         <developerConnection>scm:git:git@github.com:codenvy/plugin-editor-codemirror.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <properties>
-        <codemirror.extract.location>${project.build.directory}/codemirror-extract</codemirror.extract.location>
-        <codemirror.final.location>${project.build.directory}/codemirror/com/codenvy/ide/editor/codemirror/public/codemirror-${codemirror.upstream.version}-${codemirror.plugin.revision}</codemirror.final.location>
-        <!-- appended to the upstream version to allow plugin updates with resources changes for the same codemirror
-             upstream version.
-             _Should be rare_ mostly when changing minification parameters without changing codemirror version so
-             most of the time it should stay at 1
-              -->
-        <codemirror.plugin.revision>2</codemirror.plugin.revision>
-        <codemirror.unpack.location>${project.build.directory}/codemirror-${codemirror.upstream.version}</codemirror.unpack.location>
-        <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
+        <codemirror.plugin.revision>1</codemirror.plugin.revision>
         <codemirror.upstream.version>4.12</codemirror.upstream.version>
-        <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
         <license_years>2014-2015</license_years>
-        <patches.location>${basedir}/src/main/patches</patches.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencyManagement>
@@ -71,35 +66,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>com.codenvy.ide</groupId>
-            <artifactId>codenvy-ide-api</artifactId>
-            <version>${codenvy.ide.version}</version>
-        </dependency>
-        <dependency>
-            <!-- required until api/core cleanup! -->
-            <groupId>com.codenvy.ide</groupId>
-            <artifactId>codenvy-ide-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.codenvy.ide</groupId>
-            <artifactId>codenvy-ide-jseditor</artifactId>
-            <version>${codenvy.ide.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt.inject</groupId>
-            <artifactId>gin</artifactId>
-            <version>${com.google.gwt.gin.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>codemirror</artifactId>
-            <version>${codemirror.upstream.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
     <repositories>
         <repository>
             <id>codenvy-public-repo</id>
@@ -114,145 +80,4 @@
             <url>https://maven.codenvycorp.com/content/groups/public/</url>
         </pluginRepository>
     </pluginRepositories>
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-            </resource>
-            <resource>
-                <targetPath>${filtered.source.path}</targetPath>
-                <filtering>true</filtering>
-                <directory>src/main/filtered-sources</directory>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>target/codemirror</directory>
-                <includes>
-                    <include>**/*.js</include>
-                    <include>**/*.css</include>
-                    <include>**/*.map</include>
-                </includes>
-                <excludes>
-                    <exclude>**/test/**</exclude>
-                    <exclude>**/doc/**</exclude>
-                    <exclude>**/theme/**</exclude>
-                    <exclude>**/demo/**</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${filtered.source.path}</directory>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${filtered.source.path}</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.webjars</groupId>
-                                    <artifactId>codemirror</artifactId>
-                                    <version>${codemirror.upstream.version}</version>
-                                    <type>jar</type>
-                                    <includes>**/lib/**,**/addon/**,**/mode/**,**/keymap/**</includes>
-                                    <excludes>**/*_test.js,**/index.html</excludes>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${codemirror.unpack.location}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <mkdir dir="${codemirror.extract.location}/" />
-                                <move todir="${codemirror.extract.location}/">
-                                    <fileset dir="${codemirror.unpack.location}/META-INF/resources/webjars/codemirror/${codemirror.upstream.version}/" />
-                                </move>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!-- Apply patches -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-patch-plugin</artifactId>
-                <version>1.1.1</version>
-                <executions>
-                    <execution>
-                        <id>bugfix-patches</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>apply</goal>
-                        </goals>
-                        <configuration>
-                            <patchDirectory>${patches.location}</patchDirectory>
-                            <patches>
-                                <patch>4.12-slash-IDEX-1961.diff</patch>
-                            </patches>
-                            <optimizations>false</optimizations>
-                            <strictPatching>true</strictPatching>
-                            <strip>1</strip>
-                            <targetDirectory>${codemirror.extract.location}</targetDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.bringking</groupId>
-                <artifactId>requirejs-maven-plugin</artifactId>
-                <version>2.0.4</version>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>optimize</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <runner>rhino</runner>
-                    <configFile>${basedir}/src/main/config/buildconfig.js</configFile>
-                    <filterConfig>true</filterConfig>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
