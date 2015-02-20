@@ -17,7 +17,7 @@ import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
-import com.codenvy.ide.editor.codemirror.style.client.CodeMirrorResource;
+import com.codenvy.ide.editor.codemirror.resources.client.CodeMirrorBasePath;
 import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
@@ -31,7 +31,6 @@ import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.EditorIni
 import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.InitializerCallback;
 import com.codenvy.ide.jseditor.client.texteditor.ConfigurableTextEditor;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
-import com.codenvy.ide.util.dom.Elements;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
@@ -40,12 +39,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.inject.Inject;
-
-import elemental.client.Browser;
-import elemental.dom.Element;
-import elemental.dom.NodeList;
-import elemental.html.HeadElement;
-import elemental.html.LinkElement;
 
 @Extension(title = "CodeMirror Editor", version = "1.1.0")
 public class CodeMirrorEditorExtension {
@@ -78,7 +71,6 @@ public class CodeMirrorEditorExtension {
                                      final NotificationManager notificationManager,
                                      final CodeMirrorEditorModule editorModule,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
-                                     final CodeMirrorResource highlightResource,
                                      final CompletionResources completionResources) {
         this.notificationManager = notificationManager;
         this.moduleHolder = moduleHolder;
@@ -88,11 +80,6 @@ public class CodeMirrorEditorExtension {
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
         this.codemirrorBase = CodeMirrorBasePath.basePath();
 
-        highlightResource.highlightStyle().ensureInjected();
-        highlightResource.editorStyle().ensureInjected();
-        highlightResource.dockerfileModeStyle().ensureInjected();
-        highlightResource.gutterStyle().ensureInjected();
-        highlightResource.scrollStyle().ensureInjected();
         completionResources.completionCss().ensureInjected();
 
         Log.debug(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);
@@ -195,7 +182,8 @@ public class CodeMirrorEditorExtension {
         this.requireJsLoader.require(new Callback<JavaScriptObject[], Throwable>() {
             @Override
             public void onSuccess(final JavaScriptObject[] result) {
-                finishInit(callback);
+                final CodeMirrorOverlay codeMirror = result[0].cast();
+                finishInit(callback, codeMirror);
             }
 
             @Override
@@ -218,53 +206,11 @@ public class CodeMirrorEditorExtension {
             }
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "lib/codemirror.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/dialog/dialog.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/fold/foldgutter.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/hint/show-hint.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/search/matchesonscrollbar.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/scroll/simplescrollbars.css");
-
     }
 
-    private void finishInit(final InitializerCallback callback) {
-        final CodeMirrorOverlay codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
+    private void finishInit(final InitializerCallback callback, final CodeMirrorOverlay codeMirror) {
         codeMirror.setModeURL(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "mode/%N/%N.js");
         callback.onSuccess();
-    }
-
-
-    private static void injectCssLink(final String url) {
-        LinkElement link = Browser.getDocument().createLinkElement();
-        link.setRel("stylesheet");
-        link.setHref(url);
-        nativeAttachToHead(link);
-    }
-
-    private static void injectCssLinkAtTop(final String url) {
-        LinkElement link = Browser.getDocument().createLinkElement();
-        link.setRel("stylesheet");
-        link.setHref(url);
-        nativeAttachFirstLink(link);
-    }
-
-    /**
-     * Attach an element to document head.
-     * 
-     * @param newElement the element to attach
-     */
-    private static void nativeAttachToHead(Element newElement) {
-        Elements.getDocument().getHead().appendChild(newElement);
-    }
-
-    private static void nativeAttachFirstLink(Element styleElement) {
-        final HeadElement head = Elements.getDocument().getHead();
-        final NodeList nodes = head.getElementsByTagName("link");
-        if (nodes.length() > 0) {
-            head.insertBefore(styleElement, nodes.item(0));
-        } else {
-            head.appendChild(styleElement);
-        }
     }
 
     private void registerEditor() {

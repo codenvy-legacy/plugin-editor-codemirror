@@ -22,9 +22,6 @@
     <artifactId>plugin-editor-codemirror</artifactId>
     <packaging>jar</packaging>
     <name>CodeMirror Editor :: Editor Widget</name>
-    <properties>
-        <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -69,37 +66,8 @@
                 <directory>src/main/java</directory>
             </resource>
             <resource>
-                <targetPath>${filtered.source.path}</targetPath>
-                <filtering>true</filtering>
-                <directory>src/main/filtered-sources</directory>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
                 <directory>src/main/resources</directory>
             </resource>
-            <resource>
-                <directory>${filtered.source.path}</directory>
-            </resource>
         </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${filtered.source.path}</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 </project>

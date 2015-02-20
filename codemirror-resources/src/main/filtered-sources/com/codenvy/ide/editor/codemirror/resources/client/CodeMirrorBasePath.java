@@ -8,7 +8,7 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package com.codenvy.ide.editor.codemirror.client;
+package com.codenvy.ide.editor.codemirror.resources.client;
 
 /**
  * Defines the codemirror resources path.

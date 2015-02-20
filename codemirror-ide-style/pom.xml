@@ -28,6 +28,11 @@
             <artifactId>codenvy-ide-api</artifactId>
             <version>${codenvy.ide.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.codenvy.plugin-editor-codemirror</groupId>
+            <artifactId>codemirror-resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
