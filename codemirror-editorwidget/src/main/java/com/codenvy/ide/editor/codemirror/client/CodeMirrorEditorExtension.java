@@ -95,7 +95,7 @@ public class CodeMirrorEditorExtension {
         highlightResource.scrollStyle().ensureInjected();
         completionResources.completionCss().ensureInjected();
 
-        Log.info(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);
+        Log.debug(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);
         editorModule.setEditorInitializer(new EditorInitializer() {
             @Override
             public void initialize(final InitializerCallback callback) {
