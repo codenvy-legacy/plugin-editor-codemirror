@@ -1,44 +1,8 @@
-
-#
-# Default excludes
-#
-
-# Binaries
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-*.war
-*.ear
-*.sar
-*.class
-
-#GWT
-exo-ide-client/tomcat/
-
-# Maven 
-target/
-
-# IntelliJ project files 
-*.iml
-*.iws
-*.ipr
-.idea/
-
-# eclipse project file
-.settings/
-.classpath
-.project
-
-# OS
-.DS_Store
-
-# Misc
-*.swp
-
-# GWT
-/**/.gwt
+/.settings/
+/.classpath
+/.project
+/target
+*/.settings
+*/.project
+*/.classpath
+*/target
