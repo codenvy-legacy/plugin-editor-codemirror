@@ -24,7 +24,6 @@ import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
 import com.codenvy.ide.jseditor.client.editorconfig.DefaultTextEditorConfiguration;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
-import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
 import com.codenvy.ide.jseditor.client.requirejs.RequirejsErrorHandler.RequireError;
 import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.EditorInitializer;
@@ -55,10 +54,8 @@ public class CodeMirrorEditorExtension {
     private final String codemirrorBase;
 
     private final NotificationManager         notificationManager;
-    private final ModuleHolder                moduleHolder;
     private final RequireJsLoader             requireJsLoader;
     private final EditorTypeRegistry          editorTypeRegistry;
-    private final CodeMirrorEditorModule      editorModule;
 
     private final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory;
 
@@ -66,7 +63,6 @@ public class CodeMirrorEditorExtension {
 
     @Inject
     public CodeMirrorEditorExtension(final EditorTypeRegistry editorTypeRegistry,
-                                     final ModuleHolder moduleHolder,
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
                                      final CodeMirrorEditorModule editorModule,
@@ -74,9 +70,7 @@ public class CodeMirrorEditorExtension {
                                      final CompletionResources completionResources,
                                      final BasePathConstant basePathConstant) {
         this.notificationManager = notificationManager;
-        this.moduleHolder = moduleHolder;
         this.requireJsLoader = requireJsLoader;
-        this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
         this.codemirrorBase = basePathConstant.basePath();
