@@ -38,7 +38,7 @@ import com.codenvy.ide.api.text.RegionImpl;
 import com.codenvy.ide.api.texteditor.HandlesUndoRedo;
 import com.codenvy.ide.editor.codemirror.client.minimap.MinimapFactory;
 import com.codenvy.ide.editor.codemirror.client.minimap.MinimapPresenter;
-import com.codenvy.ide.editor.codemirror.resources.client.CodeMirrorBasePath;
+import com.codenvy.ide.editor.codemirror.resources.client.BasePathConstant;
 import com.codenvy.ide.editor.codemirrorjso.client.CMCommandOverlay;
 import com.codenvy.ide.editor.codemirrorjso.client.CMEditorOverlay;
 import com.codenvy.ide.editor.codemirrorjso.client.CMKeymapOverlay;
@@ -233,13 +233,14 @@ public class CodeMirrorEditorWidget extends CompositeEditorWidget implements
                                   final EditorAgent editorAgent,
                                   @Assisted final List<String> editorModes,
                                   final RequireJsLoader requirejs,
-                                  final MinimapFactory minimapFactory) {
+                                  final MinimapFactory minimapFactory,
+                                  final BasePathConstant basePathConstant) {
         initWidget(UIBINDER.createAndBindUi(this));
 
         this.keymapPrefReader = keymapPrefReader;
         this.requirejs = requirejs;
         this.showCompletion = new ShowCompletion(this, completionResources.completionCss());
-        this.codemirrorBasePath = CodeMirrorBasePath.basePath();
+        this.codemirrorBasePath = basePathConstant.basePath();
 
         this.codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
 

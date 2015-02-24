@@ -17,7 +17,7 @@ import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
-import com.codenvy.ide.editor.codemirror.resources.client.CodeMirrorBasePath;
+import com.codenvy.ide.editor.codemirror.resources.client.BasePathConstant;
 import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
@@ -71,14 +71,15 @@ public class CodeMirrorEditorExtension {
                                      final NotificationManager notificationManager,
                                      final CodeMirrorEditorModule editorModule,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
-                                     final CompletionResources completionResources) {
+                                     final CompletionResources completionResources,
+                                     final BasePathConstant basePathConstant) {
         this.notificationManager = notificationManager;
         this.moduleHolder = moduleHolder;
         this.requireJsLoader = requireJsLoader;
         this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
-        this.codemirrorBase = CodeMirrorBasePath.basePath();
+        this.codemirrorBase = basePathConstant.basePath();
 
         completionResources.completionCss().ensureInjected();
 

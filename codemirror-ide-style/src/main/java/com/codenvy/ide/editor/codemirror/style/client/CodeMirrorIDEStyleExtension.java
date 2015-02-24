@@ -11,7 +11,7 @@
 package com.codenvy.ide.editor.codemirror.style.client;
 
 import com.codenvy.ide.api.extension.Extension;
-import com.codenvy.ide.editor.codemirror.resources.client.CodeMirrorBasePath;
+import com.codenvy.ide.editor.codemirror.resources.client.BasePathConstant;
 import com.codenvy.ide.util.dom.Elements;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
@@ -26,7 +26,8 @@ import elemental.html.LinkElement;
 public class CodeMirrorIDEStyleExtension {
 
     @Inject
-    public CodeMirrorIDEStyleExtension(final CodeMirrorResource highlightResource) {
+    public CodeMirrorIDEStyleExtension(final CodeMirrorResource highlightResource,
+                                       final BasePathConstant basePathConstant) {
 
 
         highlightResource.highlightStyle().ensureInjected();
@@ -35,11 +36,11 @@ public class CodeMirrorIDEStyleExtension {
         highlightResource.gutterStyle().ensureInjected();
         highlightResource.scrollStyle().ensureInjected();
 
-        injectCodeMirrorIDEStyle();
+        injectCodeMirrorIDEStyle(basePathConstant);
     }
 
-    private void injectCodeMirrorIDEStyle() {
-        final String codemirrorBase = CodeMirrorBasePath.basePath();
+    private void injectCodeMirrorIDEStyle(final BasePathConstant basePathConstant) {
+        final String codemirrorBase = basePathConstant.basePath();
 
         injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "lib/codemirror.css");
         injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/dialog/dialog.css");
