@@ -291,7 +291,7 @@ public class CMEditorOptionsOverlay extends JavaScriptObject {
      * @param readOnly the new value
      */
     public final native void setReadOnly(boolean readonly) /*-{
-        this.setReadOnly(readonly);
+        this.readOnly = readonly;
     }-*/;
 
     /**
@@ -300,7 +300,7 @@ public class CMEditorOptionsOverlay extends JavaScriptObject {
      * @param readOnly the new value
      */
     public final native void setReadOnly(String readonly) /*-{
-        this.setReadOnly(readonly);
+        this.readOnly = readonly;
     }-*/;
 
     private final native boolean isReadOnlyString() /*-{
