@@ -13,25 +13,29 @@ package com.codenvy.ide.editor.codemirror.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.codenvy.api.promises.client.Operation;
+import com.codenvy.api.promises.client.OperationException;
+import com.codenvy.api.promises.client.Promise;
+import com.codenvy.api.promises.client.PromiseError;
 import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
-import com.codenvy.ide.editor.codemirror.style.client.CodeMirrorResource;
+import com.codenvy.ide.editor.codemirror.base.client.BaseCodemirrorInitializer;
+import com.codenvy.ide.editor.codemirror.base.client.BaseCodemirrorPromise;
+import com.codenvy.ide.editor.codemirror.resources.client.BasePathConstant;
 import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
 import com.codenvy.ide.jseditor.client.defaulteditor.EditorBuilder;
 import com.codenvy.ide.jseditor.client.editorconfig.DefaultTextEditorConfiguration;
 import com.codenvy.ide.jseditor.client.editortype.EditorType;
 import com.codenvy.ide.jseditor.client.editortype.EditorTypeRegistry;
-import com.codenvy.ide.jseditor.client.requirejs.ModuleHolder;
 import com.codenvy.ide.jseditor.client.requirejs.RequireJsLoader;
 import com.codenvy.ide.jseditor.client.requirejs.RequirejsErrorHandler.RequireError;
 import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.EditorInitializer;
 import com.codenvy.ide.jseditor.client.texteditor.AbstractEditorModule.InitializerCallback;
 import com.codenvy.ide.jseditor.client.texteditor.ConfigurableTextEditor;
 import com.codenvy.ide.jseditor.client.texteditor.EmbeddedTextEditorPresenter;
-import com.codenvy.ide.util.dom.Elements;
 import com.codenvy.ide.util.loging.Log;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
@@ -40,12 +44,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.inject.Inject;
-
-import elemental.client.Browser;
-import elemental.dom.Element;
-import elemental.dom.NodeList;
-import elemental.html.HeadElement;
-import elemental.html.LinkElement;
 
 @Extension(title = "CodeMirror Editor", version = "1.1.0")
 public class CodeMirrorEditorExtension {
@@ -62,7 +60,6 @@ public class CodeMirrorEditorExtension {
     private final String codemirrorBase;
 
     private final NotificationManager         notificationManager;
-    private final ModuleHolder                moduleHolder;
     private final RequireJsLoader             requireJsLoader;
     private final EditorTypeRegistry          editorTypeRegistry;
     private final CodeMirrorEditorModule      editorModule;
@@ -73,26 +70,21 @@ public class CodeMirrorEditorExtension {
 
     @Inject
     public CodeMirrorEditorExtension(final EditorTypeRegistry editorTypeRegistry,
-                                     final ModuleHolder moduleHolder,
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
                                      final CodeMirrorEditorModule editorModule,
+                                     final BaseCodemirrorPromise basePromise,
+                                     final BaseCodemirrorInitializer baseInitializer,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
-                                     final CodeMirrorResource highlightResource,
-                                     final CompletionResources completionResources) {
+                                     final CompletionResources completionResources,
+                                     final BasePathConstant basePathConstant) {
         this.notificationManager = notificationManager;
-        this.moduleHolder = moduleHolder;
         this.requireJsLoader = requireJsLoader;
         this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
-        this.codemirrorBase = CodeMirrorBasePath.basePath();
+        this.codemirrorBase = basePathConstant.basePath();
 
-        highlightResource.highlightStyle().ensureInjected();
-        highlightResource.editorStyle().ensureInjected();
-        highlightResource.dockerfileModeStyle().ensureInjected();
-        highlightResource.gutterStyle().ensureInjected();
-        highlightResource.scrollStyle().ensureInjected();
         completionResources.completionCss().ensureInjected();
 
         Log.debug(CodeMirrorEditorExtension.class, "Codemirror extension module=" + editorModule);
@@ -103,7 +95,7 @@ public class CodeMirrorEditorExtension {
                 GWT.runAsync(new RunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        injectCodeMirror(callback, completionResources);
+                        initBaseCodeMirror(basePromise, baseInitializer, callback);
                     }
                     @Override
                     public void onFailure(final Throwable reason) {
@@ -117,7 +109,28 @@ public class CodeMirrorEditorExtension {
         CodeMirrorKeymaps.init();
     }
 
-    private void injectCodeMirror(final InitializerCallback callback, final CompletionResources completionResources) {
+    private void initBaseCodeMirror(final BaseCodemirrorPromise basePromise,
+                                    final BaseCodemirrorInitializer baseInitializer,
+                                    final InitializerCallback callback) {
+        if (basePromise.getPromise() == null) {
+            baseInitializer.init();
+        }
+        final Promise<CodeMirrorOverlay> editorPromise = basePromise.getPromise().then(new Operation<CodeMirrorOverlay>() {
+            
+            @Override
+            public void apply(final CodeMirrorOverlay codemirror) throws OperationException {
+                setupFullCodeMirror(callback);
+            }
+        });
+        editorPromise.catchError(new Operation<PromiseError>() {
+            @Override
+            public void apply(final PromiseError arg) throws OperationException {
+                editorModule.setError();
+            }
+        });
+    }
+
+    private void setupFullCodeMirror(final InitializerCallback callback) {
         /*
          * This could be simplified and optimized with a all-in-one minified js from http://codemirror.net/doc/compress.html but at least
          * while debugging, unmodified source is necessary. Another option would be to include all-in-one minified along with a source map
@@ -195,7 +208,8 @@ public class CodeMirrorEditorExtension {
         this.requireJsLoader.require(new Callback<JavaScriptObject[], Throwable>() {
             @Override
             public void onSuccess(final JavaScriptObject[] result) {
-                finishInit(callback);
+                editorModule.setReady();
+                callback.onSuccess();
             }
 
             @Override
@@ -218,53 +232,6 @@ public class CodeMirrorEditorExtension {
             }
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "lib/codemirror.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/dialog/dialog.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/fold/foldgutter.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/hint/show-hint.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/search/matchesonscrollbar.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/scroll/simplescrollbars.css");
-
-    }
-
-    private void finishInit(final InitializerCallback callback) {
-        final CodeMirrorOverlay codeMirror = moduleHolder.getModule(CodeMirrorEditorExtension.CODEMIRROR_MODULE_KEY).cast();
-        codeMirror.setModeURL(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "mode/%N/%N.js");
-        callback.onSuccess();
-    }
-
-
-    private static void injectCssLink(final String url) {
-        LinkElement link = Browser.getDocument().createLinkElement();
-        link.setRel("stylesheet");
-        link.setHref(url);
-        nativeAttachToHead(link);
-    }
-
-    private static void injectCssLinkAtTop(final String url) {
-        LinkElement link = Browser.getDocument().createLinkElement();
-        link.setRel("stylesheet");
-        link.setHref(url);
-        nativeAttachFirstLink(link);
-    }
-
-    /**
-     * Attach an element to document head.
-     * 
-     * @param newElement the element to attach
-     */
-    private static void nativeAttachToHead(Element newElement) {
-        Elements.getDocument().getHead().appendChild(newElement);
-    }
-
-    private static void nativeAttachFirstLink(Element styleElement) {
-        final HeadElement head = Elements.getDocument().getHead();
-        final NodeList nodes = head.getElementsByTagName("link");
-        if (nodes.length() > 0) {
-            head.insertBefore(styleElement, nodes.item(0));
-        } else {
-            head.appendChild(styleElement);
-        }
     }
 
     private void registerEditor() {

@@ -11,17 +11,14 @@
       Codenvy, S.A. - initial API and implementation
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>plugin-editor-codemirror-parent</artifactId>
         <groupId>com.codenvy.plugin-editor-codemirror</groupId>
         <version>1.7.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
     </parent>
-    <artifactId>codemirror-ide-style</artifactId>
-    <packaging>jar</packaging>
-    <name>CodeMirror Editor :: IDE Style</name>
+    <artifactId>codemirror-highlighter</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.codenvy.ide</groupId>
@@ -30,8 +27,23 @@
         </dependency>
         <dependency>
             <groupId>com.codenvy.plugin-editor-codemirror</groupId>
+            <artifactId>codemirror-base-init</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codenvy.plugin-editor-codemirror</groupId>
+            <artifactId>codemirror-jso</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codenvy.plugin-editor-codemirror</groupId>
             <artifactId>codemirror-resources</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codenvy.plugin-editor-codemirror</groupId>
+            <artifactId>promises</artifactId>
+            <version>1.7.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>

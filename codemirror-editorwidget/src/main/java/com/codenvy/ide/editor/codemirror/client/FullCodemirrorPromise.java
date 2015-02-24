@@ -10,23 +10,18 @@
  *******************************************************************************/
 package com.codenvy.ide.editor.codemirror.client;
 
-/**
- * Defines the codemirror resources path.
- */
-public final class CodeMirrorBasePath {
+import com.codenvy.api.promises.client.Promise;
+import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
 
-    /**
-     * The base path (in the source file, it should contain version placeholders, evaluated during compilation).
-     */
-    private final static String BASE_PATH = "codemirror-${codemirror.upstream.version}-${codemirror.plugin.revision}/";
+public class FullCodemirrorPromise {
 
-    private CodeMirrorBasePath() {}
+    private Promise<CodeMirrorOverlay> fullPromise;
 
-    /**
-     * Returns the base path for codemirror resources.
-     * @return the base path
-     */
-    public static String basePath() {
-        return BASE_PATH;
+    public void setPromise(final Promise<CodeMirrorOverlay> fullCodemirrorPromise) {
+        this.fullPromise = fullCodemirrorPromise;
+    }
+
+    public Promise<CodeMirrorOverlay> getPromise() {
+        return this.fullPromise;
     }
 }

@@ -32,9 +32,15 @@
               -->
         <codemirror.unpack.location>${project.build.directory}/codemirror-${codemirror.upstream.version}</codemirror.unpack.location>
         <codemirror.upstream.url>http://codemirror.net/</codemirror.upstream.url>
+        <filtered.source.path>${project.build.directory}/filtered-sources</filtered.source.path>
         <patches.location>${basedir}/src/main/patches</patches.location>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${com.google.gwt.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>codemirror</artifactId>
@@ -45,7 +51,21 @@
     <build>
         <resources>
             <resource>
+                <directory>src/main/java</directory>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
                 <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/BasePathConstant.properties</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/BasePathConstant.properties</include>
+                </includes>
             </resource>
             <resource>
                 <directory>target/codemirror</directory>

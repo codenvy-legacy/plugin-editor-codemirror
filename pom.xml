@@ -43,6 +43,9 @@
         <module>codemirror-jso</module>
         <module>codemirror-editorwidget</module>
         <module>codemirror-resources</module>
+        <module>codemirror-base-init</module>
+        <module>codemirror-highlighter</module>
+        <module>promises</module>
     </modules>
     <scm>
         <connection>scm:git:git@github.com:codenvy/plugin-editor-codemirror.git</connection>
