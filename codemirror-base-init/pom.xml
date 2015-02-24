@@ -19,15 +19,10 @@
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
-    <artifactId>plugin-editor-codemirror</artifactId>
+    <artifactId>codemirror-base-init</artifactId>
     <packaging>jar</packaging>
-    <name>CodeMirror Editor :: Editor Widget</name>
+    <name>Codemirror Editor :: Base Init</name>
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>codemirror-base-init</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>codemirror-ide-style</artifactId>
@@ -49,20 +44,14 @@
             <version>${codenvy.ide.version}</version>
         </dependency>
         <dependency>
-            <!-- required until api/core cleanup! -->
-            <groupId>com.codenvy.ide</groupId>
-            <artifactId>codenvy-ide-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.codenvy.ide</groupId>
             <artifactId>codenvy-ide-jseditor</artifactId>
             <version>${codenvy.ide.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.gwt.inject</groupId>
-            <artifactId>gin</artifactId>
-            <version>${com.google.gwt.gin.version}</version>
-            <scope>provided</scope>
+            <groupId>com.codenvy.plugin-editor-codemirror</groupId>
+            <artifactId>promises</artifactId>
+            <version>1.7.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>

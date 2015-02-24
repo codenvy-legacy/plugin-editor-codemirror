@@ -19,6 +19,5 @@
     <inherits name="com.codenvy.ide.editor.codemirrorjso.CodeMirrorJSO"/>
     <inherits name="com.codenvy.ide.editor.codemirror.style.CodeMirrorIDEStyle"/>
     <inherits name="com.codenvy.ide.editor.codemirror.resources.CodeMirrorResources"/>
-    <inherits name="com.codenvy.ide.editor.codemirror.base.CodeMirrorBase"/>
-
+    <inherits name="com.codenvy.api.promises.Promises"/>
 </module>

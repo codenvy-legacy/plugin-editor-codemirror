@@ -13,10 +13,16 @@ package com.codenvy.ide.editor.codemirror.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.codenvy.api.promises.client.Operation;
+import com.codenvy.api.promises.client.OperationException;
+import com.codenvy.api.promises.client.Promise;
+import com.codenvy.api.promises.client.PromiseError;
 import com.codenvy.ide.api.extension.Extension;
 import com.codenvy.ide.api.notification.Notification;
 import com.codenvy.ide.api.notification.Notification.Type;
 import com.codenvy.ide.api.notification.NotificationManager;
+import com.codenvy.ide.editor.codemirror.base.client.BaseCodemirrorInitializer;
+import com.codenvy.ide.editor.codemirror.base.client.BaseCodemirrorPromise;
 import com.codenvy.ide.editor.codemirror.resources.client.BasePathConstant;
 import com.codenvy.ide.editor.codemirrorjso.client.CodeMirrorOverlay;
 import com.codenvy.ide.jseditor.client.codeassist.CompletionResources;
@@ -56,6 +62,7 @@ public class CodeMirrorEditorExtension {
     private final NotificationManager         notificationManager;
     private final RequireJsLoader             requireJsLoader;
     private final EditorTypeRegistry          editorTypeRegistry;
+    private final CodeMirrorEditorModule      editorModule;
 
     private final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory;
 
@@ -66,11 +73,14 @@ public class CodeMirrorEditorExtension {
                                      final RequireJsLoader requireJsLoader,
                                      final NotificationManager notificationManager,
                                      final CodeMirrorEditorModule editorModule,
+                                     final BaseCodemirrorPromise basePromise,
+                                     final BaseCodemirrorInitializer baseInitializer,
                                      final CodeMirrorTextEditorFactory codeMirrorTextEditorFactory,
                                      final CompletionResources completionResources,
                                      final BasePathConstant basePathConstant) {
         this.notificationManager = notificationManager;
         this.requireJsLoader = requireJsLoader;
+        this.editorModule = editorModule;
         this.editorTypeRegistry = editorTypeRegistry;
         this.codeMirrorTextEditorFactory = codeMirrorTextEditorFactory;
         this.codemirrorBase = basePathConstant.basePath();
@@ -85,7 +95,7 @@ public class CodeMirrorEditorExtension {
                 GWT.runAsync(new RunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        injectCodeMirror(callback, completionResources);
+                        initBaseCodeMirror(basePromise, baseInitializer, callback);
                     }
                     @Override
                     public void onFailure(final Throwable reason) {
@@ -99,7 +109,28 @@ public class CodeMirrorEditorExtension {
         CodeMirrorKeymaps.init();
     }
 
-    private void injectCodeMirror(final InitializerCallback callback, final CompletionResources completionResources) {
+    private void initBaseCodeMirror(final BaseCodemirrorPromise basePromise,
+                                    final BaseCodemirrorInitializer baseInitializer,
+                                    final InitializerCallback callback) {
+        if (basePromise.getPromise() == null) {
+            baseInitializer.init();
+        }
+        final Promise<CodeMirrorOverlay> editorPromise = basePromise.getPromise().then(new Operation<CodeMirrorOverlay>() {
+            
+            @Override
+            public void apply(final CodeMirrorOverlay codemirror) throws OperationException {
+                setupFullCodeMirror(callback);
+            }
+        });
+        editorPromise.catchError(new Operation<PromiseError>() {
+            @Override
+            public void apply(final PromiseError arg) throws OperationException {
+                editorModule.setError();
+            }
+        });
+    }
+
+    private void setupFullCodeMirror(final InitializerCallback callback) {
         /*
          * This could be simplified and optimized with a all-in-one minified js from http://codemirror.net/doc/compress.html but at least
          * while debugging, unmodified source is necessary. Another option would be to include all-in-one minified along with a source map
@@ -177,8 +208,8 @@ public class CodeMirrorEditorExtension {
         this.requireJsLoader.require(new Callback<JavaScriptObject[], Throwable>() {
             @Override
             public void onSuccess(final JavaScriptObject[] result) {
-                final CodeMirrorOverlay codeMirror = result[0].cast();
-                finishInit(callback, codeMirror);
+                editorModule.setReady();
+                callback.onSuccess();
             }
 
             @Override
@@ -201,11 +232,6 @@ public class CodeMirrorEditorExtension {
             }
         }, scripts, new String[]{CODEMIRROR_MODULE_KEY});
 
-    }
-
-    private void finishInit(final InitializerCallback callback, final CodeMirrorOverlay codeMirror) {
-        codeMirror.setModeURL(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "mode/%N/%N.js");
-        callback.onSuccess();
     }
 
     private void registerEditor() {
