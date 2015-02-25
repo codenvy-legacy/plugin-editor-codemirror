@@ -65,7 +65,7 @@ public abstract class AbstractCodemirrorInitializer {
         requirePromise.then(new Operation<JavaScriptObject[]>() {
             @Override
             public void apply(final JavaScriptObject[] result) throws OperationException {
-                LOG.log(Level.INFO, "Obtained codemirror instance: " + result[0]);
+                LOG.log(Level.FINE, "Obtained codemirror instance: " + result[0]);
             }
         });
         requirePromise.catchError(new Operation<PromiseError>() {
