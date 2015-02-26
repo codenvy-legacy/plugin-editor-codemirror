@@ -126,8 +126,12 @@ public class JsPromise<V> extends JavaScriptObject implements Promise<V> {
     private final native <B> Promise<B> thenJava(Thenable<B> thenable) /*-{
         return this.then(function() {
             then: function(arg) {
-                return thenable.@com.codenvy.api.promises.client.Thenable::then(*)(arg);
+                return @com.codenvy.api.promises.client.js.JsPromise::staticThen(*)(thenable, arg);
             }
         });
     }-*/;
+
+    private final static <B> Thenable<B> staticThen(Thenable<B> thenable, B arg) {
+        return thenable.then(arg);
+    }
 }
