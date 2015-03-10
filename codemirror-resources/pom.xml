@@ -24,7 +24,7 @@
     <name>CodeMirror Editor :: Resources</name>
     <properties>
         <codemirror.extract.location>${project.build.directory}/codemirror-extract</codemirror.extract.location>
-        <codemirror.final.location>${project.build.directory}/codemirror/com/codenvy/ide/editor/codemirror/resources/public/codemirror-${codemirror.upstream.version}-${codemirror.plugin.revision}</codemirror.final.location>
+        <codemirror.final.location>${project.build.directory}/codemirror/org/eclipse/che/ide/editor/codemirror/resources/public/codemirror-${codemirror.upstream.version}-${codemirror.plugin.revision}</codemirror.final.location>
         <!-- appended to the upstream version to allow plugin updates with resources changes for the same codemirror
              upstream version.
              _Should be rare_ mostly when changing minification parameters without changing codemirror version so
