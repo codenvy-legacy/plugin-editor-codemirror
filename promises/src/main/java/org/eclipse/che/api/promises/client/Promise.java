@@ -17,23 +17,23 @@ package org.eclipse.che.api.promises.client;
 public interface Promise<V> extends Thenable<V> {
 
     /**
-     * Adds an action when the promise is fullfilled.<br>
+     * Adds an action when the promise is fulfilled.<br>
      * The action is added both to the original promise and the returned value, but the promises are not
      * necessarily the same object. 
-     * @param onFullfilled the action
+     * @param onFulfilled the action
      * @return a promise equivalent to the original promise with the action added
      */
-    <B> Promise<B> then(Function<V, B> onFullfilled);
+    <B> Promise<B> then(Function<V, B> onFulfilled);
 
     /**
-     * Adds actions when the promise is fullfilled and rejected.<br>
+     * Adds actions when the promise is fulfilled and rejected.<br>
      * The actions are added both to the original promise and the returned value, but the promises are not
      * necessarily the same object. 
-     * @param onFullfilled the fulfillment action added
+     * @param onFulfilled the fulfillment action added
      * @param onRejected the rejection action added
      * @return a promise equivalent to the original promise with the actions added
      */
-    <B> Promise<B> then(Function<V, B> onFullfilled, Function<PromiseError, B> onRejected);
+    <B> Promise<B> then(Function<V, B> onFulfilled, Function<PromiseError, B> onRejected);
 
     /**
      * Adds actions when the promise is rejected.
@@ -48,9 +48,9 @@ public interface Promise<V> extends Thenable<V> {
      */
     <B> Promise<B> catchError(Function<PromiseError, B> onRejected);
 
-    Promise<V> then(Operation<V> onFullfilled);
-    Promise<V> then(Operation<V> onFullfilled, Function<PromiseError, V> onRejected);
-    Promise<V> then(Operation<V> onFullfilled, Operation<PromiseError> onRejected);
+    Promise<V> then(Operation<V> onFulfilled);
+    Promise<V> then(Operation<V> onFulfilled, Function<PromiseError, V> onRejected);
+    Promise<V> then(Operation<V> onFulfilled, Operation<PromiseError> onRejected);
 
     <B> Promise<B> then(Thenable<B> thenable);
 
