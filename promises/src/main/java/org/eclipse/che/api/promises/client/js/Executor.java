@@ -23,7 +23,7 @@ public class Executor<V> extends JavaScriptObject {
     protected Executor() {}
 
     /*
-     * The first parameter is the fullfilment function, the second is the rejection function. Both
+     * The first parameter is the fulfillment function, the second is the rejection function. Both
      * functions accept one argument.
      * These functions are handed by the promise implementation
      * The resolve function single parameter is the eventual value that's born by the promise
