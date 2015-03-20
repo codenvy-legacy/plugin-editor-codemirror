@@ -6,3 +6,6 @@
 */.project
 */.classpath
 */target
+
+# IntelliJ project files
+*.iml
