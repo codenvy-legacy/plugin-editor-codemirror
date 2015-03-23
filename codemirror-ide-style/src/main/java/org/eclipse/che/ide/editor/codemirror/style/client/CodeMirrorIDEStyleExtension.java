@@ -40,15 +40,15 @@ public class CodeMirrorIDEStyleExtension {
     }
 
     private void injectCodeMirrorIDEStyle(final BasePathConstant basePathConstant) {
-        final String codemirrorBase = basePathConstant.basePath();
+        /** GWT.getModuleBaseForStaticFiles() works incorrectly when running Super Dev Mode is used */
+        final String codemirrorBase = GWT.getModuleBaseURL() + basePathConstant.basePath();
 
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "lib/codemirror.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/dialog/dialog.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/fold/foldgutter.css");
-        injectCssLinkAtTop(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/hint/show-hint.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/search/matchesonscrollbar.css");
-        injectCssLink(GWT.getModuleBaseForStaticFiles() + codemirrorBase + "addon/scroll/simplescrollbars.css");
-
+        injectCssLink(codemirrorBase + "lib/codemirror.css");
+        injectCssLink(codemirrorBase + "addon/dialog/dialog.css");
+        injectCssLink(codemirrorBase + "addon/fold/foldgutter.css");
+        injectCssLinkAtTop(codemirrorBase + "addon/hint/show-hint.css");
+        injectCssLink(codemirrorBase + "addon/search/matchesonscrollbar.css");
+        injectCssLink(codemirrorBase + "addon/scroll/simplescrollbars.css");
     }
 
     private static void injectCssLink(final String url) {
