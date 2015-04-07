@@ -1,4 +1,4 @@
 CodeMirror Editor Plugin for Codenvy
 ====================================
 
-Plugin that allows the use of CodeMirror Editor inside Codenvy.
+This repository is deprecated. Visit https://github.com/codenvy/che-plugins
